@@ -4,7 +4,7 @@
   <title><![CDATA[Mirreal Note]]></title>
   <link href="http://blog.mirreal.net/atom.xml" rel="self"/>
   <link href="http://blog.mirreal.net/"/>
-  <updated>2016-03-14T10:32:07+08:00</updated>
+  <updated>2016-03-15T17:25:18+08:00</updated>
   <id>http://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Mirreal Ellison]]></name>
@@ -12,6 +12,23 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[2015 to 2016]]></title>
+    <link href="http://blog.mirreal.net/blog/2016/03/15/2015-to-2016/"/>
+    <updated>2016-03-15T16:54:15+08:00</updated>
+    <id>http://blog.mirreal.net/blog/2016/03/15/2015-to-2016</id>
+    <content type="html"><![CDATA[<h1>一级</h1>
+
+<h2>二级</h2>
+
+<h3>三级</h3>
+
+<h4>四级</h4>
+
+<h5>五级</h5>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[我是怎么成了一名程序员]]></title>
@@ -1308,7 +1325,7 @@ sizeof(long long) = 8
 </span><span class='line'>      <span class="nx">self</span><span class="p">.</span><span class="nx">loop</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">update</span><span class="p">();</span>
 </span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
-</span><span class='line'>      <span class="p">},</span> <span class="mi">800</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">},</span> <span class="mi">120</span><span class="p">);</span>
 </span><span class='line'>      <span class="nx">canvas</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s1">&#39;inline&#39;</span><span class="p">;</span>
 </span><span class='line'>      <span class="nx">snapshotImageElement</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span><span class="p">;</span>
 </span><span class='line'>      <span class="nx">snapshotButton</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="s1">&#39;Snapshot&#39;</span><span class="p">;</span>

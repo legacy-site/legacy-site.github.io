@@ -45,6 +45,7 @@
   <li style="float:left;margin-right:7px"><a class="nav" href="/">BLOG</a></li>
   <li style='float:left;margin-right:7px'><a class='nav' href="/archives">ARCHIVES</a></li>
   <li style="float:left;margin-right:7px"><a class="nav" href="/note">NOTE</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
   <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
   <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
 </ul><br><br>
@@ -313,7 +314,7 @@
 </span><span class='line'>      <span class="nx">self</span><span class="p">.</span><span class="nx">loop</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">update</span><span class="p">();</span>
 </span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
-</span><span class='line'>      <span class="p">},</span> <span class="mi">800</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">},</span> <span class="mi">120</span><span class="p">);</span>
 </span><span class='line'>      <span class="nx">canvas</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s1">&#39;inline&#39;</span><span class="p">;</span>
 </span><span class='line'>      <span class="nx">snapshotImageElement</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span><span class="p">;</span>
 </span><span class='line'>      <span class="nx">snapshotButton</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="s1">&#39;Snapshot&#39;</span><span class="p">;</span>
