@@ -57,7 +57,15 @@
   
 </div>
 
-  <div class="article-content">
+  <div class="article-content"><h4>一句代码的代码编辑器</h4>
+
+<p>在浏览器地址栏输入：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>data:text/html, &lt;style type="text/css"&gt;.e{position:absolute;top:0;right:0;bottom:0;left:0;}&lt;/style&gt;&lt;div class="e" id="editor"&gt;&lt;/div&gt;&lt;script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"&gt;&lt;/script&gt;&lt;script&gt;var e=ace.edit("editor");e.setTheme("ace/theme/textmate");e.getSession().setMode("ace/mode/python");&lt;/script&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>原理很简单，通过写入一段 html ,这段代码去加载 ace.js 渲染</p>
 </div>
 
   

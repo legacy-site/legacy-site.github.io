@@ -12,7 +12,7 @@
        More info: h5bp.com/b/378 -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>Learning Notes |  Mirreal Ellison</title>
+  <title>2016-03-16 |  Mirreal Ellison</title>
   <meta name="author" content="Mirreal Ellison">
   
 
@@ -51,40 +51,41 @@
 </ul><br><br>
 </nav>
     <article>
-  <h1 class="article-title">Learning Notes</h1>
+  <h1 class="article-title">2016-03-16</h1>
   <div class="sharing">
   
   
 </div>
 
-  <div class="article-content"><p>学习历程中的一些记录。有时候也懒的很，懒得读书学习，还有时候根本是懒得记录。</p>
+  <div class="article-content"><h4>Array.prototype.reduce()</h4>
 
-<hr />
+<p>reduce() 方法接收一个函数作为累加器（accumulator），数组中的每个值（从左到右）开始合并，最终为一个值。</p>
 
-<h4>一段旅程</h4>
-
-<ul>
-<li><a href="/note/2016-03-16.html">2016-03-16</a> Reduce()</li>
-<li><a href="/note/2016-03-15.html">2016-03-15</a> Code editor for browser</li>
-</ul>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">arr</span><span class="p">.</span><span class="nx">reduce</span><span class="p">(</span><span class="nx">callback</span><span class="p">,[</span><span class="nx">initialValue</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-<hr />
+<p>求数组最小值：</p>
 
-<h4>很久之前的事</h4>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">min</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">reduce</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">preValue</span><span class="p">,</span> <span class="nx">curValue</span><span class="p">,</span><span class="nx">index</span><span class="p">,</span><span class="nx">array</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">preValue</span> <span class="o">&gt;</span> <span class="nx">curValue</span> <span class="o">?</span> <span class="nx">curValue</span> <span class="o">:</span> <span class="nx">preValue</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">})</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">16</span><span class="p">];</span>
+</span><span class='line'><span class="nx">arr</span><span class="p">.</span><span class="nx">min</span><span class="p">();</span> <span class="c1">// 2</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<ul>
-<li><a href="/note/josephus-problem.html">Josephus Problem</a> - 7,8,2014</li>
-<li><a href="/note/io-list-insertion-sort.html">IO &amp; Insertion Sort with Linked List</a> - 7,9,2014</li>
-<li><a href="/note/segmentation-fault.html">String Method</a> - 7,11,2014</li>
-<li><a href="/note/function-closure-apply-bind-arguements.html">Closure, apply, bind, arguements</a> - 7,12,2014</li>
-<li><a href="/note/sorting-in-js.html">Sorting in js</a> - 7.22.2014</li>
-<li><a href="/note/shaker.html">Shaker sorting</a> - 7.23.2014</li>
-<li><a href="/note/quicksort.html">Quicksort</a> - 7.24.2014</li>
-<li><a href="/note/quicksort-plus.html">Quicksort plus</a> - 7.25.2014</li>
-<li><a href="/note/qsort-3-and-select.html">Quicksort 3 way &amp; Select</a> - 7.26.2014</li>
-</ul>
 
+<p>其他</p>
 </div>
 
   
@@ -93,8 +94,8 @@
     <div id="disqus_thread"><div id="disqus_thread"></div>
 <script type="text/javascript">
   var disqus_shortname = 'mirreal';
-  var disqus_identifier = 'http://blog.mirreal.net/note/index.html';
-  var disqus_url = 'http://blog.mirreal.net/note/index.html';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2016-03-16.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2016-03-16.html';
   //var disqus_developer = 1;
   (function() {
     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
