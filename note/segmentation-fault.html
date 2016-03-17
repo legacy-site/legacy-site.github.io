@@ -63,21 +63,30 @@
 
 <p>example 1:</p>
 
-<pre><code>char *c;
-strcpy(c, "cd");
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">char</span> <span class="o">*</span><span class="n">c</span><span class="p">;</span>
+</span><span class='line'><span class="n">strcpy</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s">&quot;cd&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>mend:</p>
 
-<pre><code>char *c = malloc(8 * sizeof(char));
-strcpy(c, "cd");
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">char</span> <span class="o">*</span><span class="n">c</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">));</span>
+</span><span class='line'><span class="n">strcpy</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s">&quot;cd&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>or</p>
 
-<pre><code>char c[8];
-strcpy(c, "cd");
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">char</span> <span class="n">c</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+</span><span class='line'><span class="n">strcpy</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s">&quot;cd&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h2>2.string method</h2>
 
