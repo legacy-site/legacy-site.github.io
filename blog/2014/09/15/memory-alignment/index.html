@@ -73,8 +73,10 @@
 
 <p>程序员可以通过预编译命令</p>
 
-<pre><code>#pragma pack(n)  // n=1,2,4,8,16
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#pragma pack(n)  </span><span class="c1">// n=1,2,4,8,16</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>来改变这一系数，其中的n就是指定的“对齐系数”。</p>
 
@@ -83,8 +85,8 @@
 <h3>规则：</h3>
 
 <ol>
-<li><p>数据成员对齐规则：结构(struct)或联合(union)的数据成员，第一个数据成员放在offset为0的地方，以后每个数据成员的对齐按照<code>#pragma pack</code>指定的数值和这个数据成员自身长度中，比较小的那个进行。</p></li>
-<li><p>结构(或联合)的整体对齐规则：在数据成员完成各自对齐之后，结构(或联合)本身也要进行对齐，对齐将按照<code>#pragma pack</code>指定的数值和结构(或联合)最大数据成员长度中，比较小的那个进行。</p></li>
+<li><p>数据成员对齐规则：结构(struct)或联合(union)的数据成员，第一个数据成员放在offset为0的地方，以后每个数据成员的对齐按照 <code>#pragma pack</code> 指定的数值和这个数据成员自身长度中，比较小的那个进行。</p></li>
+<li><p>结构(或联合)的整体对齐规则：在数据成员完成各自对齐之后，结构(或联合)本身也要进行对齐，对齐将按照 <code>#pragma pack</code> 指定的数值和结构(或联合)最大数据成员长度中，比较小的那个进行。</p></li>
 </ol>
 
 
@@ -113,15 +115,22 @@
 
 <p>在GCC中，各类型的大小如下：</p>
 
-<pre><code>sizeof(char)) = 1
-sizeof(short) = 2
-sizeof(int) = 4
-sizeof(float) = 4
-sizeof(double) = 8
-sizeof(long long) = 8
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">))</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="kt">short</span><span class="p">)</span> <span class="o">=</span> <span class="mi">2</span>
+</span><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="o">=</span> <span class="mi">4</span>
+</span><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span> <span class="o">=</span> <span class="mi">4</span>
+</span><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="kt">double</span><span class="p">)</span> <span class="o">=</span> <span class="mi">8</span>
+</span><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="kt">long</span> <span class="kt">long</span><span class="p">)</span> <span class="o">=</span> <span class="mi">8</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<h3>注解：在32位系统，n=4</h3>
+
+<h4>注解：在32位系统，n=4</h4>
 
 <p>相当于：</p>
 
@@ -146,10 +155,12 @@ sizeof(long long) = 8
 
 <p>最后整体对齐，按4圆整，故：</p>
 
-<pre><code>sizeof(test) = 20 
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="n">test</span><span class="p">)</span> <span class="o">=</span> <span class="mi">20</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<h3>注解：在64位系统，默认的对齐系数为8</h3>
+
+<h4>注解：在64位系统，默认的对齐系数为8</h4>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -168,10 +179,12 @@ sizeof(long long) = 8
 
 <p>最后整体对齐，按8圆整，故：</p>
 
-<pre><code>sizeof(test) = 24 
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="n">test</span><span class="p">)</span> <span class="o">=</span> <span class="mi">24</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<h3>注解：C++允许在结构体中定义static变量，静态变量分配在同一的静态存储区，不包含在结构体大小中。</h3>
+
+<h4>注解：C++允许在结构体中定义static变量，静态变量分配在同一的静态存储区，不包含在结构体大小中。</h4>
 
 <p>如下：</p>
 

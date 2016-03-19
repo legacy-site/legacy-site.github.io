@@ -56,7 +56,7 @@
   <h1 class="article-title">实现不定尺寸图片居中的几种方式</h1>
   <div class="article-content"><p>这是在实习工作中遇到的一个需求，实现未知尺寸的图片在一固定宽高的容器中水平和垂直居中。</p>
 
-<p>比如是在一个200px的正方形容器，图片的宽高可能大于200px，也可能小于200px。对于小图片，就是简单的水平和垂直居中，而大图片则要求按比例缩放，并实现居中。</p>
+<p>比如是在一个 200px 的正方形容器，图片的宽高可能大于 200px，也可能小于 200px。对于小图片，就是简单的水平和垂直居中，而大图片则要求按比例缩放，并实现居中。</p>
 
 <p>这个问题主要有两个方面的点：</p>
 
@@ -78,9 +78,9 @@
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;box&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;img/0.jpg&quot;</span> <span class="na">alt=</span><span class="s">&quot;earth shadow&quot;</span> <span class="na">title=</span><span class="s">&quot;It&#39;s me&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;box&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;img/0.jpg&quot;</span> <span class="na">alt=</span><span class="s">&quot;earth shadow&quot;</span> <span class="na">title=</span><span class="s">&quot;It&#39;s me&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/div&gt;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -105,7 +105,7 @@
 </pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.box</span> <span class="p">{</span>
 </span><span class='line'>  <span class="k">width</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">height</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
-</span><span class='line'><span class="k">position</span><span class="o">:</span> <span class="k">relative</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">position</span><span class="o">:</span> <span class="k">relative</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">text-align</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'><span class="nc">.box</span> <span class="nt">img</span> <span class="p">{</span>
@@ -121,9 +121,9 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>将容器的位置设为<code>relative</code>，图片的位置设为<code>absolute</code>，然后将其<code>top</code>，<code>right</code>，<code>bottom</code>，<code>left</code>都设置成0，虽然图片尺寸未知，但是对于一张具体的图片而言是有固定宽高的，所以并不能使它四个方位间距都为0，因此<code>margin: auto;</code>会让它居中。如果仅对于宽高都小于200px的图片，这样就足够了，但是对于大图片就不适用，所以再加上<code>max-width: 200px;max-height: 200px;</code>，这样图片就可以自适应缩放。</p>
+<p>将容器的位置设为 <code>relative</code> ，图片的位置设为 <code>absolute</code> ，然后将其 <code>top</code>， <code>right</code>， <code>bottom</code>， <code>left</code> 都设置成0，虽然图片尺寸未知，但是对于一张具体的图片而言是有固定宽高的，所以并不能使它四个方位间距都为0，因此 <code>margin: auto;</code> 会让它居中。如果仅对于宽高都小于200px的图片，这样就足够了，但是对于大图片就不适用，所以再加上 <code>max-width: 200px;max-height: 200px;</code> ，这样图片就可以自适应缩放。</p>
 
-<p>查看演示：<a href="http://blog.mirreal.net/demo/image-center/1.html">demo1</a></p>
+<p>查看演示：<a href="http://mirreal.github.io/demo/image-center/1.html">demo1</a></p>
 
 <h3>方式二：使用表格布局</h3>
 

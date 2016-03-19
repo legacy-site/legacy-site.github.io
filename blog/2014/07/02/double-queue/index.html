@@ -58,105 +58,177 @@
 
 <p>比如数组。这里使用双端队列简单的实现了一些类似动态数组的功能。</p>
 
-<p>模拟stack， queue实现push， pop， shift， unshift操作，以及两个遍历方法，for_each()和map()，其中for_each接受一个函数，函数包括一个item参数，map方法与其类似，但是返回一个数组。</p>
+<p>模拟 stack， queue 实现 push， pop， shift， unshift 操作，以及两个遍历方法，for_each() 和 map()，其中 for_each 接受一个函数，函数包括一个 item 参数，map 方法与其类似，但是返回一个数组。</p>
 
 <!-- more -->
 
 
-<h4>Double Queue定义：</h4>
+<h4>Double Queue 定义：</h4>
 
-<pre><code>typedef int data;
-typedef struct node* node;
-typedef struct double_queue* dqueue;
-struct node {
-  data item;
-  node prev, next;
-};
-struct double_queue {
-  int count;
-  node head, tail;
-};
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="k">typedef</span> <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
+</span><span class='line'><span class="k">typedef</span> <span class="k">struct</span> <span class="n">node</span><span class="o">*</span> <span class="n">node</span><span class="p">;</span>
+</span><span class='line'><span class="k">typedef</span> <span class="k">struct</span> <span class="n">double_queue</span><span class="o">*</span> <span class="n">dqueue</span><span class="p">;</span>
+</span><span class='line'><span class="k">struct</span> <span class="n">node</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">data</span> <span class="n">item</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">node</span> <span class="n">prev</span><span class="p">,</span> <span class="n">next</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="k">struct</span> <span class="n">double_queue</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">count</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">node</span> <span class="n">head</span><span class="p">,</span> <span class="n">tail</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h4>Push</h4>
 
-<pre><code>void dq_push(dqueue dq, data item) {
-  node t = malloc(sizeof *t);
-  t-&gt;item = item;
-  t-&gt;prev = dq-&gt;tail;
-  t-&gt;next = NULL;
-  if (dq-&gt;count) {
-    dq-&gt;tail-&gt;next = t;
-  } else {
-    dq-&gt;head = t;
-  }
-  dq-&gt;tail= t;
-  dq-&gt;count++;
-}
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">void</span> <span class="nf">dq_push</span><span class="p">(</span><span class="n">dqueue</span> <span class="n">dq</span><span class="p">,</span> <span class="n">data</span> <span class="n">item</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">node</span> <span class="n">t</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span> <span class="o">*</span><span class="n">t</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">t</span><span class="o">-&gt;</span><span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">t</span><span class="o">-&gt;</span><span class="n">prev</span> <span class="o">=</span> <span class="n">dq</span><span class="o">-&gt;</span><span class="n">tail</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">t</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">dq</span><span class="o">-&gt;</span><span class="n">count</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">dq</span><span class="o">-&gt;</span><span class="n">tail</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">dq</span><span class="o">-&gt;</span><span class="n">head</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="n">dq</span><span class="o">-&gt;</span><span class="n">tail</span><span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">dq</span><span class="o">-&gt;</span><span class="n">count</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h4>pop</h4>
 
-<pre><code>data dq_pop(dqueue dq) {
-  data item = dq-&gt;tail-&gt;item;
-  dq-&gt;tail-&gt;prev-&gt;next = NULL;
-  dq-&gt;tail = dq-&gt;tail-&gt;prev;
-  dq-&gt;count--;
-  return item;
-}
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">data</span> <span class="nf">dq_pop</span><span class="p">(</span><span class="n">dqueue</span> <span class="n">dq</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">data</span> <span class="n">item</span> <span class="o">=</span> <span class="n">dq</span><span class="o">-&gt;</span><span class="n">tail</span><span class="o">-&gt;</span><span class="n">item</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">dq</span><span class="o">-&gt;</span><span class="n">tail</span><span class="o">-&gt;</span><span class="n">prev</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">dq</span><span class="o">-&gt;</span><span class="n">tail</span> <span class="o">=</span> <span class="n">dq</span><span class="o">-&gt;</span><span class="n">tail</span><span class="o">-&gt;</span><span class="n">prev</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">dq</span><span class="o">-&gt;</span><span class="n">count</span><span class="o">--</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">item</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h4>shift</h4>
 
-<pre><code>data dq_shift(dqueue dq) {
-  data item = dq-&gt;head-&gt;item;
-  dq-&gt;head-&gt;next-&gt;prev = NULL;
-  dq-&gt;head = dq-&gt;head-&gt;next;
-  dq-&gt;count--;
-  return item;
-}
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">data</span> <span class="nf">dq_shift</span><span class="p">(</span><span class="n">dqueue</span> <span class="n">dq</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">data</span> <span class="n">item</span> <span class="o">=</span> <span class="n">dq</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">item</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">dq</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">-&gt;</span><span class="n">prev</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">dq</span><span class="o">-&gt;</span><span class="n">head</span> <span class="o">=</span> <span class="n">dq</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">dq</span><span class="o">-&gt;</span><span class="n">count</span><span class="o">--</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">item</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h4>unshift</h4>
 
-<pre><code>void dq_unshift(dqueue dq, data item) {
-  node t = malloc(sizeof *t);
-  t-&gt;item = item;
-  t-&gt;prev = NULL;
-  t-&gt;next = dq-&gt;head;
-  if (dq-&gt;count) {
-    dq-&gt;head-&gt;prev = t;
-  } else {
-    dq-&gt;tail = t;
-  }
-  dq-&gt;head = t;
-  dq-&gt;count++;
-}
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">void</span> <span class="nf">dq_unshift</span><span class="p">(</span><span class="n">dqueue</span> <span class="n">dq</span><span class="p">,</span> <span class="n">data</span> <span class="n">item</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">node</span> <span class="n">t</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span> <span class="o">*</span><span class="n">t</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">t</span><span class="o">-&gt;</span><span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">t</span><span class="o">-&gt;</span><span class="n">prev</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">t</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">dq</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">dq</span><span class="o">-&gt;</span><span class="n">count</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">dq</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">prev</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">dq</span><span class="o">-&gt;</span><span class="n">tail</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="n">dq</span><span class="o">-&gt;</span><span class="n">head</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">dq</span><span class="o">-&gt;</span><span class="n">count</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h4>遍历操作：</h4>
 
 <h5>for_each</h5>
 
-<pre><code>void dq_for_each(dqueue dq, void f(data)) {
-  node t = malloc(sizeof *t);
-  for (t = dq-&gt;head; t != NULL; t = t-&gt;next) {
-    f(t-&gt;item);
-  }
-}
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">void</span> <span class="nf">dq_for_each</span><span class="p">(</span><span class="n">dqueue</span> <span class="n">dq</span><span class="p">,</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">node</span> <span class="n">t</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span> <span class="o">*</span><span class="n">t</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">t</span> <span class="o">=</span> <span class="n">dq</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">;</span> <span class="n">t</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">item</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h5>map</h5>
 
-<pre><code>int* dq_map(dqueue dq, data f(data)) {
-  int *a = malloc(dq-&gt;count * sizeof(int)), i;
-  node t = malloc(sizeof *t);
-  for (t = dq-&gt;head, i = 0; t != NULL; t = t-&gt;next, i++) {
-    a[i] = f(t-&gt;item);
-  }
-  return a;
-}
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span><span class="o">*</span> <span class="nf">dq_map</span><span class="p">(</span><span class="n">dqueue</span> <span class="n">dq</span><span class="p">,</span> <span class="n">data</span> <span class="n">f</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">dq</span><span class="o">-&gt;</span><span class="n">count</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">)),</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">node</span> <span class="n">t</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span> <span class="o">*</span><span class="n">t</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">t</span> <span class="o">=</span> <span class="n">dq</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">t</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">,</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">item</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">a</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h4>完整源代码及测试用例：</h4>
 

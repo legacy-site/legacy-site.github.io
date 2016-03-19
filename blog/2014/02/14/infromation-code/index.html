@@ -148,7 +148,7 @@
 <span class='line-number'>67</span>
 <span class='line-number'>68</span>
 <span class='line-number'>69</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="c1">//编译指令：gcc shannon.c -lm</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="c1">// 编译指令：gcc shannon.c -lm</span>
 </span><span class='line'>
 </span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
 </span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
@@ -167,7 +167,7 @@
 </span><span class='line'>    <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%lf&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
 </span><span class='line'>  <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//选择排序（降序）</span>
+</span><span class='line'><span class="c1">// 选择排序（降序）</span>
 </span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="kt">double</span> <span class="n">v</span><span class="p">;</span>
 </span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">];</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">j</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
@@ -176,21 +176,21 @@
 </span><span class='line'>    <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">;</span>
 </span><span class='line'>  <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//计算码长：1-log2(p(xi))向上取整</span>
+</span><span class='line'><span class="c1">// 计算码长：1-log2(p(xi))向上取整</span>
 </span><span class='line'>  <span class="kt">int</span> <span class="n">k</span><span class="p">[</span><span class="n">n</span><span class="p">];</span>
 </span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="o">-</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
 </span><span class='line'>  <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//累加概率</span>
+</span><span class='line'><span class="c1">// 累加概率</span>
 </span><span class='line'>  <span class="kt">double</span> <span class="n">pa</span><span class="p">[</span><span class="n">n</span><span class="p">];</span>
 </span><span class='line'>  <span class="n">pa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="n">pa</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pa</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
 </span><span class='line'>  <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//将累加概率转换为二进制</span>
+</span><span class='line'><span class="c1">// 将累加概率转换为二进制</span>
 </span><span class='line'>  <span class="kt">char</span> <span class="n">code</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">n</span><span class="p">];</span>
 </span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="kt">double</span> <span class="n">t</span> <span class="o">=</span> <span class="n">pa</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
@@ -206,7 +206,7 @@
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>  <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//输出结果</span>
+</span><span class='line'><span class="c1">// 输出结果</span>
 </span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%16s %12s %16s %4s %4c%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="s">&quot;信源&quot;</span><span class="p">,</span> <span class="s">&quot;概率p(x)&quot;</span><span class="p">,</span> <span class="s">&quot;累加概率&quot;</span><span class="p">,</span> <span class="s">&quot;码长&quot;</span><span class="p">,</span> <span class="sc">&#39; &#39;</span><span class="p">,</span> <span class="s">&quot;码字code&quot;</span><span class="p">);</span>
 </span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%12d %12lf %12lf %4d %4c&quot;</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pa</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="sc">&#39; &#39;</span><span class="p">);</span>
@@ -222,7 +222,7 @@
 
 <h2>2.费诺编码法</h2>
 
-<p>这个编码方法准确说应该叫做Shannon-Fano编码法。这项技术是香农于1948年，在他介绍信息理论的文章“通信数学理论”中被提出的，归功于费诺，是由于他在不久以后以技术报告发布了它。</p>
+<p>这个编码方法准确说应该叫做 Shannon-Fano 编码法。这项技术是香农于1948年，在他介绍信息理论的文章“通信数学理论”中被提出的，归功于费诺，是由于他在不久以后以技术报告发布了它。</p>
 
 <p>方法如下：</p>
 
@@ -372,7 +372,7 @@
 
 <h2>3.霍夫曼编码法</h2>
 
-<p>香农当然知道Shannon-Fano编码法不是最优的，果然没太久，费诺的学生霍夫曼就找到一种更优的编码方法。</p>
+<p>香农当然知道 Shannon-Fano 编码法不是最优的，果然没太久，费诺的学生霍夫曼就找到一种更优的编码方法。</p>
 
 <p>有过算法课程上霍夫曼树的经验，霍夫曼编码法就比较容易理解。每次选取最小的节点构造霍夫曼树，各消息的码字即为从根节点到该消息节点的码元组合。</p>
 
