@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://blog.mirreal.net/blog/2016/03/19/ff/</loc>
+<lastmod>2016-03-19T10:01:13+08:00</lastmod>
+</url>
+<url>
 <loc>http://blog.mirreal.net/blog/2016/03/15/2015-to-2016/</loc>
 <lastmod>2016-03-15T16:54:15+08:00</lastmod>
 </url>
@@ -13,7 +17,7 @@
 <lastmod>2015-04-19T23:11:18+08:00</lastmod>
 </url>
 <url>
-<loc>http://blog.mirreal.net/blog/2015/01/23/image-atuo-middle/</loc>
+<loc>http://blog.mirreal.net/blog/2015/01/23/image-audo-middle/</loc>
 <lastmod>2015-01-23T21:26:48+08:00</lastmod>
 </url>
 <url>
@@ -70,22 +74,22 @@
 <loc>http://blog.mirreal.net/weekly/2016-03-19.html</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/note/function-closure-apply-bind-arguements.html</loc>
+<loc>http://blog.mirreal.net/note/2016-03-21.html</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/about/</loc>
+<loc>http://blog.mirreal.net/note/function-closure-apply-bind-arguements.html</loc>
 </url>
 <url>
 <loc>http://blog.mirreal.net/archives/</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/</loc>
-</url>
-<url>
 <loc>http://blog.mirreal.net/blog/archives/</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/weekly/</loc>
+<loc>http://blog.mirreal.net/about/</loc>
+</url>
+<url>
+<loc>http://blog.mirreal.net/</loc>
 </url>
 <url>
 <loc>http://blog.mirreal.net/note/</loc>
@@ -95,6 +99,9 @@
 </url>
 <url>
 <loc>http://blog.mirreal.net/about/</loc>
+</url>
+<url>
+<loc>http://blog.mirreal.net/weekly/</loc>
 </url>
 <url>
 <loc>http://blog.mirreal.net/note/io-list-insertion-sort.html</loc>
@@ -127,6 +134,6 @@
 <loc>http://blog.mirreal.net/blog/categories/shi-xi/</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/blog/categories/css/</loc>
+<loc>http://blog.mirreal.net/posts/2/</loc>
 </url>
 </urlset>

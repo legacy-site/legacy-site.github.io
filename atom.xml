@@ -4,7 +4,7 @@
   <title><![CDATA[Mirreal Note]]></title>
   <link href="http://blog.mirreal.net/atom.xml" rel="self"/>
   <link href="http://blog.mirreal.net/"/>
-  <updated>2016-03-19T09:00:26+08:00</updated>
+  <updated>2016-03-21T20:55:43+08:00</updated>
   <id>http://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Mirreal Ellison]]></name>
@@ -12,6 +12,15 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Ff]]></title>
+    <link href="http://blog.mirreal.net/blog/2016/03/19/ff/"/>
+    <updated>2016-03-19T10:01:13+08:00</updated>
+    <id>http://blog.mirreal.net/blog/2016/03/19/ff</id>
+    <content type="html"><![CDATA[<p>&hellip;</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[2015 to 2016]]></title>
@@ -117,9 +126,9 @@
   
   <entry>
     <title type="html"><![CDATA[实现不定尺寸图片居中的几种方式]]></title>
-    <link href="http://blog.mirreal.net/blog/2015/01/23/image-atuo-middle/"/>
+    <link href="http://blog.mirreal.net/blog/2015/01/23/image-audo-middle/"/>
     <updated>2015-01-23T21:26:48+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2015/01/23/image-atuo-middle</id>
+    <id>http://blog.mirreal.net/blog/2015/01/23/image-audo-middle</id>
     <content type="html"><![CDATA[<p>这是在实习工作中遇到的一个需求，实现未知尺寸的图片在一固定宽高的容器中水平和垂直居中。</p>
 
 <p>比如是在一个 200px 的正方形容器，图片的宽高可能大于 200px，也可能小于 200px。对于小图片，就是简单的水平和垂直居中，而大图片则要求按比例缩放，并实现居中。</p>
@@ -139,7 +148,7 @@
 <!-- more -->
 
 
-<p>HTML大概是这样的：</p>
+<p>HTML 大概是这样的：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -193,7 +202,7 @@
 
 <h3>方式二：使用表格布局</h3>
 
-<p>还是这段HTML：</p>
+<p>还是这段 HTML：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -219,16 +228,16 @@
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 </pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.box1</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">width</span><span class="o">:</span><span class="m">200px</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">height</span><span class="o">:</span><span class="m">200px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">width</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">height</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">display</span><span class="o">:</span> <span class="k">table-cell</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">vertical-align</span><span class="o">:</span><span class="k">middle</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">text-align</span><span class="o">:</span><span class="k">center</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">vertical-align</span><span class="o">:</span> <span class="k">middle</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">text-align</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'><span class="nc">.box1</span> <span class="nt">img</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">max-width</span><span class="o">:</span><span class="m">200px</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">max-height</span><span class="o">:</span><span class="m">200px</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">vertical-align</span><span class="o">:</span><span class="k">middle</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">max-width</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">max-height</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">vertical-align</span><span class="o">:</span> <span class="k">middle</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -250,18 +259,20 @@
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
+<span class='line-number'>7</span>
 </pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.box2</span> <span class="p">{</span>
 </span><span class='line'>  <span class="k">width</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">height</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">background</span><span class="o">:</span> <span class="sx">url(img/0.jpg)</span> <span class="k">no-repeat</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="sx">url(img/0.jpg)</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">background-repeat</span><span class="o">:</span> <span class="k">no-repeat</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">background-position</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>直接使用<code>background-position: center;</code>实现居中，如图片尺寸小于200px就OK了。但是对于大图片，会被截掉，所以还需加上<code>background-size: contain;</code>，可是对于小图片又有问题，因为加上这个属性会对图片缩放，小图也不例外。而在我们的需求里，对小图要求按照其原有大小显示。</p>
+<p>直接使用 <code>background-position: center;</code> 实现居中，如图片尺寸小于 200px 就 OK 了。但是对于大图片，会被截掉，所以还需加上 <code>background-size: contain;</code> ，可是对于小图片又有问题，因为加上这个属性会对图片缩放，小图也不例外。而在我们的需求里，对小图要求按照其原有大小显示。</p>
 
-<p>貌似这种方式使用纯CSS行不通。</p>
+<p>貌似这种方式使用纯 CSS 行不通。</p>
 
 <p>&hellip;</p>
 ]]></content>

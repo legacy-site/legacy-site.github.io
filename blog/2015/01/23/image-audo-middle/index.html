@@ -48,7 +48,8 @@
   <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
   <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
   <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
-</ul><br><br>
+</ul>
+<br><br>
 </nav>
     <article>
 
@@ -73,7 +74,7 @@
 <!-- more -->
 
 
-<p>HTML大概是这样的：</p>
+<p>HTML 大概是这样的：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -127,7 +128,7 @@
 
 <h3>方式二：使用表格布局</h3>
 
-<p>还是这段HTML：</p>
+<p>还是这段 HTML：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -153,16 +154,16 @@
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 </pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.box1</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">width</span><span class="o">:</span><span class="m">200px</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">height</span><span class="o">:</span><span class="m">200px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">width</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">height</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">display</span><span class="o">:</span> <span class="k">table-cell</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">vertical-align</span><span class="o">:</span><span class="k">middle</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">text-align</span><span class="o">:</span><span class="k">center</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">vertical-align</span><span class="o">:</span> <span class="k">middle</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">text-align</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'><span class="nc">.box1</span> <span class="nt">img</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">max-width</span><span class="o">:</span><span class="m">200px</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">max-height</span><span class="o">:</span><span class="m">200px</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">vertical-align</span><span class="o">:</span><span class="k">middle</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">max-width</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">max-height</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">vertical-align</span><span class="o">:</span> <span class="k">middle</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -184,18 +185,20 @@
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
+<span class='line-number'>7</span>
 </pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.box2</span> <span class="p">{</span>
 </span><span class='line'>  <span class="k">width</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">height</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">background</span><span class="o">:</span> <span class="sx">url(img/0.jpg)</span> <span class="k">no-repeat</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="sx">url(img/0.jpg)</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">background-repeat</span><span class="o">:</span> <span class="k">no-repeat</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">background-position</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>直接使用<code>background-position: center;</code>实现居中，如图片尺寸小于200px就OK了。但是对于大图片，会被截掉，所以还需加上<code>background-size: contain;</code>，可是对于小图片又有问题，因为加上这个属性会对图片缩放，小图也不例外。而在我们的需求里，对小图要求按照其原有大小显示。</p>
+<p>直接使用 <code>background-position: center;</code> 实现居中，如图片尺寸小于 200px 就 OK 了。但是对于大图片，会被截掉，所以还需加上 <code>background-size: contain;</code> ，可是对于小图片又有问题，因为加上这个属性会对图片缩放，小图也不例外。而在我们的需求里，对小图要求按照其原有大小显示。</p>
 
-<p>貌似这种方式使用纯CSS行不通。</p>
+<p>貌似这种方式使用纯 CSS 行不通。</p>
 
 <p>&hellip;</p>
 </div>
@@ -205,8 +208,8 @@
       <div id="disqus_thread"><div id="disqus_thread"></div>
 <script type="text/javascript">
   var disqus_shortname = 'mirreal';
-  var disqus_identifier = 'http://blog.mirreal.net/blog/2015/01/23/image-atuo-middle/';
-  var disqus_url = 'http://blog.mirreal.net/blog/2015/01/23/image-atuo-middle/';
+  var disqus_identifier = 'http://blog.mirreal.net/blog/2015/01/23/image-audo-middle/';
+  var disqus_url = 'http://blog.mirreal.net/blog/2015/01/23/image-audo-middle/';
   //var disqus_developer = 1;
   (function() {
     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -222,7 +225,7 @@
 </article>
 
 
-      <p class="meta">
+    <p class="meta">
       
         <a class="basic-alignment left nav" href="/blog/2014/11/29/my-first-internship/" title="Previous Post: 第一次实习生体验">&laquo; 第一次实习生体验</a>
       
@@ -233,4 +236,3 @@
   </div>
 </body>
 </html>
-
