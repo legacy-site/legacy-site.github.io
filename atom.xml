@@ -4,7 +4,7 @@
   <title><![CDATA[Mirreal Note]]></title>
   <link href="http://blog.mirreal.net/atom.xml" rel="self"/>
   <link href="http://blog.mirreal.net/"/>
-  <updated>2016-03-22T13:17:57+08:00</updated>
+  <updated>2016-03-22T20:30:49+08:00</updated>
   <id>http://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Mirreal Ellison]]></name>
@@ -12,15 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[Ff]]></title>
-    <link href="http://blog.mirreal.net/blog/2016/03/19/ff/"/>
-    <updated>2016-03-19T10:01:13+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2016/03/19/ff</id>
-    <content type="html"><![CDATA[<p>&hellip;</p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[2015 to 2016]]></title>
