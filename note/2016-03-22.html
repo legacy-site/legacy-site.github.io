@@ -353,6 +353,25 @@
 
 <p>绝对不要使用 eval，任何使用它的代码都会在它的工作方式，性能和安全性方面受到质疑。 如果一些情况必须使用到 eval 才能正常工作，首先它的设计会受到质疑，这不应该是首选的解决方案， 一个更好的不使用 eval 的解决方案应该得到充分考虑并优先采用。</p>
 
+<h3>对象比较</h3>
+
+<p>虽然 == 和 === 操作符都是等于操作符，但是当其中有一个操作数为对象时，行为就不同了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">{}</span> <span class="o">===</span> <span class="p">{};</span>                   <span class="c1">// false</span>
+</span><span class='line'><span class="k">new</span> <span class="nb">String</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="s1">&#39;foo&#39;</span><span class="p">;</span> <span class="c1">// false</span>
+</span><span class='line'><span class="k">new</span> <span class="nb">Number</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">===</span> <span class="mi">10</span><span class="p">;</span>       <span class="c1">// false</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'><span class="nx">foo</span> <span class="o">===</span> <span class="nx">foo</span><span class="p">;</span>                 <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里等于操作符比较的不是值是否相等，而是是否属于同一个身份；也就是说，只有对象的同一个实例才被认为是相等的。 这有点像 Python 中的 is 和 C 中的指针比较。</p>
+
 <h2>阅读</h2>
 
 <p><a href="http://www.jianshu.com/p/d7c52d113a68">浅谈API安全设计</a></p>
