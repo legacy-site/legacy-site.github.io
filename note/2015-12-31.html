@@ -12,7 +12,7 @@
        More info: h5bp.com/b/378 -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>2016-03-05 |  Mirreal Ellison</title>
+  <title>2015-12-31 |  Mirreal Ellison</title>
   <meta name="author" content="Mirreal Ellison">
   
 
@@ -52,25 +52,28 @@
 <br><br>
 </nav>
     <article>
-  <h1 class="article-title">2016-03-05</h1>
+  <h1 class="article-title">2015-12-31</h1>
   <div class="sharing">
   
   
 </div>
 
-  <div class="article-content"><h2>阅读</h2>
+  <div class="article-content"><h2>两次 URL 编码</h2>
 
-<p>Jean-Jacques Dubray是一名资深工程师，他最近引入了一个新的模式：状态-行为-模型（State-Action-Model，SAM）。SAM是一个函数式反应型的编程模式，它致力于简化数据Model和View之间的交互。它究竟有何优点值得作者弃用MVC呢？</p>
+<p>一般情况下, 发送 encodeURIComponent(parmeName)+&ldquo;=&rdquo;+encodeURIComponent(parmeValue);</p>
 
-<p><a href="http://www.infoq.com/articles/no-more-mvc-frameworks">Why I No Longer Use MVC Frameworks</a> <a href="http://www.infoq.com/articles/no-more-mvc-frameworks">http://www.infoq.com/articles/no-more-mvc-frameworks</a></p>
+<p>接收时, 直接 String paramValue = request.getParameter(paramName); // 容器自动解码.</p>
 
-<p>作者本身就是一个高产博主，在这篇文章中，详细介绍了为什么要坚持写文章，以及如何写一篇好的文章。</p>
+<p>我们知道 encodeURIComponent 使用的是 UTF-8 编码规则来编的.
+如果 request.getParameter(paramName) 时,容器也按 UTF-8 解的话,是正确的. 根本无须在客户端
+进行二次的 encodeURIComponent(&hellip;)</p>
 
-<p><a href="https://www.phodal.com/blog/programmer-how-to-write-a-good-article/">程序员怎样才能写出一篇好的博客或者技术文章</a> <a href="https://www.phodal.com/blog/programmer-how-to-write-a-good-article/">https://www.phodal.com/blog/programmer-how-to-write-a-good-article/</a></p>
+<p>如果 request.getParameter(paramName),容器没有按 UTF-8 解的话, 结果只有一个,就是乱码!
+容器按什么编码来解码,决定于 request.setCharacterEncoding(***) 或者 服务器程序配置.</p>
 
-<p>HTTP/2改变了Web开发者优化网站的方式。在HTTP/1.1中，为了压缩5%的页面加载速度，人们会通过类似雪碧图、内联代码、细分域名、合并代码等方式，来想方设法地优化TCP连接和HTTP请求，但在HTTP/2中的最佳实践可能正好与之相反，不过，幸运的是一些最佳实践依然有效。</p>
+<p>如果你在 jsp 程序中,能够 request.setCharacterEncoding(&ldquo;UTF-8&rdquo;), 并且 修改服务器配置,让容器在解 GET 提交的参数时,使用 UTF-8.</p>
 
-<p><a href="https://github.com/xitu/gold-miner/blob/master/TODO/http2-for-web-developers.md">Web开发者的HTTP/2性能优化指南</a> <a href="https://github.com/xitu/gold-miner/blob/master/TODO/http2-for-web-developers.md">https://github.com/xitu/gold-miner/blob/master/TODO/http2-for-web-developers.md</a></p>
+<p>客户端提交前不用二次编码, 接收时,也只要直接 request.getParameter(paramName) 即可</p>
 </div>
 
   
@@ -79,8 +82,8 @@
     <div id="disqus_thread"><div id="disqus_thread"></div>
 <script type="text/javascript">
   var disqus_shortname = 'mirreal';
-  var disqus_identifier = 'http://blog.mirreal.net/weekly/2016-03-05.html';
-  var disqus_url = 'http://blog.mirreal.net/weekly/2016-03-05.html';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2015-12-31.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2015-12-31.html';
   //var disqus_developer = 1;
   (function() {
     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

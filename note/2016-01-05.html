@@ -12,7 +12,7 @@
        More info: h5bp.com/b/378 -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>2016-03-05 |  Mirreal Ellison</title>
+  <title>2016-01-05 |  Mirreal Ellison</title>
   <meta name="author" content="Mirreal Ellison">
   
 
@@ -52,25 +52,45 @@
 <br><br>
 </nav>
     <article>
-  <h1 class="article-title">2016-03-05</h1>
+  <h1 class="article-title">2016-01-05</h1>
   <div class="sharing">
   
   
 </div>
 
-  <div class="article-content"><h2>阅读</h2>
+  <div class="article-content"><h2>获取元素高度</h2>
 
-<p>Jean-Jacques Dubray是一名资深工程师，他最近引入了一个新的模式：状态-行为-模型（State-Action-Model，SAM）。SAM是一个函数式反应型的编程模式，它致力于简化数据Model和View之间的交互。它究竟有何优点值得作者弃用MVC呢？</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#content&quot;</span><span class="p">).</span><span class="nx">height</span><span class="p">();</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#content&quot;</span><span class="p">).</span><span class="nx">innerHeight</span><span class="p">();</span> <span class="c1">// 元素内部区域高度，忽略 padding、border</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#content&quot;</span><span class="p">).</span><span class="nx">outerHeight</span><span class="p">();</span> <span class="c1">// 忽略边框</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#content&quot;</span><span class="p">).</span><span class="nx">outerHeight</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span> <span class="c1">//包含边框高度</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p><a href="http://www.infoq.com/articles/no-more-mvc-frameworks">Why I No Longer Use MVC Frameworks</a> <a href="http://www.infoq.com/articles/no-more-mvc-frameworks">http://www.infoq.com/articles/no-more-mvc-frameworks</a></p>
 
-<p>作者本身就是一个高产博主，在这篇文章中，详细介绍了为什么要坚持写文章，以及如何写一篇好的文章。</p>
+<h2>scrollIntoViewIfNeeded</h2>
 
-<p><a href="https://www.phodal.com/blog/programmer-how-to-write-a-good-article/">程序员怎样才能写出一篇好的博客或者技术文章</a> <a href="https://www.phodal.com/blog/programmer-how-to-write-a-good-article/">https://www.phodal.com/blog/programmer-how-to-write-a-good-article/</a></p>
+<p>DOM规范中并没有规定各浏览器需要实现怎样的滚动页面区域，各浏览器实现了相应的方法，可以使用不同的方式控制页面区域的滚动。这些方法作为HTMLElement类型的扩展存在，所以它能在所有元素上使用。</p>
 
-<p>HTTP/2改变了Web开发者优化网站的方式。在HTTP/1.1中，为了压缩5%的页面加载速度，人们会通过类似雪碧图、内联代码、细分域名、合并代码等方式，来想方设法地优化TCP连接和HTTP请求，但在HTTP/2中的最佳实践可能正好与之相反，不过，幸运的是一些最佳实践依然有效。</p>
+<ol>
+<li><p>scrollIntoView(alignWithTop)  滚动浏览器窗口或容器元素，以便在当前视窗的可见范围看见当前元素。如果alignWithTop为true，或者省略它，窗口会尽可能滚动到自身顶部与元素顶部平齐。&mdash;&mdash;-目前各浏览器均支持</p></li>
+<li><p>scrollIntoViewIfNeeded(alignCenter) 只在当前元素在视窗的可见范围内不可见的情况下，才滚动浏览器窗口或容器元素，最终让当前元素可见。如果当前元素在视窗中可见，这个方法不做任何处理。如果将可选参数alignCenter设置为true，则表示尽量将元素显示在视窗中部（垂直方向）&mdash;&mdash;Safari、Chrome实现了这个方法</p></li>
+</ol>
 
-<p><a href="https://github.com/xitu/gold-miner/blob/master/TODO/http2-for-web-developers.md">Web开发者的HTTP/2性能优化指南</a> <a href="https://github.com/xitu/gold-miner/blob/master/TODO/http2-for-web-developers.md">https://github.com/xitu/gold-miner/blob/master/TODO/http2-for-web-developers.md</a></p>
+
+<h2>halt()</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">halt</span> <span class="p">(</span><span class="nx">stopImmediatePropagation</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果 stopImmediatePropagation==true 则相当于调用 stopImmediatePropagation + preventDefault</p>
+
+<p>否则相当于调用 stopPropagation + preventDefault</p>
 </div>
 
   
@@ -79,8 +99,8 @@
     <div id="disqus_thread"><div id="disqus_thread"></div>
 <script type="text/javascript">
   var disqus_shortname = 'mirreal';
-  var disqus_identifier = 'http://blog.mirreal.net/weekly/2016-03-05.html';
-  var disqus_url = 'http://blog.mirreal.net/weekly/2016-03-05.html';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2016-01-05.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2016-01-05.html';
   //var disqus_developer = 1;
   (function() {
     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

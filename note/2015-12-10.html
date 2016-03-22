@@ -12,7 +12,7 @@
        More info: h5bp.com/b/378 -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>2016-03-05 |  Mirreal Ellison</title>
+  <title>2015-12-10 |  Mirreal Ellison</title>
   <meta name="author" content="Mirreal Ellison">
   
 
@@ -52,25 +52,36 @@
 <br><br>
 </nav>
     <article>
-  <h1 class="article-title">2016-03-05</h1>
+  <h1 class="article-title">2015-12-10</h1>
   <div class="sharing">
   
   
 </div>
 
-  <div class="article-content"><h2>阅读</h2>
+  <div class="article-content"><h2>Flexbox 的一些兼容方案</h2>
 
-<p>Jean-Jacques Dubray是一名资深工程师，他最近引入了一个新的模式：状态-行为-模型（State-Action-Model，SAM）。SAM是一个函数式反应型的编程模式，它致力于简化数据Model和View之间的交互。它究竟有何优点值得作者弃用MVC呢？</p>
+<p>还在使用着 <code>display:box</code>，其实已经过时了</p>
 
-<p><a href="http://www.infoq.com/articles/no-more-mvc-frameworks">Why I No Longer Use MVC Frameworks</a> <a href="http://www.infoq.com/articles/no-more-mvc-frameworks">http://www.infoq.com/articles/no-more-mvc-frameworks</a></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">display</span><span class="o">:</span> <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">box</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">display</span><span class="o">:</span> <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">box</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">display</span><span class="o">:</span> <span class="o">-</span><span class="n">ms</span><span class="o">-</span><span class="n">flexbox</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">display</span><span class="o">:</span> <span class="n">flex</span><span class="p">;</span>
+</span><span class='line'>  <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">box</span><span class="o">-</span><span class="n">orient</span><span class="o">:</span> <span class="n">horizontal</span><span class="p">;</span>
+</span><span class='line'>  <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">box</span><span class="o">-</span><span class="n">orient</span><span class="o">:</span> <span class="n">horizontal</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">flex</span><span class="o">-</span><span class="k">direction</span><span class="o">:</span> <span class="n">row</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p>作者本身就是一个高产博主，在这篇文章中，详细介绍了为什么要坚持写文章，以及如何写一篇好的文章。</p>
-
-<p><a href="https://www.phodal.com/blog/programmer-how-to-write-a-good-article/">程序员怎样才能写出一篇好的博客或者技术文章</a> <a href="https://www.phodal.com/blog/programmer-how-to-write-a-good-article/">https://www.phodal.com/blog/programmer-how-to-write-a-good-article/</a></p>
-
-<p>HTTP/2改变了Web开发者优化网站的方式。在HTTP/1.1中，为了压缩5%的页面加载速度，人们会通过类似雪碧图、内联代码、细分域名、合并代码等方式，来想方设法地优化TCP连接和HTTP请求，但在HTTP/2中的最佳实践可能正好与之相反，不过，幸运的是一些最佳实践依然有效。</p>
-
-<p><a href="https://github.com/xitu/gold-miner/blob/master/TODO/http2-for-web-developers.md">Web开发者的HTTP/2性能优化指南</a> <a href="https://github.com/xitu/gold-miner/blob/master/TODO/http2-for-web-developers.md">https://github.com/xitu/gold-miner/blob/master/TODO/http2-for-web-developers.md</a></p>
 </div>
 
   
@@ -79,8 +90,8 @@
     <div id="disqus_thread"><div id="disqus_thread"></div>
 <script type="text/javascript">
   var disqus_shortname = 'mirreal';
-  var disqus_identifier = 'http://blog.mirreal.net/weekly/2016-03-05.html';
-  var disqus_url = 'http://blog.mirreal.net/weekly/2016-03-05.html';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2015-12-10.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2015-12-10.html';
   //var disqus_developer = 1;
   (function() {
     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
