@@ -141,7 +141,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>将容器的位置设为 <code>relative</code> ，图片的位置设为 <code>absolute</code> ，然后将其 <code>top</code>， <code>right</code>， <code>bottom</code>， <code>left</code> 都设置成0，虽然图片尺寸未知，但是对于一张具体的图片而言是有固定宽高的，所以并不能使它四个方位间距都为0，因此 <code>margin: auto;</code> 会让它居中。如果仅对于宽高都小于200px的图片，这样就足够了，但是对于大图片就不适用，所以再加上 <code>max-width: 200px;max-height: 200px;</code> ，这样图片就可以自适应缩放。</p>
+<p>将容器的位置设为 <code>relative</code> ，图片的位置设为 <code>absolute</code> ，然后将其 <code>top</code>， <code>right</code>， <code>bottom</code>， <code>left</code> 都设置成0，虽然图片尺寸未知，但是对于一张具体的图片而言是有固定宽高的，所以并不能使它四个方位间距都为0，因此 <code>margin: auto;</code> 会让它居中。如果仅对于宽高都小于200px的图片，这样就足够了，但是对于大图片就不适用，所以再加上 <code>max-width: 200px; max-height: 200px;</code> ，这样图片就可以自适应缩放。</p>
 
 <p>查看演示：<a href="http://mirreal.github.io/demo/image-center/1.html">demo1</a></p>
 
@@ -172,9 +172,11 @@
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
+<span class='line-number'>13</span>
 </pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.box1</span> <span class="p">{</span>
 </span><span class='line'>  <span class="k">width</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">height</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">min-width</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">display</span><span class="o">:</span> <span class="k">table-cell</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">vertical-align</span><span class="o">:</span> <span class="k">middle</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">text-align</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
@@ -186,6 +188,8 @@
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
+
+<p>查看演示：<a href="http://mirreal.github.io/demo/image-center/2.html">demo2</a></p>
 
 <h3>方式三：使用背景图片</h3>
 
@@ -214,6 +218,8 @@
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
+
+<p>一个演示：<a href="http://mirreal.github.io/demo/image-center/3.html">demo3</a></p>
 
 <p>直接使用 <code>background-position: center;</code> 实现居中，如图片尺寸小于 200px 就 OK 了。但是对于大图片，会被截掉，所以还需加上 <code>background-size: contain;</code> ，可是对于小图片又有问题，因为加上这个属性会对图片缩放，小图也不例外。而在我们的需求里，对小图要求按照其原有大小显示。</p>
 
