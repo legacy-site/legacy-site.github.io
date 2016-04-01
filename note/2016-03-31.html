@@ -12,7 +12,7 @@
        More info: h5bp.com/b/378 -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>2016-03-23 |  Mirreal Ellison</title>
+  <title>2016-03-31 |  Mirreal Ellison</title>
   <meta name="author" content="Mirreal Ellison">
   
 
@@ -52,7 +52,7 @@
 <br><br>
 </nav>
     <article>
-  <h1 class="article-title">2016-03-23</h1>
+  <h1 class="article-title">2016-03-31</h1>
   <div class="sharing">
   
   
@@ -60,64 +60,34 @@
 
   <div class="article-content"><h2>阅读</h2>
 
-<p><a href="http://taobaofed.org/blog/2016/03/23/the-growth-of-front-end/">一个前端的自我修养</a></p>
+<p><a href="http://www.36dsj.com/archives/45336">使用机器学习的方法给 Quora 的答案排序</a></p>
 
-<h2>three.js 笔记</h2>
+<p><a href="http://www.matrix67.com/blog/archives/6039">用三段 140 字符以内的代码生成一张 1024×1024 的图片</a></p>
 
-<h3>一堆名词</h3>
+<h2>英文</h2>
 
-<ul>
-<li>Renderer 渲染器</li>
-<li>Scene 场景</li>
-<li><p>Camera 照相机</p></li>
-<li><p>perspective 透视</p></li>
-<li>material 材质</li>
-<li>Geometry 几何体</li>
-</ul>
+<h3>subtle</h3>
 
+<p>英 [&lsquo;sʌt(ə)l]  美 [&#8216;sʌtl]</p>
 
-<h3>照相机（Camera)</h3>
+<p>adj. 微妙的；精细的；敏感的；狡猾的；稀薄的</p>
 
-<h4>正交投影照相机（Orthographic Camera)</h4>
+<h2>聚沙</h2>
 
-<p>一般说来，对于制图、建模软件通常使用正交投影，这样不会因为投影而改变物体比例；</p>
+<h3>@忤合 去掉字符串中的 HTML 标签🔗</h3>
 
-<h4>透视投影照相机（Perspective Camera)</h4>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">strip</span><span class="p">(</span><span class="nx">html</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>   <span class="kd">var</span> <span class="nx">tmp</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">);</span>
+</span><span class='line'>   <span class="nx">tmp</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">html</span><span class="p">;</span>
+</span><span class='line'>   <span class="k">return</span> <span class="nx">tmp</span><span class="p">.</span><span class="nx">textContent</span> <span class="o">||</span> <span class="nx">tmp</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p>而对于其他大多数应用，通常使用透视投影，因为这更接近人眼的观察效果。</p>
-
-<h2>zoom 和 scale</h2>
-
-<ul>
-<li>zoom相当于是一个放大镜，缩放被zoom的元素不会影响初始或实际视口的大小。</li>
-</ul>
-
-
-<p>zoom的取值可以为数值和百分比值，不能取负值。</p>
-
-<ul>
-<li>transform的变换过程实际上是矩阵变换的过程，被transform的元素要经过一系列的矩阵运算最终确定其坐标.</li>
-</ul>
-
-
-<p>scale()是transform的一个属性值，这是一个缩放函数。当一个元素被定义了transform:scale(x,y)，可以控制其x方向和y方向上的缩放比例，如果只有一个参数，那么第二个参数与第一个参数相等。</p>
-
-<p>scale的取值只能是数值，但是可以为负数。</p>
-
-<h2>工具</h2>
-
-<ul>
-<li><a href="https://www.lingoapp.com/">Lingo</a>：一款整理视觉素材的 Mac App  <a href="https://www.lingoapp.com/">https://www.lingoapp.com/</a></li>
-</ul>
-
-
-<h2>一句话</h2>
-
-<p>Better</p>
-
-<p>to have a 100 people who love you than a million people who sort of like you.</p>
-
-<p>这是著名短租网站 Airbnb 创始人 Brian Chesky 在去年的一次演讲中的一个忠告。中文翻译过来就是：宁愿有100个“脑残粉”，也不要有100万人觉得你的产品还不错。</p>
 </div>
 
   
@@ -126,8 +96,8 @@
     <div id="disqus_thread"><div id="disqus_thread"></div>
 <script type="text/javascript">
   var disqus_shortname = 'mirreal';
-  var disqus_identifier = 'http://blog.mirreal.net/note/2016-03-23.html';
-  var disqus_url = 'http://blog.mirreal.net/note/2016-03-23.html';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2016-03-31.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2016-03-31.html';
   //var disqus_developer = 1;
   (function() {
     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
