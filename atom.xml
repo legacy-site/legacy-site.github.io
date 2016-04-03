@@ -4,7 +4,7 @@
   <title><![CDATA[Mirreal Note]]></title>
   <link href="http://blog.mirreal.net/atom.xml" rel="self"/>
   <link href="http://blog.mirreal.net/"/>
-  <updated>2016-04-01T20:22:47+08:00</updated>
+  <updated>2016-04-01T22:55:29+08:00</updated>
   <id>http://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Mirreal Ellison]]></name>
@@ -14,19 +14,35 @@
 
   
   <entry>
+    <title type="html"><![CDATA[JSONP]]></title>
+    <link href="http://blog.mirreal.net/blog/2016/04/01/what-is-jsonp-and-why/"/>
+    <updated>2016-04-01T21:06:58+08:00</updated>
+    <id>http://blog.mirreal.net/blog/2016/04/01/what-is-jsonp-and-why</id>
+    <content type="html"><![CDATA[<h1>JSONP，跨域，安全策略，以及 WHY</h1>
+
+<p>数据预览</p>
+
+<p>服务器端、浏览器端</p>
+
+<p>原生实现，包装 Api</p>
+
+<p>之所以会写这样一篇文章，源于
+很多人都在使用 JSONP ，也听过类似 ajax 这种曾经大红大紫的词。但倘若稍微深入一点，就好像什么都不知道。</p>
+
+<h2>AJAX、JSON、JSONP</h2>
+
+<p>这三种东西到底是什么，有什么关系和区别呢</p>
+
+<p>ajax</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[2015 to 2016]]></title>
     <link href="http://blog.mirreal.net/blog/2016/03/15/2015-to-2016/"/>
     <updated>2016-03-15T16:54:15+08:00</updated>
     <id>http://blog.mirreal.net/blog/2016/03/15/2015-to-2016</id>
-    <content type="html"><![CDATA[<h1>一级</h1>
-
-<h2>二级</h2>
-
-<h3>三级</h3>
-
-<h4>四级</h4>
-
-<h5>五级</h5>
+    <content type="html"><![CDATA[
 ]]></content>
   </entry>
   
