@@ -80,26 +80,26 @@
     </p>
   </div>
 
-  <div class="article-content"><h3>Base64是一种基于64个可打印字符来表示二进制数据的表示方法。</h3>
+  <div class="article-content"><h3>Base64 是一种基于 64 个可打印字符来表示二进制数据的表示方法。</h3>
 
-<h4>1.base64算法的由来</h4>
+<h4>1.base64 算法的由来</h4>
 
-<p>base64最早是用作解决电子邮件的传输问题，由于历史原因，早期电子邮件只允许传输ASCII码字符，如果想传输一封带有非ASCII字符的邮件，在遇到一些老旧的网关就可能会对字符最高位进行调整，导致收到的邮件出现乱码。</p>
+<p>base64 最早是用作解决电子邮件的传输问题，由于历史原因，早期电子邮件只允许传输 ASCII 码字符，如果想传输一封带有非 ASCII 字符的邮件，在遇到一些老旧的网关就可能会对字符最高位进行调整，导致收到的邮件出现乱码。</p>
 
-<h4>2.base64不是加密算法</h4>
+<h4>2.base64 不是加密算法</h4>
 
-<p>base64算法的编码和解码方法可以作为加密和解密操作，但是不能叫做加密算法，因为其算法和充当密钥的索引表都是公开的。最多是让在你身后的人一时看不懂，所谓防君子不防小人。</p>
+<p>base64 算法的编码和解码方法可以作为加密和解密操作，但是不能叫做加密算法，因为其算法和充当密钥的索引表都是公开的。最多是让在你身后的人一时看不懂，所谓防君子不防小人。</p>
 
-<h4>3.Base编码方法</h4>
+<h4>3.Base 编码方法</h4>
 
 <!-- more -->
 
 
-<p>转换的时候，将三个byte的数据，先后放入一个24bit的缓冲区中，先来的byte占高位。数据不足3byte的话，剩下的bit用0补足。然后，每次取出6个bit，按照其值选择索引表的字符作为编码后的输出。不断进行，直到全部输入数据转换完成。</p>
+<p>转换的时候，将三个 byte 的数据，先后放入一个 24bit 的缓冲区中，先来的 byte 占高位。数据不足 3byte 的话，剩下的 bit 用 0 补足。然后，每次取出 6 个 bit，按照其值选择索引表的字符作为编码后的输出。不断进行，直到全部输入数据转换完成。</p>
 
 <p>这里就不举例说明，具体可以参考维基百科。</p>
 
-<h4>4.base64索引表如下</h4>
+<h4>4.base64 索引表如下</h4>
 
 <table>
 <tr>
@@ -275,9 +275,187 @@
 </table>
 
 
-<h4>5.一个不太优雅的编码方法和译码方法实现：</h4>
+<table>
+<thead>
+<tr>
+<th> 数值 </th>
+<th> 字符 </th>
+<th> 数值 </th>
+<th> 字符 </th>
+<th> 数值 </th>
+<th> 字符 </th>
+<th> 数值 </th>
+<th> 字符 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 0 </td>
+<td> A </td>
+<td> 16 </td>
+<td> Q </td>
+<td> 32 </td>
+<td> g   </td>
+<td> 48 </td>
+<td> w </td>
+</tr>
+<tr>
+<td> 1 </td>
+<td> B </td>
+<td> 17 </td>
+<td> R </td>
+<td> 33   </td>
+<td> h </td>
+<td> 49 </td>
+<td> x </td>
+</tr>
+<tr>
+<td> 2 </td>
+<td>   C   </td>
+<td> 18 </td>
+<td> S </td>
+<td> 34   </td>
+<td> i </td>
+<td> 50 </td>
+<td> y </td>
+</tr>
+<tr>
+<td> 3 </td>
+<td> D </td>
+<td> 19 </td>
+<td> T </td>
+<td> 35   </td>
+<td> j </td>
+<td> 51 </td>
+<td> z </td>
+</tr>
+<tr>
+<td> 4 </td>
+<td> E </td>
+<td> 20 </td>
+<td> U </td>
+<td> 36   </td>
+<td> k </td>
+<td> 52 </td>
+<td> 0 </td>
+</tr>
+<tr>
+<td> 5 </td>
+<td>F  </td>
+<td>21 </td>
+<td>V  </td>
+<td>37 </td>
+<td>l  </td>
+<td>53 </td>
+<td>1</td>
+</tr>
+<tr>
+<td> 6 </td>
+<td>G  </td>
+<td>22 </td>
+<td>W  </td>
+<td>38 </td>
+<td>m  </td>
+<td>54 </td>
+<td>2</td>
+</tr>
+<tr>
+<td> 7 </td>
+<td>H  </td>
+<td>23 </td>
+<td>X  </td>
+<td>39 </td>
+<td>n  </td>
+<td>55 </td>
+<td>3</td>
+</tr>
+<tr>
+<td> 8 </td>
+<td>I  </td>
+<td>24 </td>
+<td>Y  </td>
+<td>40 </td>
+<td>o  </td>
+<td>56 </td>
+<td>4</td>
+</tr>
+<tr>
+<td> 9 </td>
+<td>J  </td>
+<td>25 </td>
+<td>Z  </td>
+<td>41 </td>
+<td>p  </td>
+<td>57 </td>
+<td>5</td>
+</tr>
+<tr>
+<td> 10    </td>
+<td>K  </td>
+<td>26 </td>
+<td>a  </td>
+<td>42 </td>
+<td>q  </td>
+<td>58 </td>
+<td>6</td>
+</tr>
+<tr>
+<td> 11    </td>
+<td>L  </td>
+<td>27 </td>
+<td>b  </td>
+<td>43 </td>
+<td>r  </td>
+<td>59 </td>
+<td>7</td>
+</tr>
+<tr>
+<td> 12    </td>
+<td>M  </td>
+<td>28 </td>
+<td>c  </td>
+<td>44 </td>
+<td>s  </td>
+<td>60 </td>
+<td>8</td>
+</tr>
+<tr>
+<td> 13    </td>
+<td>N  </td>
+<td>29 </td>
+<td>d  </td>
+<td>45 </td>
+<td>t  </td>
+<td>61 </td>
+<td>9</td>
+</tr>
+<tr>
+<td> 14    </td>
+<td>O  </td>
+<td>30 </td>
+<td>e  </td>
+<td>46 </td>
+<td>u  </td>
+<td>62 </td>
+<td>+</td>
+</tr>
+<tr>
+<td> 15    </td>
+<td>P  </td>
+<td>31 </td>
+<td>f  </td>
+<td>47 </td>
+<td>v  </td>
+<td>63 </td>
+<td>/</td>
+</tr>
+</tbody>
+</table>
 
-<figure class='code'><figcaption><span>base64.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+
+<h4>5.一个简单的编码方法和译码方法实现：</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -380,19 +558,19 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3>HTML5提供的通用Base64方法API</h3>
+<h3>HTML5 提供的通用 Base64 方法 API</h3>
 
 <h4>1.编码： <code>window.btoa(stringToEncode)</code></h4>
 
-<p>只能将ASCII字符串或二进制数据转换成一个base64编码过的字符串,该方法不能直接作用于Unicode字符串。</p>
+<p>只能将 ASCII 字符串或二进制数据转换成一个 base64 编码过的字符串,该方法不能直接作用于 Unicode 字符串。</p>
 
 <h4>2.解码： <code>window.atob(encodedData)</code></h4>
 
-<p>将已经被base64编码过的数据进行解码。</p>
+<p>将已经被 base64 编码过的数据进行解码。</p>
 
-<h4>3.作用于UTF-8编码的文字</h4>
+<h4>3.作用于 UTF-8 编码的文字</h4>
 
-<p>但是这两个Web API功能很简单，并不能直接作用于Unicode字符串，所以当调用 <code>btoa()</code> 时若传入的不是ASCII或二进制字符串，比如汉字就会出错。</p>
+<p>但是这两个 Web API 功能很简单，并不能直接作用于 Unicode 字符串，所以当调用 <code>btoa()</code> 时若传入的不是 ASCII 或二进制字符串，比如汉字就会出错。</p>
 
 <p>下面是别人提供的简单解决方法：</p>
 
@@ -449,14 +627,14 @@
 
 <p>关于 <code>console.log()</code> 的用法以及 <code>console</code> 对象的其他方法、属性，具体此处不再赘述。</p>
 
-<p>回到url，可以看到一长串数据，在开头是这样的：</p>
+<p>回到 url，可以看到一长串数据，在开头是这样的：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nt">data</span><span class="nd">:image</span><span class="o">/</span><span class="nt">png</span><span class="o">;</span><span class="nt">base64</span><span class="o">...</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>这就是Data URL Scheme的语法格式，后面是用Base64编码的图片数据。</p>
+<p>这就是 Data URL Scheme 的语法格式，后面是用 Base64 编码的图片数据。</p>
 
 <p>完整的图片就像下面这样，可以直接复制到地址栏查看：</p>
 
@@ -465,7 +643,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>不过，Firefox 似乎不支持在控制台使用 Data URL，不知道是不是由于这个原因，美团外卖在控制台直接用的一张图片。</p>
+<p>不过，Firefox 似乎不支持在控制台使用 Data URL，大概是由于这个原因，有时候可以降级在控制台直接使用一张图片。</p>
 
 <h5>参考资料：</h5>
 
