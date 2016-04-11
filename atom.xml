@@ -4,7 +4,7 @@
   <title><![CDATA[Mirreal Note]]></title>
   <link href="http://blog.mirreal.net/atom.xml" rel="self"/>
   <link href="http://blog.mirreal.net/"/>
-  <updated>2016-04-09T09:17:57+08:00</updated>
+  <updated>2016-04-11T20:32:17+08:00</updated>
   <id>http://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Mirreal Ellison]]></name>
@@ -25,6 +25,10 @@
 原生实现，包装 Api
 
 同步请求？异步请求
+
+文件上传
+
+安全，跨域问题
 
 
 之所以会写这样一篇文章，源于

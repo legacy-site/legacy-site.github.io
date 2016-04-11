@@ -1,0 +1,198 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>2016-04-10 |  Mirreal Ellison</title>
+  <meta name="author" content="Mirreal Ellison">
+  
+
+  
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <!-- end CSS-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips &#8211;>
+
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="/javascripts/libs/modernizr-2.0.6.min.js"></script>
+</head>
+
+<body id="article">
+
+  <div id="container" style="margin-top: 30px;">
+    <nav role="navigation" ><ul class="main-navigation">
+  <li style='float:left;margin-right:5px'><a class='nav' href="http://mirreal.net/">HOME</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/">BLOG</a></li>
+  <li style='float:left;margin-right:7px'><a class='nav' href="/archives">ARCHIVES</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/note">NOTE</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
+</ul>
+<br><br>
+</nav>
+    <article>
+  <h1 class="article-title">2016-04-10</h1>
+  <div class="sharing">
+  
+  
+</div>
+
+  <div class="article-content"><h2>站点</h2>
+
+<p><a href="http://www.udpwork.com/">http://www.udpwork.com/</a></p>
+
+<h2>聚沙</h2>
+
+<h3>文件上传</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">formData</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
+</span><span class='line'><span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">,</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#file&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;/upload&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;POST&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">cache</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">data</span><span class="o">:</span> <span class="nx">formData</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">processData</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">contentType</span><span class="o">:</span> <span class="kc">false</span>
+</span><span class='line'><span class="p">}).</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="p">}).</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>2</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">fd</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;fileinfo&quot;</span><span class="p">));</span>
+</span><span class='line'><span class="nx">fd</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;CustomField&quot;</span><span class="p">,</span> <span class="s2">&quot;This is some extra data&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;stash.php&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">data</span><span class="o">:</span> <span class="nx">fd</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">processData</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>  <span class="c1">// 告诉jQuery不要去处理发送的数据</span>
+</span><span class='line'>  <span class="nx">contentType</span><span class="o">:</span> <span class="kc">false</span>   <span class="c1">// 告诉jQuery不要去设置Content-Type请求头</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">首先，创建一个</span> <span class="nx">XMLHttpRequest2</span> <span class="err">的实例：</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+</span><span class='line'><span class="err">添加</span> <span class="nx">file</span> <span class="err">控件，这里我们使用</span> <span class="nx">multiple</span> <span class="err">属性来支持多文件的选择。</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">input</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;filename&quot;</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;file&quot;</span> <span class="nx">multiple</span><span class="o">=</span><span class="s2">&quot;multiple&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="err">获取并保存选择的多个文件。</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">files</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">).</span><span class="nx">files</span><span class="p">;</span>
+</span><span class='line'><span class="err">接下来，要介绍的是另一个</span> <span class="nx">html5</span> <span class="err">推出的新对象：</span><span class="nx">FormData</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">FormData</span> <span class="err">对象是用户的表单数据的集合，</span> <span class="err">它以键值对的形式存储了表单数据，其值能够包括数字、字符串以及文件。</span>
+</span><span class='line'><span class="err">我们通过这个对象，来向服务器提交我们的文件数据。</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">formData</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
+</span><span class='line'><span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="nx">files</span><span class="p">[</span><span class="nx">index</span><span class="p">]);</span> <span class="c1">// index 为第 n 个文件的索引</span>
+</span><span class='line'><span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="nx">url</span><span class="p">);</span> <span class="c1">// url 为提交的后台地址</span>
+</span><span class='line'><span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">formData</span><span class="p">);</span>
+</span><span class='line'><span class="err">这样就完成了一次文件的上传，多个文件我们遍历多个文件重复这个步骤即可。</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>CORS</h4>
+
+<p>利用 CORS，<a href="http://www.test2.com">http://www.test2.com</a> 只需添加一个标头，就可以允许来自 <a href="http://www.test1.com">http://www.test1.com</a> 的请求，下图是我在PHP中的 hander() 设置，“*”号表示允许任何域向我们的服务端提交请求：</p>
+
+<p>　　也可以设置指定的域名，如域名 <a href="http://www.test2.com">http://www.test2.com</a> ，那么就允许来自这个域名的请求：</p>
+</div>
+
+  
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread"><div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'mirreal';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2016-04-11.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2016-04-11.html';
+  //var disqus_developer = 1;
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+  
+</article>
+
+       <footer role="contentinfo" class="copyright">
+    	<p>
+		Copyright &copy; 2016 - <span><a href="http://mirreal.net/">Mirreal Ellison</a></span>
+	</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
+
