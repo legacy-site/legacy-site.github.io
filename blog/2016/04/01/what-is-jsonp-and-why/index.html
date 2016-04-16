@@ -282,11 +282,6 @@
 <span class='line-number'>29</span>
 <span class='line-number'>30</span>
 <span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="cm">/**</span>
 </span><span class='line'><span class="cm"> * 对 jsonp 的一种简单封装</span>
 </span><span class='line'><span class="cm"> * @param {Object} options</span>
@@ -298,27 +293,22 @@
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">url</span><span class="p">;</span>
 </span><span class='line'>
 </span><span class='line'>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">__callback</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">options</span><span class="p">.</span><span class="nx">success</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">scriptElem</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">);</span>
 </span><span class='line'>  <span class="nx">scriptElem</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="nx">url</span> <span class="o">+</span> <span class="s1">&#39;?callback=&#39;</span> <span class="o">+</span> <span class="nx">callbackName</span><span class="p">);</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="nx">scriptElem</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nb">window</span><span class="p">[</span><span class="nx">callbackName</span><span class="p">]</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">delete</span> <span class="nb">window</span><span class="p">[</span><span class="nx">callbackName</span><span class="p">];</span>
 </span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
 </span><span class='line'>  <span class="p">};</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="nx">scriptElem</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="s1">&#39;load error&#39;</span><span class="p">);</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="nb">window</span><span class="p">[</span><span class="nx">callbackName</span><span class="p">]</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">delete</span> <span class="nb">window</span><span class="p">[</span><span class="nx">callbackName</span><span class="p">];</span>
 </span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
 </span><span class='line'>  <span class="p">};</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="nb">window</span><span class="p">[</span><span class="nx">callbackName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">__callback</span><span class="p">;</span>
+</span><span class='line'>  <span class="nb">window</span><span class="p">[</span><span class="nx">callbackName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">success</span><span class="p">;</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="c1">// 调用</span>
 </span><span class='line'>  <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">).</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">scriptElem</span><span class="p">);</span>
@@ -359,7 +349,7 @@
 <h4>2.设置回调函数</h4>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nb">window</span><span class="p">[</span><span class="nx">callbackName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">__callback</span><span class="p">;</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nb">window</span><span class="p">[</span><span class="nx">callbackName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">success</span><span class="p">;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
