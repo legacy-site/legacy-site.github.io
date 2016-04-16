@@ -12,7 +12,7 @@
        More info: h5bp.com/b/378 -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>JSONP |  Mirreal Ellison</title>
+  <title>为什么是 JSONP |  Mirreal Ellison</title>
   <meta name="author" content="Mirreal Ellison">
   
 
@@ -55,7 +55,7 @@
 
 
   <div class="header-line">
-    <h1 class="article-title">JSONP</h1>
+    <h1 class="article-title">为什么是 JSONP</h1>
     <p class="meta">
       
   
@@ -74,9 +74,9 @@
     </p>
   </div>
 
-  <div class="article-content"><h1>JSONP，跨域，安全策略，以及 WHY</h1>
+  <div class="article-content"><!-- # JSONP，跨域，安全策略，以及 WHY
 
-<!-- 服务器端、浏览器端
+服务器端、浏览器端
 
 原生实现，包装 Api
 
@@ -84,20 +84,14 @@
 
 文件上传
 
-安全，跨域问题
-
-
-之所以会写这样一篇文章，源于
-很多人都在使用 JSONP ，也听过类似 ajax 这种曾经大红大紫的词。但倘若稍微深入一点，就好像什么都不知道。 -->
+安全，跨域问题 -->
 
 
 <h2>AJAX、JSON、JSONP</h2>
 
-<p>这三种东西到底是什么，有什么关系和区别呢</p>
+<p>在 WEB 开发中，经常见到诸如 AJAX、JSON、JSONP 这些词，但这三种东西到底是什么，又有什么关系和区别。</p>
 
-<h3>AJAX</h3>
-
-<p>Asynchronous JavaScript + XML</p>
+<h3>AJAX （Asynchronous JavaScript + XML）</h3>
 
 <blockquote><p>Ajax isn’t a technology. It’s really several technologies, each flourishing in its own right, coming together in powerful new ways. Ajax incorporates:</p><p>* standards-based presentation using XHTML and CSS;<br/>* dynamic display and interaction using the Document Object Model;<br/>* data interchange and manipulation using XML and XSLT;<br/>* asynchronous data retrieval using XMLHttpRequest;<br/>* and JavaScript binding everything together.</p><footer><strong>Jesse James Garrett,</strong> <cite><a href='http://adaptivepath.org/ideas/ajax-new-approach-web-applications/'>Ajax: A New Approach to Web Applications</a></cite></footer></blockquote>
 
@@ -106,9 +100,9 @@
 
 <p>尽管在 AJAX 中 X 代表 XML, 但现在 JSON 使用的更多，因为 JSON 具有很多优势，比如更轻量并且是 JavaScript 的一部分. 在 AJAX 模型中 JSON 和 XML 都用于承载信息.</p>
 
-<h3>JSON</h3>
+<h3>JSON（Javascript Object Notation）</h3>
 
-<p>JSON(JavaScript Object Notation) 是一种轻量级的数据交换格式。由道格拉斯·克罗克福特（Douglas Crockford）在 2012 年发明，并逐渐取代 XML 成为事实上的数据交换格式标准。</p>
+<p>JSON 是一种轻量级的数据交换格式。由道格拉斯·克罗克福特（Douglas Crockford）在 2012 年发明，并逐渐取代 XML 成为事实上的数据交换格式标准。</p>
 
 <p>JSON 基于 JavaScript Programming Language, Standard ECMA-262 3rd Edition - December 1999的一个子集。但采用完全独立于语言的文本格式，并使用了类似于 C 语言家族的习惯。</p>
 
@@ -128,13 +122,34 @@
 
 <p>在 javascript 中有一个全局的对象 JSON，包含两个方法 <code>JSON.stringify()</code> 和 <code>JSON.parse()</code>，用于序列化和解析 JSON。</p>
 
-<h3>JSONP</h3>
+<h3>JSONP（JSON with Padding）</h3>
 
-<p>最初是开发者为了解决跨域问题搞出来的一个颇为奇怪的东西，产生原因和</p>
+<p>最初是开发者为了解决跨域问题搞出来的一个颇为奇怪的东西，产生原因和名字一样古怪，光听名字恐怕没几个人知道说的是个什么东西。</p>
 
-<h2>举个栗子</h2>
+<p>因为 ajax 请求收到同源策略的限制不允许跨域访问，而在实际开发中又常常会有类似的需求。</p>
+
+<p>刚好 <code>&lt;script&gt;</code> 标签可以引用其他站点的静态资源，想想我们有时候在站点引入的数据统计类的 js。</p>
+
+<p>但我们要的是数据，而不是一段静态代码，怎么办？</p>
+
+<p>这还不简单吗，让服务器动态生成 js ，再把数据放进去不就可以吗。为了区分不数据，还需要针对返回的数据做一个标识，其实就是在数据外面包裹一个函数名。</p>
+
+<p>然后需要浏览器端预先设置好这样一个函数，返回的数据就相当于一次执行过程，对获取数据的处理。</p>
+
+<h3>总结</h3>
+
+<ol>
+<li>AJAX 是一类技术的集合，其中最重要的是 <code>XMLHttpRequest</code></li>
+<li>JSON 是一个数据交换格式</li>
+<li>JSONP 是为了解决跨域问题搞出来的一种获取数据的方式</li>
+</ol>
+
+
+<h2>下面举个栗子</h2>
 
 <h3>服务器</h3>
+
+<p>这里使用 node 返回一段简单的数据。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -178,7 +193,7 @@
 </span><span class='line'>
 </span><span class='line'><span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;Mirreal&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="o">:</span> <span class="s1">&#39;24&#39;</span><span class="p">};</span>
 </span><span class='line'>
-</span><span class='line'><span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">){</span>
+</span><span class='line'><span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">params</span> <span class="o">=</span> <span class="nx">urllib</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">url</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">query</span> <span class="o">&amp;&amp;</span> <span class="nx">params</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
@@ -213,21 +228,163 @@
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-</span><span class='line'>    <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;GET&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;http://127.0.0.1:9999&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">data</span><span class="o">:</span> <span class="p">{</span> <span class="nx">_input_charset</span><span class="o">:</span> <span class="s1">&#39;utf-8&#39;</span> <span class="p">},</span>
-</span><span class='line'>    <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;jsonp&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">timeout</span><span class="o">:</span> <span class="mi">300</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">context</span><span class="o">:</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">),</span>
-</span><span class='line'>    <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
-</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="nx">error</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">xhr</span><span class="p">,</span> <span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Ajax error!&#39;</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">});</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// zepto 的写法</span>
+</span><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;http://127.0.0.1:9999&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">data</span><span class="o">:</span> <span class="p">{</span> <span class="nx">_input_charset</span><span class="o">:</span> <span class="s1">&#39;utf-8&#39;</span> <span class="p">},</span>
+</span><span class='line'>  <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;jsonp&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">timeout</span><span class="o">:</span> <span class="mi">300</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">context</span><span class="o">:</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">),</span>
+</span><span class='line'>  <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">error</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">xhr</span><span class="p">,</span> <span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Ajax error!&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
 </span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就很轻松的通过 JSONP 的方式获取到数据，我们也不需要关心里面究竟是怎么一回事，但经常会有人问起像“为什么 jsonp 不能使用 POST 方法”的问题，其实稍微了解一下 JSONP 的原理，这种问题完全就不存在了。</p>
+
+<p>虽然像 jQuery 这类库将 jsonp 封装到 Ajax 上，但准确来讲是不对的。因为 jsonp 只是通过动态地通过 <code>&lt;script&gt;</code> 标签去请求一段 js 代码（或者叫数据），而非使用 XMLHttpRequest ，原理就像下面这样：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * 对 jsonp 的一种简单封装</span>
+</span><span class='line'><span class="cm"> * @param {Object} options</span>
+</span><span class='line'><span class="cm"> * @returns null</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">getJsonp</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">callbackName</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">callbackName</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">url</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">__callback</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">options</span><span class="p">.</span><span class="nx">success</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">scriptElem</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">scriptElem</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="nx">url</span> <span class="o">+</span> <span class="s1">&#39;?callback=&#39;</span> <span class="o">+</span> <span class="nx">callbackName</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">scriptElem</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">window</span><span class="p">[</span><span class="nx">callbackName</span><span class="p">]</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">scriptElem</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="s1">&#39;load error&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">window</span><span class="p">[</span><span class="nx">callbackName</span><span class="p">]</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nb">window</span><span class="p">[</span><span class="nx">callbackName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">__callback</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// 调用</span>
+</span><span class='line'>  <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">).</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">scriptElem</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这段代码对 JSONP 进行一层简单包装，调用也很简单：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">getJsonp</span><span class="p">({</span>
+</span><span class='line'>  <span class="s1">&#39;url&#39;</span><span class="o">:</span> <span class="s1">&#39;http://127.0.0.1:9999/&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s1">&#39;callbackName&#39;</span><span class="o">:</span> <span class="s1">&#39;log&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s1">&#39;success&#39;</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;我是回调函数,我拿到数据了&#39;</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看上去代码还挺长的，实际上核心代码不多，分三步：</p>
+
+<h4>1.创建一个 <code>&lt;script&gt;</code> 标签，并设置其 url</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">scriptElem</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">scriptElem</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="nx">url</span> <span class="o">+</span> <span class="s1">&#39;?callback=&#39;</span> <span class="o">+</span> <span class="nx">callbackName</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>2.设置回调函数</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nb">window</span><span class="p">[</span><span class="nx">callbackName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">__callback</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里简单处理，直接把传入的回调函数设置成全局的</p>
+
+<h4>3.调用</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">).</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">scriptElem</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>实际上就是把 <code>&lt;script&gt;</code> 加到 html 文档中，这样就会去加载标签的内容，也就是一个 js 文件。</p>
+
+<p>但通常现实中跑的代码内容会更多，包含一些错误控制、参数拼接、超时处理、性能安全等方面的，但它仍然清楚地描述 JSONP 的原理。</p>
+
+<h2>安全</h2>
+
+<p>早期的浏览器处于安全层面的考量，使用同源策略，限制了一个源（origin）中加载文本或脚本与来自其它源（origin）中资源的交互方式。</p>
+
+<p>但是随着互联网的发展催生了跨域访问进行数据交互的需求，于是 JSONP 就产生了，以及后来的 CORS 机制，允许 XMLHttpRequest 对象发起跨域的请求。</p>
+
+<p>但是另一方面，也增加了安全风险，我们在使用的时候应当更加谨慎小心，防止 XSS、CSRF 等攻击。</p>
+
+<!-- JSONP 的安全问题通常属于 CSRF（ Cross-site request forgery 跨站请求伪造）攻击范畴。 -->
 
 
 <h2>其他</h2>
