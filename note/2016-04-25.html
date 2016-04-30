@@ -66,7 +66,9 @@
 
 <p>Object.assign()</p>
 
-<h4>【缺少标识符、字符串或数字】default or catch</h4>
+<h4>default or catch</h4>
+
+<p>在兼容性测试过程中，对下面的代码（babel 自动生成的）：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -77,14 +79,27 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>或者这种：</p>
 
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">_main2</span><span class="p">.</span><span class="k">default</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>出现“缺少标识符、字符串或数字”的错</p>
+
+<p>得在对象的属性上加&#8221;&ldquo;才可以。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="err">“</span><span class="k">default</span><span class="err">”</span><span class="o">:</span> <span class="nx">obj</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">_interopRequireDefault</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">obj</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">__esModule</span> <span class="o">?</span> <span class="nx">obj</span> <span class="o">:</span> <span class="p">{</span> <span class="err">‘</span><span class="k">default</span><span class="err">’</span><span class="o">:</span> <span class="nx">obj</span> <span class="p">};</span>
 </span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">_main2</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">];</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -100,6 +115,8 @@
 
 
 <p>其实是 <code>default</code> 的问题，作为一个关键字</p>
+
+<p>总之，避免使用关键字，或者保留字作为对象的属性值，尤其是在习惯不加引号的情况下</p>
 
 <p>相关讨论：<a href="https://github.com/airbnb/javascript/issues/61">Allow reserved words for properties</a></p>
 
