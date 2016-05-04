@@ -81,7 +81,7 @@ gzip compression (smaller &ldquo;size&rdquo; than &ldquo;content&rdquo;, usually
 
 <h3>IE8 postMessage</h3>
 
-<p>虽然 postMessage 是 HTML5 的特性，但 IE8 和 Firefox3 就实现了这个 API，当然，更后来的标准并不一致。</p>
+<p>虽然 postMessage 是 HTML5 的特性，但 IE8 和 Firefox3 就实现了这个 API，当然，跟后来的标准并不一致。</p>
 
 <p>这其实也不能怪 IE8。</p>
 
@@ -145,33 +145,23 @@ gzip compression (smaller &ldquo;size&rdquo; than &ldquo;content&rdquo;, usually
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>   <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span> <span class="o">=</span> <span class="nx">f</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">);</span>
 </span><span class='line'>   <span class="nb">window</span><span class="p">.</span><span class="nx">setInterval</span> <span class="o">=</span> <span class="nx">f</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">setInterval</span><span class="p">);</span>
 </span><span class='line'><span class="p">})(</span><span class="kd">function</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>  <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span> <span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[].</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arguments</span><span class="p">)</span>
 </span><span class='line'>    <span class="k">return</span> <span class="nx">f</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>      <span class="nx">c</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">a</span><span class="p">)</span>
 </span><span class='line'>    <span class="p">},</span> <span class="nx">t</span><span class="p">);</span>
 </span><span class='line'>  <span class="p">}</span>
 </span><span class='line'><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
-</span><span class='line'><span class="p">},</span> <span class="mi">200</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/setTimeout">https://developer.mozilla.org/zh-CN/docs/Web/API/Window/setTimeout</a></p>
+
+<p><a href="http://blog.mirreal.net/note/2016-05-03.html">more</a></p>
 </div>
 
   
