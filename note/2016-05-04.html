@@ -175,17 +175,24 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>不想全局修改，就在 <code>.git/config</code> 改一个词就行</p>
+
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">ignorecase</span> <span class="o">=</span> <span class="kc">false</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">Add</span> <span class="nx">ignorecase</span> <span class="o">=</span> <span class="kc">false</span> <span class="nx">to</span> <span class="p">[</span><span class="nx">core</span><span class="p">]</span> <span class="k">in</span> <span class="p">.</span><span class="nx">git</span><span class="o">/</span><span class="nx">config</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>或则全局修改</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">git</span> <span class="nx">config</span> <span class="nx">core</span><span class="p">.</span><span class="nx">ignorecase</span> <span class="kc">false</span>  <span class="o">--</span><span class="nx">global</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
 
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">Add</span> <span class="nx">ignorecase</span> <span class="o">=</span> <span class="kc">false</span> <span class="nx">to</span> <span class="p">[</span><span class="nx">core</span><span class="p">]</span> <span class="k">in</span> <span class="p">.</span><span class="nx">git</span><span class="o">/</span><span class="nx">config</span><span class="p">;</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">ignorecase</span> <span class="o">=</span> <span class="kc">false</span>
 </span></code></pre></td></tr></table></div></figure>
 
 </div>
