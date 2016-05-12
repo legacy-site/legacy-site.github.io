@@ -58,7 +58,17 @@
   
 </div>
 
-  <div class="article-content"><h2>聚沙</h2>
+  <div class="article-content"><h2>文章</h2>
+
+<p><a href="https://css-tricks.com/flexbox-truncated-text/">Flexbox and Truncated Text</a></p>
+
+<p>解决缩放时文字溢出的问题</p>
+
+<p><a href="http://sspai.com/34023">5 种方法教你重置 Mac 用户登录密码</a></p>
+
+<p><a href="http://www.ifanr.com/655063">从柏拉图看 VR 的前世今生，为什么 VR 是中世纪的望远镜</a></p>
+
+<h2>聚沙</h2>
 
 <h3>开放-封闭原则（OCP，Open - Closed Priciple）</h3>
 
@@ -156,6 +166,67 @@
 </span><span class='line'><span class="p">};</span>
 </span></code></pre></td></tr></table></div></figure>
 
+
+<h3>代码执行效率</h3>
+
+<p><a href="https://jsperf.com/">https://jsperf.com/</a></p>
+
+<h3>类数组</h3>
+
+<h4>定义：具有length属性</h4>
+
+<p>转化成数组，很简单：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arrayLike</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 更简洁的写法</span>
+</span><span class='line'><span class="p">[].</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arrayLike</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>类数组对象</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">arrayLike</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">length</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>  <span class="mi">0</span><span class="o">:</span> <span class="s1">&#39;anything is okay&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="mi">1</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="p">[].</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arrayLike</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="c1">// [&quot;anything is okay&quot;, true]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当然，<code>length</code> 也不一定是 2，数组的 <code>length</code> 是可变的，你可以随意扩充，也可以用它来截断</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">a</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span> <span class="c1">// [4, 3, 6, 8]</span>
+</span><span class='line'><span class="nx">a</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span> <span class="c1">// [4, 3, 6, 8, undefined × 8]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>类数组函数</p>
+
+<p>函数也有length属性，其值等于函数要接收的参数。</p>
+
+<p><a href="http://blog.mirreal.net/note/2016-05-12.html">MORE</a></p>
 </div>
 
   
