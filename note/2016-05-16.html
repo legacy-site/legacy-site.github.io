@@ -58,7 +58,176 @@
   
 </div>
 
-  <div class="article-content">
+  <div class="article-content"><h2>阅读</h2>
+
+<p><a href="http://blog.jobbole.com/100779/">TCP/IP 之 大明王朝邮差</a></p>
+
+<p>故事只要写的不是太烂，更利于传播，另一方面，科普也并非某些人摒弃的毫无意义</p>
+
+<p><a href="http://www.cnblogs.com/vajoy/p/5471308.html">几款主流 NoSql 数据库的对比</a></p>
+
+<p>供选择数据库的时候做一个参考</p>
+
+<p><a href="http://www.iteye.com/news/31551">代码重构的实战经验和那些坑</a></p>
+
+<h2>聚沙</h2>
+
+<h3>End-to-End Test</h3>
+
+<blockquote><p>End-to-end testing is a methodology used to test whether the flow of an application is performing as designed from start to finish. The purpose of carrying out end-to-end tests is to identify system dependencies and to ensure that the right information is passed between various system components and systems.</p></blockquote>
+
+<p><a href="https://www.techopedia.com/definition/7035/end-to-end-test">https://www.techopedia.com/definition/7035/end-to-end-test</a></p>
+
+<h3>document.execCommand</h3>
+
+<p>操作剪切板</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm"> Copy text from any appropriate field to the clipboard</span>
+</span><span class='line'><span class="cm">  By Craig Buckler, @craigbuckler</span>
+</span><span class='line'><span class="cm">  use it, abuse it, do whatever you like with it!</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// click events</span>
+</span><span class='line'>  <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="nx">copy</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// event handler</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">copy</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// find target element</span>
+</span><span class='line'>    <span class="kd">var</span>
+</span><span class='line'>      <span class="nx">t</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">c</span> <span class="o">=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">copytarget</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">inp</span> <span class="o">=</span> <span class="p">(</span><span class="nx">c</span> <span class="o">?</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span> <span class="o">:</span> <span class="kc">null</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// is element selectable?</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">inp</span> <span class="o">&amp;&amp;</span> <span class="nx">inp</span><span class="p">.</span><span class="nx">select</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// select text</span>
+</span><span class='line'>      <span class="nx">inp</span><span class="p">.</span><span class="nx">select</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">try</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// copy text</span>
+</span><span class='line'>        <span class="nb">document</span><span class="p">.</span><span class="nx">execCommand</span><span class="p">(</span><span class="s1">&#39;copy&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">inp</span><span class="p">.</span><span class="nx">blur</span><span class="p">();</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;please press Ctrl/Cmd+C to copy&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">})();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>document.execCommand <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/execCommand">https://developer.mozilla.org/zh-CN/docs/Web/API/Document/execCommand</a></p>
+
+<h3>this 指向</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">bar</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">baz</span><span class="p">;</span> <span class="p">},</span>
+</span><span class='line'>  <span class="nx">baz</span><span class="o">:</span> <span class="mi">1</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// this 指向 arguments</span>
+</span><span class='line'><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">typeof</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]();</span>
+</span><span class='line'><span class="p">})(</span><span class="nx">foo</span><span class="p">.</span><span class="nx">bar</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// this 指向 global</span>
+</span><span class='line'><span class="k">typeof</span> <span class="p">(</span><span class="nx">f</span> <span class="o">=</span> <span class="nx">foo</span><span class="p">.</span><span class="nx">bar</span><span class="p">)();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>new 运算符</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">f</span><span class="p">(){</span> <span class="k">return</span> <span class="nx">f</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'><span class="k">new</span> <span class="nx">f</span><span class="p">()</span> <span class="k">instanceof</span> <span class="nx">f</span><span class="p">;</span> <span class="c1">// false</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关于 new 运算符</p>
+
+<ol>
+<li>创建空对象。</li>
+<li>将类的prototype中的属性和方法复制到实例中。</li>
+<li>将第一步创建的空对象做为类的参数调用类的构造函数</li>
+</ol>
+
+
+<p>默认如果没有覆盖这个空对象的话,返回this</p>
+
+<h2>乱弹</h2>
+
+<ul>
+<li>有些题目 <a href="http://www.cnblogs.com/aaronjs/p/3172112.html">http://www.cnblogs.com/aaronjs/p/3172112.html</a></li>
+<li>骗赞？ <a href="https://www.zhihu.com/question/30002951">https://www.zhihu.com/question/30002951</a></li>
+<li>Robust 鲁棒性（健壮性）指系统在扰动或不确定的情况下仍能保持它们的特征行为</li>
+</ul>
+
+
+<p><a href="http://blog.mirreal.net/note/2016-05-12.html">MORE</a></p>
 </div>
 
   

@@ -335,9 +335,7 @@
 
 <p>但只要 IE8/9 还在一天，console 检查还是不能少的</p>
 
-<p>事实上，IE8/9 从未死去，所以</p>
-
-<p>就像这样：</p>
+<p>事实上，IE8/9 从未死去，所以，得写成这样：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -350,7 +348,7 @@
 
 <p>要是有一堆 <code>console.log</code>, <code>console.count</code>, <code>console.error</code>, <code>console.time</code>, <code>console.profile</code>，&hellip; 这样去写，那还不把人写到恶心死。</p>
 
-<p>写个简单的 console polyfill 吧，检测是否存在 <code>console</code>，不存在可以常见一个同名的空方法达到不报错的目的。当然，生产环境的代码其实也不会有那么多奇奇怪怪的 <code>console</code>。</p>
+<p>写个简单的 console polyfill 吧，检测是否存在 <code>console</code>，不存在可以创见一个同名的空方法达到不报错的目的。当然，生产环境的代码其实也不会有那么多奇奇怪怪的 <code>console</code>。</p>
 
 <h2>0x09 定义文档兼容性</h2>
 
