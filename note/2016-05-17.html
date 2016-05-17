@@ -1,0 +1,208 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>2016-05-17 |  Mirreal Ellison</title>
+  <meta name="author" content="Mirreal Ellison">
+  
+
+  
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <!-- end CSS-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips &#8211;>
+
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="/javascripts/libs/modernizr-2.0.6.min.js"></script>
+</head>
+
+<body id="article">
+
+  <div id="container" style="margin-top: 30px;">
+    <nav role="navigation" ><ul class="main-navigation">
+  <li style='float:left;margin-right:5px'><a class='nav' href="http://mirreal.net/">HOME</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/">BLOG</a></li>
+  <li style='float:left;margin-right:7px'><a class='nav' href="/archives">ARCHIVES</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/note">NOTE</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
+</ul>
+<br><br>
+</nav>
+    <article>
+  <h1 class="article-title">2016-05-17</h1>
+  <div class="sharing">
+  
+  
+</div>
+
+  <div class="article-content"><h2>阅读</h2>
+
+<p><a href="http://blog.jobbole.com/101055/">Email 诞生记</a></p>
+
+<p>本文主要介绍 Email 的原理和协议</p>
+
+<p><a href="http://www.cnblogs.com/fly-snow/archive/2016/04/24/5427865.html">setTimeout 的黑魔法</a></p>
+
+<p><a href="http://www.yinwang.org/blog-cn/2016/05/14/future">未来计划</a></p>
+
+<h2>聚沙</h2>
+
+<h3>typewriter</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">typewriter</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">$this</span> <span class="o">=</span> <span class="nx">element</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">html</span> <span class="o">=</span> <span class="nx">$this</span><span class="p">.</span><span class="nx">innerHTML</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">progress</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">$this</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">loop</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">current</span> <span class="o">=</span> <span class="nx">html</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="nx">progress</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">current</span> <span class="o">==</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">progress</span> <span class="o">=</span> <span class="nx">html</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="nx">progress</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">progress</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">$this</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">html</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">progress</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nx">progress</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="o">?</span> <span class="s1">&#39;_&#39;</span> <span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">progress</span> <span class="o">&gt;=</span> <span class="nx">html</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">loop</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">},</span> <span class="mi">80</span><span class="p">);</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">element</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;.code&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">typewriter</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>点击穿透</h3>
+
+<h4>产生的原因</h4>
+
+<p>浮层下面有一些跳转的列表，这些采用的是 a 标签进行跳转，而 a 标签的点击事件默认的是 click 事件。</p>
+
+<p>click 事件在移动端不会立即执行，会有 300 毫秒的延时，用来检测用户单击还是双击（最初源于iOS 自带的 Safari 浏览器）。</p>
+
+<p>而罪魁祸首就是这 300 毫秒的延时，由于浮层上一般借助的 zepto 库绑定的 tap 事件，zepto 库的 tap 事件主要是利用的 touch 来模拟的，而 touch 没有 300 毫米的延时。</p>
+
+<p>这样就造成，当点击浮层，复层消失立即消失，从点击到浮层消失的时间间隔小于 300 毫秒，就再次出发浮层下面的 click 事件，导致上面的“点击穿透现象”。</p>
+
+<h4>解决方案</h4>
+
+<ul>
+<li><p>用 click 代替 tap 事件，这种方案的优点就是简单，基本没有什么改动。缺点就是体验不佳，明显感觉反应慢半拍。当然可以通过交互设计弱化这种感觉，通过浮层逐渐消失（fadeOut）抵消300ms 的延时</p></li>
+<li><p>动态地在触摸位置生成一个透明的元素，在一定的 timeout 后再将生成的透明元素移除。这个方案的优点就是感受不到延时，缺点是需要额外的添加元素及 js 代码，并且当浮层消失后，下面的点击会处于暂时失效状态。类似的做法还有利用 pointer-events。</p></li>
+<li><p>既然问题源于 click 事件延时，那么检测到 touchend 事件的时候就拦截系统的 click 事件，通过 DOM 自定义事件立即触发一个模拟 click 事件。这个方案的代表就是FastClick.</p></li>
+</ul>
+
+
+<h4>pointer-events</h4>
+
+<p>CSS属性pointer-events允许作者控制特定的图形元素在何时成为属性事件的target。</p>
+
+<p>除了指定元素不成为鼠标事件的目标，none值还指示鼠标事件穿过该元素，并指向位于元素下面的元素。</p>
+
+<p>none</p>
+
+<p>元素永远不会成为鼠标事件的target。但是，当其后代元素的pointer-events属性指定其他值时，鼠标事件可以指向后代元素，在这种情况下，鼠标事件将在捕获或冒泡阶触发父元素的事件侦听器。</p>
+
+<h3>异步和线程</h3>
+
+<ul>
+<li>浏览器的内核是多线程的，它们在内核制控下相互配合以保持同步，一个浏览器至少实现三个常驻线程：javascript引擎线程，GUI渲染线程，浏览器事件触发线程。</li>
+<li>javascript引擎是基于事件驱动单线程执行的.JS引擎一直等待着任务队列中任务的到来，然后加以处理，浏览器无论什么时候都只有一个JS线程在运行JS程序。</li>
+</ul>
+
+
+<h2>乱弹</h2>
+
+<ul>
+<li>决定伟大水平和一般水平的关键因素，既不是天赋，也不是经验，而是[刻意练习]的程度</li>
+</ul>
+
+
+<p><a href="http://hackerzhou.me/ex_love/">http://hackerzhou.me/ex_love/</a></p>
+</div>
+
+  
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread"><div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'mirreal';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2016-05-17.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2016-05-17.html';
+  //var disqus_developer = 1;
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+  
+</article>
+
+       <footer role="contentinfo" class="copyright">
+    	<p>
+		Copyright &copy; 2016 - <span><a href="http://mirreal.net/">Mirreal Ellison</a></span>
+	</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
+
