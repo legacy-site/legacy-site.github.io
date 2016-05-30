@@ -58,7 +58,84 @@
   
 </div>
 
-  <div class="article-content"><h2>乱弹</h2>
+  <div class="article-content"><h2>聚沙</h2>
+
+<h3>EditorConfig</h3>
+
+<p>一个用于设置 Python 和 JavaScript 行尾和缩进风格的配置文件。来自 <a href="http://editorconfig.org/">http://editorconfig.org/</a></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># EditorConfig is awesome: http://EditorConfig.org</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># top-most EditorConfig file</span>
+</span><span class='line'><span class="nv">root</span> <span class="o">=</span> <span class="nb">true</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Unix-style newlines with a newline ending every file</span>
+</span><span class='line'><span class="o">[</span>*<span class="o">]</span>
+</span><span class='line'><span class="nv">end_of_line</span> <span class="o">=</span> lf
+</span><span class='line'><span class="nv">insert_final_newline</span> <span class="o">=</span> <span class="nb">true</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Matches multiple files with brace expansion notation</span>
+</span><span class='line'><span class="c"># Set default charset</span>
+</span><span class='line'><span class="o">[</span>*.<span class="o">{</span>js,py<span class="o">}]</span>
+</span><span class='line'><span class="nv">charset</span> <span class="o">=</span> utf-8
+</span><span class='line'>
+</span><span class='line'><span class="c"># 4 space indentation</span>
+</span><span class='line'><span class="o">[</span>*.py<span class="o">]</span>
+</span><span class='line'><span class="nv">indent_style</span> <span class="o">=</span> space
+</span><span class='line'><span class="nv">indent_size</span> <span class="o">=</span> 4
+</span><span class='line'>
+</span><span class='line'><span class="c"># Tab indentation (no size specified)</span>
+</span><span class='line'><span class="o">[</span>Makefile<span class="o">]</span>
+</span><span class='line'><span class="nv">indent_style</span> <span class="o">=</span> tab
+</span><span class='line'>
+</span><span class='line'><span class="c"># Indentation override for all JS under lib directory</span>
+</span><span class='line'><span class="o">[</span>lib/**.js<span class="o">]</span>
+</span><span class='line'><span class="nv">indent_style</span> <span class="o">=</span> space
+</span><span class='line'><span class="nv">indent_size</span> <span class="o">=</span> 2
+</span><span class='line'>
+</span><span class='line'><span class="c"># Matches the exact files either package.json or .travis.yml</span>
+</span><span class='line'><span class="o">[{</span>package.json,.travis.yml<span class="o">}]</span>
+</span><span class='line'><span class="nv">indent_style</span> <span class="o">=</span> space
+</span><span class='line'><span class="nv">indent_size</span> <span class="o">=</span> 2
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://editorconfig.org/">http://editorconfig.org/</a></p>
+
+<h2>乱弹</h2>
 
 <ul>
 <li><a href="https://www.sitepoint.com/write-maintainable-javascript/">Untangling Spaghetti Code: How to Write Maintainable JavaScript</a> 这片文章之前猿小报推荐过，目前在网上还看到两个译本，一个是 <a href="http://jixianqianduan.com/article-translation/2016/05/20/how-to-write-maintainable-js.html">解开面条代码: 怎样书写可维护JavaScript</a>，一个是月影翻译的 <a href="https://www.h5jun.com/post/untangling-spaghetti-code-writing-maintainable-javascript.html">寻找头绪：编写可维护的 JavaScript</a>，人们对于这一块看来是有一致的认同</li>
