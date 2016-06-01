@@ -12,7 +12,7 @@
        More info: h5bp.com/b/378 -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>2016-05-31 |  Mirreal Ellison</title>
+  <title>2016-06-01 |  Mirreal Ellison</title>
   <meta name="author" content="Mirreal Ellison">
   
 
@@ -52,7 +52,7 @@
 <br><br>
 </nav>
     <article>
-  <h1 class="article-title">2016-05-31</h1>
+  <h1 class="article-title">2016-06-01</h1>
   <div class="sharing">
   
   
@@ -60,67 +60,67 @@
 
   <div class="article-content"><h2>阅读</h2>
 
-<p><a href="https://segmentfault.com/a/1190000005595107">基于JavaScript的一些函数式编程概念讲解</a></p>
+<p><a href="http://blog.jobbole.com/101835/">一个 Java 程序员眼中的 Go 语言</a></p>
 
-<p><a href="http://www.barretlee.com/blog/2016/05/30/h5-crash-research/">H5 Crash 研究</a></p>
+<p><a href="https://javax0.wordpress.com/2016/04/27/comparing-golang-with-java/">https://javax0.wordpress.com/2016/04/27/comparing-golang-with-java/</a></p>
+
+<p><a href="http://blog.jobbole.com/101734/">我的开源项目从0到1024的过程</a></p>
+
+<p><a href="http://blog.jobbole.com/101502/">为什么给类、方法、变量命名这么难？</a></p>
 
 <h2>聚沙</h2>
 
-<h3>npm scripts</h3>
+<h3>MongoDb</h3>
 
-<h3>管道式命令</h3>
+<h4>Install MongoDB Community Edition with Homebrew</h4>
 
-<p>如果希望同时执行多个任务，可以借用 Linux 系统的 管道命令，将两个操作连在一起。</p>
-
-<p>在 package.json 文件的 scripts 字段内的一个任务可以由多个子任务组成。</p>
-
-<p>|：连接两个任务</p>
+<p>1.Update Homebrew’s package database</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s2">&quot;build-js&quot;</span><span class="o">:</span> <span class="s2">&quot;browserify browser/main.js | uglifyjs -mc &gt; static/bundle.js&quot;</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>brew update
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>&amp;&amp;：任务内部引用其他任务，子任务 先后 执行</p>
+<p>2.Install MongoDB</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s2">&quot;build&quot;</span><span class="o">:</span> <span class="s2">&quot;npm run build-js &amp;&amp; npm run build-css&quot;</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>brew install mongodb
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>&amp;：任务内部引用其他任务，子任务 平行 执行</p>
+<h4>Run MongoDB</h4>
+
+<p>1.Create the data directory.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s2">&quot;commit&quot;</span><span class="o">:</span> <span class="s2">&quot;npm run test &amp; npm run commit&quot;</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>mkdir -p /data/db
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>流操作示例：</p>
+<p>2.Set permissions for the data directory.</p>
+
+<p>3.Run MongoDB</p>
+
+<p>Run without specifying paths</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s2">&quot;scripts&quot;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>  <span class="s2">&quot;build-css&quot;</span><span class="o">:</span> <span class="s2">&quot;autoprefixer -b &#39;last 2 versions&#39; &lt; assets/styles/main.css | cssmin &gt; dist/main.css&quot;</span>
-</span><span class='line'><span class="p">}</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>mongod
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>上面我们在 package.json 中定义了一个叫做 build-css 的任务，他又两个任务组成；当我们使用 npm run build-css 时会执行两个子任务（前提是这两个子任务的模块在本地或全局已安装，不报错）。</p>
+<p>Specify the path of the data directory</p>
 
-<p><a href="https://www.zybuluo.com/yangfch3/note/249328">https://www.zybuluo.com/yangfch3/note/249328</a></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>mongod --dbpath &lt;path to data directory&gt;
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h2>乱弹</h2>
 
 <ul>
-<li>最初学习的时候，看着课本上的经典算法，想着如果用可视化的方式来呈现这一过程一定很好 <a href="http://jasonpark.me/AlgorithmVisualizer/#path=graph_search/dfs/tree">AlgorithmVisualizer</a></li>
-<li>数据好不好看，关键在于模型，在于计算公式，你其他什么也不需要做，换换公式，突然就一片大好。总之，即使数据是死的，但计算方法掌握在人的手里。更让人震惊的是，大家对此心知肚明，这样一想，好像也没有值得惊讶的了，看来我还是图样图森破。</li>
-<li>三思而后行。</li>
-<li>每一个看似不合理的动作，其实都有它的原因，和平常事物的区别在于，你是否发现其原因。而在这时候，总会出现一个愚昧的人，作出自己认为聪明的作法。</li>
+<li>在写代码的时候，你要经常想着，那个最终维护你代码的人可能将是一个有暴力倾向的疯子，并且他还知道你住在哪里</li>
 </ul>
 
-
-<p><a href="http://blog.mirreal.net/note/2016-05-31.html">MORE</a></p>
 </div>
 
   
@@ -129,8 +129,8 @@
     <div id="disqus_thread"><div id="disqus_thread"></div>
 <script type="text/javascript">
   var disqus_shortname = 'mirreal';
-  var disqus_identifier = 'http://blog.mirreal.net/note/2016-05-31.html';
-  var disqus_url = 'http://blog.mirreal.net/note/2016-05-31.html';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2016-06-01.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2016-06-01.html';
   //var disqus_developer = 1;
   (function() {
     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
