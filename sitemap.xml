@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://blog.mirreal.net/blog/2016/06/10/the-method-and-principle-of-breaking-the-wall/</loc>
+<lastmod>2016-06-10T18:15:50+08:00</lastmod>
+</url>
+<url>
 <loc>http://blog.mirreal.net/blog/2016/05/14/compatibility-problem-with-es6/</loc>
 <lastmod>2016-05-14T16:35:34+08:00</lastmod>
 </url>
@@ -253,10 +257,10 @@
 <loc>http://blog.mirreal.net/note/2016-04-08.html</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/note/2016-04-09.html</loc>
+<loc>http://blog.mirreal.net/weekly/2016-04-09.html</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/weekly/2016-04-09.html</loc>
+<loc>http://blog.mirreal.net/note/2016-04-09.html</loc>
 </url>
 <url>
 <loc>http://blog.mirreal.net/note/2016-04-11.html</loc>
@@ -274,10 +278,10 @@
 <loc>http://blog.mirreal.net/note/2016-04-15.html</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/note/2016-04-16.html</loc>
+<loc>http://blog.mirreal.net/weekly/2016-04-16.html</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/weekly/2016-04-16.html</loc>
+<loc>http://blog.mirreal.net/note/2016-04-16.html</loc>
 </url>
 <url>
 <loc>http://blog.mirreal.net/note/2016-04-17.html</loc>
@@ -313,10 +317,10 @@
 <loc>http://blog.mirreal.net/note/2016-04-29.html</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/note/2016-04-30.html</loc>
+<loc>http://blog.mirreal.net/weekly/2016-04-30.html</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/weekly/2016-04-30.html</loc>
+<loc>http://blog.mirreal.net/note/2016-04-30.html</loc>
 </url>
 <url>
 <loc>http://blog.mirreal.net/note/2016-05-01.html</loc>
@@ -418,6 +422,18 @@
 <loc>http://blog.mirreal.net/note/2016-06-03.html</loc>
 </url>
 <url>
+<loc>http://blog.mirreal.net/note/2016-06-04.html</loc>
+</url>
+<url>
+<loc>http://blog.mirreal.net/note/2016-06-10.html</loc>
+</url>
+<url>
+<loc>http://blog.mirreal.net/note/2016-06-11.html</loc>
+</url>
+<url>
+<loc>http://blog.mirreal.net/note/2016-06-12.html</loc>
+</url>
+<url>
 <loc>http://blog.mirreal.net/note/collection.html</loc>
 </url>
 <url>
@@ -433,9 +449,6 @@
 <loc>http://blog.mirreal.net/note/function-closure-apply-bind-arguements.html</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/archives/</loc>
-</url>
-<url>
 <loc>http://blog.mirreal.net/blog/archives/</loc>
 </url>
 <url>
@@ -445,6 +458,15 @@
 <loc>http://blog.mirreal.net/</loc>
 </url>
 <url>
+<loc>http://blog.mirreal.net/archives/</loc>
+</url>
+<url>
+<loc>http://blog.mirreal.net/code/</loc>
+</url>
+<url>
+<loc>http://blog.mirreal.net/project/</loc>
+</url>
+<url>
 <loc>http://blog.mirreal.net/about/</loc>
 </url>
 <url>
@@ -452,12 +474,6 @@
 </url>
 <url>
 <loc>http://blog.mirreal.net/joke/</loc>
-</url>
-<url>
-<loc>http://blog.mirreal.net/code/</loc>
-</url>
-<url>
-<loc>http://blog.mirreal.net/project/</loc>
 </url>
 <url>
 <loc>http://blog.mirreal.net/weekly/</loc>
@@ -500,8 +516,5 @@
 </url>
 <url>
 <loc>http://blog.mirreal.net/blog/categories/shi-xi/</loc>
-</url>
-<url>
-<loc>http://blog.mirreal.net/posts/2/</loc>
 </url>
 </urlset>

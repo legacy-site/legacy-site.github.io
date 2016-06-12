@@ -4,7 +4,7 @@
   <title><![CDATA[Mirreal Note]]></title>
   <link href="http://blog.mirreal.net/atom.xml" rel="self"/>
   <link href="http://blog.mirreal.net/"/>
-  <updated>2016-06-03T22:01:41+08:00</updated>
+  <updated>2016-06-12T22:26:11+08:00</updated>
   <id>http://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Mirreal Ellison]]></name>
@@ -12,6 +12,15 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[科学上网的方法和原理]]></title>
+    <link href="http://blog.mirreal.net/blog/2016/06/10/the-method-and-principle-of-breaking-the-wall/"/>
+    <updated>2016-06-10T18:15:50+08:00</updated>
+    <id>http://blog.mirreal.net/blog/2016/06/10/the-method-and-principle-of-breaking-the-wall</id>
+    <content type="html"><![CDATA[<p>逗你呢，这里没有你想要的东西。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[使用 ES6 的浏览器兼容性问题]]></title>
