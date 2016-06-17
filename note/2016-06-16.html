@@ -58,7 +58,11 @@
   
 </div>
 
-  <div class="article-content"><p><a href="https://code.facebook.com/posts/879890885467584/improving-css-quality-at-facebook-and-beyond/">Improving CSS quality at Facebook and beyond</a></p>
+  <div class="article-content"><h2>阅读</h2>
+
+<p><a href="http://www.cnblogs.com/constantince/archive/2016/06/13/5580003.html">javascript 的 api 设计原则</a></p>
+
+<p><a href="https://code.facebook.com/posts/879890885467584/improving-css-quality-at-facebook-and-beyond/">Improving CSS quality at Facebook and beyond</a></p>
 
 <p><a href="https://raygun.com/blog/2015/05/javascript-debugging-with-black-box/">Javascript Debugging With Black Box</a></p>
 
@@ -72,40 +76,16 @@
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">betterParseInt</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">str</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">str</span> <span class="o">=</span> <span class="nx">str</span><span class="p">.</span><span class="nx">trim</span><span class="p">();</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="sr">/^(\-|\+)?([0-9]+)$/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">str</span><span class="p">))</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">str</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">return</span> <span class="kc">NaN</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">betterParseInt</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">str</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>  <span class="nx">str</span> <span class="o">=</span> <span class="nx">str</span><span class="p">.</span><span class="nx">trim</span><span class="p">();</span>
 </span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="sr">/^(\-|\+)?\d+$/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">str</span><span class="p">))</span>
 </span><span class='line'>    <span class="k">return</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">str</span><span class="p">);</span>
 </span><span class='line'>  <span class="k">return</span> <span class="kc">NaN</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">betterParseInt</span><span class="p">(</span><span class="s1">&#39;-2334&#39;</span><span class="p">));</span>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">betterParseInt</span><span class="p">(</span><span class="s1">&#39;8990&#39;</span><span class="p">));</span>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">betterParseInt</span><span class="p">(</span><span class="s1">&#39; 334   &#39;</span><span class="p">));</span>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">betterParseInt</span><span class="p">(</span><span class="s1">&#39;mi2334&#39;</span><span class="p">));</span>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">betterParseInt</span><span class="p">(</span><span class="s1">&#39;334dd&#39;</span><span class="p">));</span>
 </span></code></pre></td></tr></table></div></figure>
 
+
+<p>分割</p>
 </div>
 
   
