@@ -58,7 +58,11 @@
   
 </div>
 
-  <div class="article-content"><h2>聚沙</h2>
+  <div class="article-content"><h2>阅读</h2>
+
+<p><a href="http://jixianqianduan.com/article-translation/2016/06/22/ways-to-write-self-documenting-js.html">自文档化的JavaScript代码的开发方法</a></p>
+
+<h2>聚沙</h2>
 
 <h3>数据导出 mongoexport</h3>
 
@@ -102,15 +106,63 @@
 
 <h4>导入JSON 数据</h4>
 
-<p>我们先将表user 删除掉，以便演示效果</p>
+<p>我们先将表user 删除掉</p>
 
-<blockquote><p>db.user.drop();
-true
-show collections;
-system.indexes</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">drop</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p>然后导入数据
-[root@localhost bin]# ./mongoimport -d my_mongodb -c user user.dat</p></blockquote>
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>show collections<span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后导入数据</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>mongoimport -d hunter -c members members.dat
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>数据备份 mongodump</h3>
+
+<p>可以用 mongodump 来做 MongoDB 的库或表级别的备份</p>
+
+<p>备份my_mongodb 数据库</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>mongodump -d &lt;db_name&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>此时会在当前目录下创建一个dump 目录，用于存放备份出来的文件</p>
+
+<h3>数据恢复 mongorestore</h3>
+
+<p>由于刚刚已经做了备份，先将库my_mongodb 删除掉</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>&gt; use my_mongodb
+</span><span class='line'>switched to db my_mongodb
+</span><span class='line'>&gt; db.dropDatabase()
+</span><span class='line'>{ &quot;dropped&quot; : &quot;my_mongodb&quot;, &quot;ok&quot; : 1 }
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>接下来我们进行数据库恢复</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>mongorestore -d my_mongodb my_mongodb_dump/*
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://blog.mirreal.net/note/2016-06-23.html">MORE</a></p>
 </div>
 
   
