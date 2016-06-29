@@ -58,7 +58,40 @@
   
 </div>
 
-  <div class="article-content">
+  <div class="article-content"><h2>阅读</h2>
+
+<p><a href="https://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650993121&amp;idx=1&amp;sn=d7ac7e04e28e697f91c714401676de58">Google和微软牵手的产物：我为什么选择Angular 2？</a></p>
+
+<h2>聚沙</h2>
+
+<h3>如何在 mongodb 中在原有键值上修改</h3>
+
+<p>比如乘以 10</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">db</span><span class="p">.</span><span class="nx">scores</span><span class="p">.</span><span class="nx">find</span><span class="p">().</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">db</span><span class="p">.</span><span class="nx">scores</span><span class="p">.</span><span class="nx">update</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">_id</span><span class="o">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">_id</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="nx">$set</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="s2">&quot;score&quot;</span><span class="o">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">score</span> <span class="o">*</span> <span class="mi">10</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://blog.mirreal.net/note/2016-06-29.html">MORE</a></p>
 </div>
 
   
