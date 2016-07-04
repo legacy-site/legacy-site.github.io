@@ -1,0 +1,144 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>2016-07-04 |  Mirreal Ellison</title>
+  <meta name="author" content="Mirreal Ellison">
+  
+
+  
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <!-- end CSS-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips &#8211;>
+
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="/javascripts/libs/modernizr-2.0.6.min.js"></script>
+</head>
+
+<body id="article">
+
+  <div id="container" style="margin-top: 30px;">
+    <nav role="navigation" ><ul class="main-navigation">
+  <li style='float:left;margin-right:5px'><a class='nav' href="http://mirreal.net/">HOME</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/">BLOG</a></li>
+  <li style='float:left;margin-right:7px'><a class='nav' href="/archives">ARCHIVES</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/note">NOTE</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
+</ul>
+<br><br>
+</nav>
+    <article>
+  <h1 class="article-title">2016-07-04</h1>
+  <div class="sharing">
+  
+  
+</div>
+
+  <div class="article-content"><h2>聚沙</h2>
+
+<h3>如何设置 tbody 滚动</h3>
+
+<ol>
+<li>把tbody设置成display:block，然后就对其高度设置一个固定值，overflow设置成auto。</li>
+<li>把thead的tr设置成display:block。</li>
+<li>因为都设置成block所以要给td手动添加宽度 width:200px</li>
+</ol>
+
+
+<p>看看代码是什么样的？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.table</span> <span class="nt">thead</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">display</span><span class="o">:</span> <span class="k">block</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nc">.table</span> <span class="nt">tbody</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">display</span><span class="o">:</span> <span class="k">block</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">height</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">overflow</span><span class="o">:</span> <span class="k">auto</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">text-align</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nc">.table</span> <span class="nt">th</span><span class="o">,</span> <span class="nc">.table</span> <span class="nt">td</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">width</span><span class="o">:</span> <span class="m">200px</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>对象字面量</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="mi">2</span><span class="p">..</span><span class="nx">toString</span><span class="p">();</span> <span class="c1">// 第二个点号可以正常解析</span>
+</span><span class='line'><span class="mi">2</span> <span class="p">.</span><span class="nx">toString</span><span class="p">();</span> <span class="c1">// 注意点号前面的空格</span>
+</span><span class='line'><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="nx">toString</span><span class="p">();</span> <span class="c1">// 2先被计算</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+  
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread"><div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'mirreal';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2016-07-04.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2016-07-04.html';
+  //var disqus_developer = 1;
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+  
+</article>
+
+       <footer role="contentinfo" class="copyright">
+    	<p>
+		Copyright &copy; 2016 - <span><a href="http://mirreal.net/">Mirreal Ellison</a></span>
+	</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
+
