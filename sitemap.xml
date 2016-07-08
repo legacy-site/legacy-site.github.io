@@ -485,6 +485,9 @@
 <loc>http://blog.mirreal.net/note/2016-07-06.html</loc>
 </url>
 <url>
+<loc>http://blog.mirreal.net/note/2016-07-07.html</loc>
+</url>
+<url>
 <loc>http://blog.mirreal.net/note/collection.html</loc>
 </url>
 <url>
@@ -500,7 +503,7 @@
 <loc>http://blog.mirreal.net/note/function-closure-apply-bind-arguements.html</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/archives/</loc>
+<loc>http://blog.mirreal.net/about/</loc>
 </url>
 <url>
 <loc>http://blog.mirreal.net/</loc>
@@ -509,10 +512,7 @@
 <loc>http://blog.mirreal.net/blog/archives/</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/about/</loc>
-</url>
-<url>
-<loc>http://blog.mirreal.net/weekly/</loc>
+<loc>http://blog.mirreal.net/archives/</loc>
 </url>
 <url>
 <loc>http://blog.mirreal.net/note/</loc>
@@ -525,6 +525,9 @@
 </url>
 <url>
 <loc>http://blog.mirreal.net/joke/</loc>
+</url>
+<url>
+<loc>http://blog.mirreal.net/weekly/</loc>
 </url>
 <url>
 <loc>http://blog.mirreal.net/code/</loc>
@@ -567,8 +570,5 @@
 </url>
 <url>
 <loc>http://blog.mirreal.net/blog/categories/shi-xi/</loc>
-</url>
-<url>
-<loc>http://blog.mirreal.net/posts/2/</loc>
 </url>
 </urlset>
