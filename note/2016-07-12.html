@@ -86,6 +86,58 @@
 
 <p>HSTS preload list是Chrome浏览器中的HSTS预载入列表，在该列表中的网站，使用Chrome浏览器访问时，会自动转换成HTTPS。Firefox、Safari、Edge浏览器也在采用这个列表。</p>
 
+<h3>rgbColor</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">rgbColor</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">r</span><span class="o">:</span> <span class="mi">234</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">g</span><span class="o">:</span> <span class="mi">36</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">b</span><span class="o">:</span> <span class="mi">122</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">hexColor</span> <span class="o">=</span> <span class="nx">rgbColor2HEX</span><span class="p">(</span><span class="nx">rgbColor</span><span class="p">.</span><span class="nx">r</span><span class="p">,</span> <span class="nx">rgbColor</span><span class="p">.</span><span class="nx">g</span><span class="p">,</span> <span class="nx">rgbColor</span><span class="p">.</span><span class="nx">b</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">hexColor</span><span class="p">);</span> <span class="c1">// #ea247a</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">rgbColor2HEX</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span> <span class="nx">g</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="s1">&#39;#&#39;</span> <span class="o">+</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nx">r</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nx">g</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="nx">b</span><span class="p">).</span><span class="nx">toString</span><span class="p">(</span><span class="mi">16</span><span class="p">).</span><span class="nx">substr</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>蛇精病的做法</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">swop</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">a</span> <span class="o">^=</span> <span class="nx">b</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">b</span> <span class="o">^=</span> <span class="nx">a</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">a</span> <span class="o">^=</span> <span class="nx">b</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">swop</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">);</span> <span class="c1">// 6, 3</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 <p><a href="http://blog.mirreal.net/note/2016-07-12.html">MORE</a></p>
 </div>
 
