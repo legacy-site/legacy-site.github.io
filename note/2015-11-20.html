@@ -1,0 +1,232 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>2015-11-20 |  Mirreal Ellison</title>
+  <meta name="author" content="Mirreal Ellison">
+  
+
+  
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <!-- end CSS-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips &#8211;>
+
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="/javascripts/libs/modernizr-2.0.6.min.js"></script>
+</head>
+
+<body id="article">
+
+  <div id="container" style="margin-top: 30px;">
+    <nav role="navigation" ><ul class="main-navigation">
+  <li style='float:left;margin-right:5px'><a class='nav' href="http://mirreal.net/">HOME</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/">BLOG</a></li>
+  <li style='float:left;margin-right:7px'><a class='nav' href="/archives">ARCHIVES</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/note">NOTE</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
+</ul>
+<br><br>
+</nav>
+    <article>
+  <h1 class="article-title">2015-11-20</h1>
+  <div class="sharing">
+  
+  
+</div>
+
+  <div class="article-content"><p>WebAssembly: a binary format for the web</p>
+
+<h1>WebAssembly: web上的二进制形式</h1>
+
+<p>Labels: asmjs, dev, javascript, webassembly
+Updates:</p>
+
+<p>[2015-07-02] New material in these sections:</p>
+
+<p>How do I create WebAssembly code?
+First experiences in practice
+Further reading
+[2015-06-24] I added an FAQ with three new questions:</p>
+
+<p>Does the web finally have a universal bytecode?
+Isn’t WebAssembly like Flash?
+Will WebAssembly make JavaScript faster?</p>
+
+<p>WebAssembly (short: wasm) is a new binary format for the web, created by Google, Microsoft, Mozilla and others. It will be used for performance critical code and to compile languages other than JavaScript (especially C/C++) to the web platform. It can be seen as a next step for asm.js [3].</p>
+
+<p>WebAssembly（简称：WASM）是Web，由谷歌，微软，Mozilla等创造的一种新的二进制格式。它将被用于性能关键代码和编译语言比JavaScript的（特别是C/C++）到其他的网络平台。它可以被看作是对asm.js下一阶段。</p>
+
+<h2>1.asm.js</h2>
+
+<p>Most JavaScript engines have the following compilation pipeline:</p>
+
+<p>大多数的JavaScript引擎有以下编译过程：</p>
+
+<p>JavaScript source → bytecode → machine code</p>
+
+<p>Javascript源代码 → 字节码 → 机器码</p>
+
+<p>The idea of asm.js is to code JavaScript in such a way that engines produce machine code that is as efficient as possible. That is, you kind of try to bypass the first compilation step. The results are impressive: if one compiles C++ to asm.js one can reach 70% of native speed in web browsers.</p>
+
+<p>asm.js的想法是通过一种生成机器码的方式去编写JavaScript，并尽可能高效。也就是说，试图绕过第一个编译步骤，结果是令人印象深刻：如果从C++编码到asm.js可以在Web浏览器达到原生速度得70％。</p>
+
+<p>WebAssembly: the next step for asm.js</p>
+
+<h2>2.WebAssembly：asm.js的下一步</h2>
+
+<p>Initially, WebAssembly is (roughly) a binary format for delivering asm.js code. The two main advantages of such a format are:</p>
+
+<p>最初，WebAssembly用于输送asm.js码的二进制格式。这种格式的两个主要优点是：</p>
+
+<p>Faster loading. Especially with large code bases and mobile devices, parsing becomes a bottleneck: “On mobile, large compiled codes can easily take 20–40s just to parse” (WebAssembly FAQ). First experiments show that WebAssembly can be loaded more than 20 times faster, because the work for parsing is minimal.</p>
+
+<ul>
+<li>更快的加载。特别是对于大型的代码库和移动设备，解析成为一个瓶颈：“在移动，大编解码可以轻松地20-40s 只是解析”（WebAssembly FAQ）。第一实验表明WebAssembly可装载快20倍以上，是因为用于解析的工作是最小的。</li>
+</ul>
+
+
+<p>Evolving WebAssembly is simpler: The way that asm.js is currently written is constrained by having to run fast as normal JavaScript (in legacy engines) and by having to support ahead of time compilation within JavaScript syntax.</p>
+
+<p>Legacy engines will be supported via a JavaScript library that translates WebAssembly (binary) to asm.js (source code). First indications are that that is reasonably fast.</p>
+
+<p>WebAssembly binaries are trees
+WebAssembly binaries will encode abstract syntax trees. That is, they are not a linear format like stack- or register-based bytecode. Not surprisingly, the format looks much like asm.js: roughly, a statically typed version of JavaScript without objects.</p>
+
+<p>There will be a text format for WebAssembly. It will mirror the semantics of the binaries and contain a tree of statements and expressions.</p>
+
+<p>WebAssembly does not replace JavaScript</p>
+
+<p>The previous diagram (which is a much simplified depiction of reality) should make it obvious that WebAssembly is not a replacement for JavaScript, it is a new feature of JavaScript engines that builds on their infrastructures. That means that it will fit well into the web platform:</p>
+
+<p>It will have the same evolution strategy as JavaScript: everything is always backward-compatible, there is no explicit versioning, code uses feature testing to determine how it should run.
+It will execute in the same semantic universe as JavaScript and allow synchronous calls to and from JavaScript (including browser APIs).
+Security will be handled like in JavaScript, via same-origin and permissions security policies.
+The nice thing is that WebAssembly removes the burden from JavaScript to be a good compilation target for other languages. For example, the following two methods were only added to ES6 to support asm.js well:</p>
+
+<p>Math.fround(x) rounds x to a 32 bit float.
+Math.imul(x,y) multiplies the two integers x and y.
+How will JavaScript and WebAssembly coexist?
+Performance critical functionality (games, video and image decoders, etc.) will be implemented via WebAssembly, either by hand-coding it or by yet-to-be-invented languages that are slightly higher-level.</p>
+
+<p>External code bases, especially those in C/C++, will be easy to port to the web platform, via WebAssembly.</p>
+
+<p>Other than that, JavaScript will continue to evolve and will probably remain the most popular way of implementing web apps.</p>
+
+<p>The future
+The initial focus is for WebAssembly to be a compilation target for C/C++. Longer term, more features supporting other languages will be added, including the ability to create garbage-collected data (currently, asm.js creates and manages its own heap).</p>
+
+<p>You’ll eventually be able to debug a WebAssembly binary via the source code that was compiled to it. That mechanism will be an evolution of source maps [4] that provide similar services for JavaScript.</p>
+
+<p>Frequently asked questions
+What is different this time?
+Why should WebAssembly succeed where previous attempts (such as Adobe Flash and Google Portable Native Client) have failed? There are three reasons:</p>
+
+<p>First, this is a collaborative effort, no single company goes it alone. At the moment, the following projects are involved: Firefox, Chromium, Edge and WebKit.</p>
+
+<p>Second, the interoperability with the web platform and JavaScript is excellent. Using WebAssembly code from JavaScript will be as simple as importing a module.</p>
+
+<p>Third, this is not about replacing JavaScript engines, it is more about adding a new feature to them. That greatly reduces the amount of work to implement WebAssembly and should help with getting the support of the web development community.</p>
+
+<p>Does the web finally have a universal bytecode?
+WebAssembly is not bytecode: Bytecode is linear and (usually) stack-, register- or SSA-based, WebAssembly is a binary format for an abstract syntax tree (AST). Compared to bytecode, this has the following advantages:</p>
+
+<p>WebAssembly is relatively easy to add to all current JavaScript engines, because it is high-level and similar to parts of JavaScript. That is, it builds on the infrastructures of engines, instead of replacing them. Engines will continue to have different compilation strategies and/or bytecode, which is good for the web ecosystem, because the differences have fostered experimentation and innovation.</p>
+
+<p>WebAssembly is not versioned. It uses the same evolution strategy as JavaScript (feature detection and polyfills).</p>
+
+<p>On the other hand, WebAssembly is like bytecode in two ways:</p>
+
+<p>WebAssembly will eventually lead to a “universal” virtual machine (VM). It will probably gain features that JavaScript/asm.js will never have and therefore better accommodate languages that currently don’t compile well to JavaScript. Note, though, that asm.js was the beginning of that universal VM – you don’t need a binary format for that.</p>
+
+<p>WebAssembly eliminates the parser as a bottleneck.</p>
+
+<p>Isn’t WebAssembly like Flash?
+Everything mentioned in the previous question applies here, too: Flash is based on bytecode, but WebAssembly is not bytecode and does not have some of its disadvantages. Additionally, WebAssembly is much better integrated into the web platform, its code lives in the universe of JavaScript. So far, the power consumption story of the web platform also seems to be better than Flash’s, but there is still a lot of room for improvement.</p>
+
+<p>Will WebAssembly make JavaScript faster?
+Short answer: yes (load time) and no (execution time).</p>
+
+<p>70% of the speed native C/C++ means that WebAssembly is fast where C/C++ is fast (static code) and slow where C/C++ is slow (e.g. dynamic OOP features).</p>
+
+<p>It does not currently make sense to compile JavaScript to WebAssembly, because it lacks JavaScript-specific features such as objects and arrays (for C++, one manually manages a heap in a typed array). Once WebAssembly gains those features, JavaScript can be compiled to it, but it will use the same techniques as current engines. Therefore, only the load time of applications will improve, because parsing is much faster.</p>
+
+<p>The reduction of the size of executables will be less dramatic. One can already save a lot of space via minification and compression. First experiments (see below) resulted in gzipped asm.js being 1.4 times bigger than gzipped WebAssembly.</p>
+
+<p>How do I create WebAssembly code?
+The main three options are:</p>
+
+<p>Write the code manually and use the textual representation.
+Produce binary output programmatically.
+Use a compiler to compile an LLVM-based language (initially mainly C/C++) to WebAssembly. The official FAQ “What compilers can I use to build WebAssembly programs?” has more information.
+First experiences in practice
+For the Unity Game Engine, first tests were made with WebAssembly. Quoting “WebGL: WebAssembly and Feature Roadmap” by Jonas Echterhoff for the Unity Blog:</p>
+
+<p>Experimenting with a prototype WebAssembly format on a build of our AngryBots demo, we saw the size of the generated JavaScript code go from 19.0 MB of asm.js code (gzip-compressed to 4.1 MB) down to 6.3 MB of WebAssembly code (gzip-compressed to 3.0 MB). This means that the amount of data the browser needs to process gets reduced by 3.0x, and the compressed download size gets reduced by 1.4x. Actual results may change based on the project used, but we expect to see very relevant improvements to anyone caring about WebGL deployment in Unity.</p>
+
+<p>Further reading
+Especially informative is Eric Elliott’s interview with Brendan Eich: “Why we Need WebAssembly”.</p>
+
+<p>References:</p>
+
+<p>“WebAssembly” by Luke Wagner
+The official WebAssembly FAQ
+asm.js: closing the gap between JavaScript and native
+“Introduction to JavaScript Source Maps” by Ryan Seddon on HTML5 Rocks</p>
+</div>
+
+  
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread"><div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'mirreal';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2015-11-20.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2015-11-20.html';
+  //var disqus_developer = 1;
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+  
+</article>
+
+       <footer role="contentinfo" class="copyright">
+    	<p>
+		Copyright &copy; 2016 - <span><a href="http://mirreal.net/">Mirreal Ellison</a></span>
+	</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
+

@@ -1,0 +1,526 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>2016-05-09 |  Mirreal Ellison</title>
+  <meta name="author" content="Mirreal Ellison">
+  
+
+  
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <!-- end CSS-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips &#8211;>
+
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="/javascripts/libs/modernizr-2.0.6.min.js"></script>
+</head>
+
+<body id="article">
+
+  <div id="container" style="margin-top: 30px;">
+    <nav role="navigation" ><ul class="main-navigation">
+  <li style='float:left;margin-right:5px'><a class='nav' href="http://mirreal.net/">HOME</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/">BLOG</a></li>
+  <li style='float:left;margin-right:7px'><a class='nav' href="/archives">ARCHIVES</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/note">NOTE</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
+</ul>
+<br><br>
+</nav>
+    <article>
+  <h1 class="article-title">2016-05-09</h1>
+  <div class="sharing">
+  
+  
+</div>
+
+  <div class="article-content"><h2>阅读</h2>
+
+<p><a href="http://bobao.360.cn/learning/detail/441.html">常见的隐写工具介绍</a></p>
+
+<p><a href="https://www.h5jun.com/post/wait-promise.html">Promise 与定时器</a></p>
+
+<p><a href="https://zhuanlan.zhihu.com/p/20858727">使用CSS技术实现Netflix Logo动画效果</a></p>
+
+<p><a href="http://www.lxxyx.win/2016/05/07/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3JavaScript%E7%B1%BB%E6%95%B0%E7%BB%84/">深入理解JavaScript类数组</a></p>
+
+<h2>聚沙</h2>
+
+<h3>code style basee on JSCS</h3>
+
+<p>只是代码风格</p>
+
+<h4>Automatically create your configuration file</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>jscs --auto-configure src
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Automatically fix your errors</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>jscs src --fix
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="https://github.com/jscs-dev/node-jscs/tree/master/presets">https://github.com/jscs-dev/node-jscs/tree/master/presets</a></p>
+
+<h3>jshint</h3>
+
+<p>关注“代码质量”的格式检查工具</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nt">&quot;predef&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;$&quot;</span><span class="p">,</span> <span class="s2">&quot;jQuery&quot;</span><span class="p">,</span> <span class="s2">&quot;angular&quot;</span><span class="p">,</span> <span class="s2">&quot;define&quot;</span><span class="p">,</span> <span class="s2">&quot;require&quot;</span><span class="p">,</span> <span class="s2">&quot;echarts&quot;</span><span class="p">,</span> <span class="s2">&quot;console&quot;</span><span class="p">,</span> <span class="s2">&quot;chrome&quot;</span><span class="p">,</span> <span class="s2">&quot;JSTracker&quot;</span><span class="p">,</span> <span class="s2">&quot;JSTracker2&quot;</span><span class="p">,</span> <span class="s2">&quot;TOP&quot;</span><span class="p">,</span> <span class="s2">&quot;QN&quot;</span><span class="p">]</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;curly&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;eqeqeq&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;freeze&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;funcscope&quot;</span><span class="p">:</span> <span class="kc">false</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;futurehostile&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;latedef&quot;</span><span class="p">:</span> <span class="s2">&quot;nofunc&quot;</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;maxerr&quot;</span><span class="p">:</span> <span class="mi">99999</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;nocomma&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;nonbsp&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;nonew&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;notypeof&quot;</span><span class="p">:</span> <span class="kc">false</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;undef&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;asi&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;expr&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;debug&quot;</span><span class="p">:</span> <span class="kc">false</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;lastsemic&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;loopfunc&quot;</span><span class="p">:</span> <span class="kc">false</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;proto&quot;</span><span class="p">:</span> <span class="kc">false</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;validthis&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;withstmt&quot;</span><span class="p">:</span> <span class="kc">false</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;browser&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;jquery&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>配置项解释</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;predef&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;$&quot;</span><span class="p">,</span> <span class="s2">&quot;jQuery&quot;</span><span class="p">,</span> <span class="s2">&quot;angular&quot;</span><span class="p">,</span> <span class="s2">&quot;define&quot;</span><span class="p">,</span> <span class="s2">&quot;require&quot;</span><span class="p">,</span> <span class="s2">&quot;echarts&quot;</span><span class="p">,</span> <span class="s2">&quot;console&quot;</span><span class="p">,</span> <span class="s2">&quot;chrome&quot;</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">预定义的全局量.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">,</span> <span class="nt">&quot;curly&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">必须加大括号</span><span class="p">,</span> <span class="err">即使在</span> <span class="err">if</span> <span class="err">后只有一条语句.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="nt">&quot;eqeqeq&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">禁止使用</span> <span class="err">==</span> <span class="err">/</span> <span class="err">!=</span> <span class="p">,</span> <span class="err">只能用</span> <span class="err">===</span> <span class="err">/</span> <span class="err">!==</span> <span class="err">.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="nt">&quot;freeze&quot;</span><span class="p">:</span> <span class="kc">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">禁止动原生对象的原型.</span> <span class="err">比如给</span> <span class="err">Array</span> <span class="err">加一个</span> <span class="err">count</span> <span class="err">方法</span><span class="p">,</span> <span class="err">Array.prototype.count</span> <span class="err">=</span> <span class="err">function(){</span><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;funcscope&quot;</span><span class="err">:</span> <span class="kc">false</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">你不能在一个控制结构中声明一个变量,</span> <span class="err">但是却在控制结构之外使用它.</span> <span class="err">比如:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">function</span> <span class="err">test()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="err">if</span> <span class="err">(true)</span> <span class="err">{</span>
+</span><span class='line'>            <span class="err">var</span> <span class="err">x</span> <span class="err">=</span> <span class="err">0;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="err">x</span> <span class="err">+=</span> <span class="mi">1</span><span class="err">;</span> <span class="err">//</span> <span class="err">Default:</span> <span class="err">&#39;x&#39;</span> <span class="err">used</span> <span class="err">out</span> <span class="err">of</span> <span class="err">scope.</span>
+</span><span class='line'>                <span class="err">//</span> <span class="err">No</span> <span class="err">warning</span> <span class="err">when</span> <span class="err">funcscope:</span><span class="kc">true</span>
+</span><span class='line'>    <span class="err">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;futurehostile&quot;</span><span class="err">:</span> <span class="kc">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">不能使用在后续</span> <span class="err">js</span> <span class="err">版本中出现的关键词.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;latedef&quot;</span><span class="err">:</span> <span class="s2">&quot;nofunc&quot;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">从顺序结构上来看,</span> <span class="err">不允许使用未声明的变量.</span> <span class="err">function</span> <span class="err">abc()</span><span class="p">{}</span> <span class="err">这种函数声明例外,</span> <span class="err">函数声明允许后置.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;maxerr&quot;</span><span class="err">:</span> <span class="mi">50</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">jshint</span> <span class="err">工作时的最大</span><span class="s2">&quot;错误&quot;</span><span class="err">数量,</span> <span class="err">超过这个量会中止检查.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;nocomma&quot;</span><span class="err">:</span> <span class="kc">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">禁止使用</span><span class="s2">&quot;逗号&quot;</span><span class="err">表达式.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;nonbsp&quot;</span><span class="err">:</span> <span class="kc">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">禁止</span> <span class="s2">&quot;non-breaking whitespace&quot;</span> <span class="err">字符(不知道是什么就不用管它).</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;nonew&quot;</span><span class="err">:</span> <span class="kc">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">new</span> <span class="err">必须出现在赋值语句中.</span> <span class="err">空的</span> <span class="err">new</span> <span class="err">Abc()</span> <span class="err">不被允许.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;notypeof&quot;</span><span class="err">:</span> <span class="kc">false</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">检查对</span> <span class="err">typeof</span> <span class="err">结果的比较操作,</span> <span class="err">比如</span> <span class="err">typeof</span> <span class="err">a</span> <span class="err">==</span> <span class="s2">&quot;fuction&quot;</span> <span class="err">就无法通过检查,</span> <span class="err">因为</span> <span class="err">fuction</span> <span class="err">不是一个</span><span class="s2">&quot;合理结果集&quot;</span><span class="err">中的成员.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;undef&quot;</span><span class="err">:</span> <span class="kc">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">禁止使用未声明的变量.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;asi&quot;</span><span class="err">:</span> <span class="kc">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">末尾的分号不强制.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;expr&quot;</span><span class="err">:</span> <span class="kc">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">允许使用行内表达式,</span> <span class="err">比如</span> <span class="err">callback</span> <span class="err">&amp;&amp;</span> <span class="err">callback()</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;debug&quot;</span><span class="err">:</span> <span class="kc">false</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">代码中不能有遗留的</span> <span class="err">debugger</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;loopfunc&quot;</span><span class="err">:</span> <span class="kc">false</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">不允许在循环结构中定义函数.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;proto&quot;</span><span class="err">:</span> <span class="kc">false</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">不允许有涉及</span> <span class="err">__proto__</span> <span class="err">属性的行为.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;validthis&quot;</span><span class="err">:</span> <span class="kc">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">在非构造函数中使用</span> <span class="err">this</span> <span class="err">是被允许的.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;withstmt&quot;</span><span class="err">:</span> <span class="kc">false</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">不允许使用</span> <span class="err">with</span> <span class="err">.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;browser&quot;</span><span class="err">:</span> <span class="kc">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">jslint</span> <span class="err">环境,</span> <span class="err">配置成浏览器它会自动处理</span> <span class="err">document</span> <span class="err">这种全局量.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">,</span> <span class="s2">&quot;jquery&quot;</span><span class="err">:</span> <span class="kc">true</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">jslint</span> <span class="err">环境,</span> <span class="err">配置</span> <span class="err">jquery</span> <span class="err">它会自动处理相关全局量.</span>
+</span><span class='line'><span class="err">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>.jshintignore 忽略检查</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="err">node_modules/</span>
+</span><span class='line'><span class="err">build/</span>
+</span><span class='line'><span class="err">src/**/tpl.js</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://www.sitepoint.com/comparison-javascript-linting-tools/">http://www.sitepoint.com/comparison-javascript-linting-tools/</a></p>
+
+<p><a href="http://www.swifthumb.com/thread-8829-1-1.html">http://www.swifthumb.com/thread-8829-1-1.html</a></p>
+
+<p><a href="http://efe.baidu.com/blog/js-lints/">http://efe.baidu.com/blog/js-lints/</a></p>
+
+<h3>数组元素的洗牌</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">];</span>
+</span><span class='line'><span class="nx">list</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.5</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>合并数组</h3>
+
+<p>如果你要合并两个数组，一般情况之下你都会使用 <code>Array.concat()</code> 函数：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">array1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">];</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">array2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">];</span>
+</span><span class='line'><span class="nx">array1</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">array2</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后这个函数并不适合用来合并两个大型的数组，因为其将消耗大量的内存来存储新创建的数组。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">array1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">array2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">];</span>
+</span><span class='line'><span class="nx">array1</span><span class="p">.</span><span class="nx">push</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">array1</span><span class="p">,</span> <span class="nx">array2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这种方法不是用来创建一个新的数组，其只是将第一个第二个数组合并在一起，同时减少内存的使用</p>
+
+<h3>翻转数组指定部分</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">reverse</span><span class="p">(</span><span class="nx">array</span><span class="p">,</span> <span class="nx">begin</span><span class="p">,</span> <span class="nx">end</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">end</span><span class="o">-</span><span class="nx">begin</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">len</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">t</span> <span class="o">=</span> <span class="nx">array</span><span class="p">[</span><span class="nx">begin</span><span class="o">+</span><span class="nx">i</span><span class="p">];</span>
+</span><span class='line'>    <span class="nx">array</span><span class="p">[</span><span class="nx">begin</span><span class="o">+</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">array</span><span class="p">[</span><span class="nx">begin</span><span class="o">+</span><span class="nx">len</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="nx">i</span><span class="p">];</span>
+</span><span class='line'>    <span class="nx">array</span><span class="p">[</span><span class="nx">begin</span><span class="o">+</span><span class="nx">len</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">t</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">array</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">reverse</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>demo</h2>
+
+<p>空间悖论 Penrose <a href="http://codepen.io/pixelass/full/PNXaMG/">http://codepen.io/pixelass/full/PNXaMG/</a></p>
+</div>
+
+  
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread"><div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'mirreal';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2016-05-09.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2016-05-09.html';
+  //var disqus_developer = 1;
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+  
+</article>
+
+       <footer role="contentinfo" class="copyright">
+    	<p>
+		Copyright &copy; 2016 - <span><a href="http://mirreal.net/">Mirreal Ellison</a></span>
+	</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
+

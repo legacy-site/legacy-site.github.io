@@ -1,0 +1,163 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>2016-05-06 |  Mirreal Ellison</title>
+  <meta name="author" content="Mirreal Ellison">
+  
+
+  
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <!-- end CSS-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips &#8211;>
+
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="/javascripts/libs/modernizr-2.0.6.min.js"></script>
+</head>
+
+<body id="article">
+
+  <div id="container" style="margin-top: 30px;">
+    <nav role="navigation" ><ul class="main-navigation">
+  <li style='float:left;margin-right:5px'><a class='nav' href="http://mirreal.net/">HOME</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/">BLOG</a></li>
+  <li style='float:left;margin-right:7px'><a class='nav' href="/archives">ARCHIVES</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/note">NOTE</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
+</ul>
+<br><br>
+</nav>
+    <article>
+  <h1 class="article-title">2016-05-06</h1>
+  <div class="sharing">
+  
+  
+</div>
+
+  <div class="article-content"><h2>阅读</h2>
+
+<p><a href="http://taobaofed.org/blog/2016/05/03/promise-anti-patterns/">Promise 反模式</a></p>
+
+<p><a href="https://zhuanlan.zhihu.com/p/20824976">当我们说软件工程师的时候我们在说什么</a></p>
+
+<h2>聚沙</h2>
+
+<h3>分号</h3>
+
+<p>不插入的案例</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">s</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">x</span><span class="o">*</span><span class="nx">x</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span><span class="p">).</span><span class="nx">toString</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>定义文档兼容性</h3>
+
+<blockquote><p>与任何早期浏览器版本相比，Internet Explorer 8 对行业标准提供了更加紧密的支持。 因此，针对旧版本的浏览器设计的站点可能不会按预期显示。 为了帮助减轻任何问题，Internet Explorer 8 引入了文档兼容性的概念，从而允许您指定站点所支持的 Internet Explorer 版本。 文档兼容性在 Internet Explorer 8 中添加了新的模式；这些模式将告诉浏览器如何解释和呈现网站。 如果您的站点在 Internet Explorer 8 中无法正确显示，则可以更新该站点以支持最新的 Web 标准（首选方式），也可以强制 Internet Explorer 8 按照在旧版本的浏览器中查看站点的方式来显示内容。 通过使用 meta 元素将 X-UA-Compatible 标头添加到网页中，可以实现这一点。
+这将允许您选择何时更新站点以支持由 Internet Explorer 8 支持的新功能。</p></blockquote>
+
+<p>好官方的语调，简单来说，就是：</p>
+
+<p><code>X-UA-Compatible</code> 当初是针对 IE8 新加的一个配置</p>
+
+<p>用于为 IE8 指定不同的页面渲染模式，比如使用 IE7 兼容模式，或者是采用最新的引擎。</p>
+
+<p>现在基本也不需要前者的降级模式，更多的是写入 <code>IE=edge</code> 支持最新特性</p>
+
+<p>而 <code>chrome=1</code> 则会激活 Google Chrome Frame，前提是你的 IE 安装过这个插件</p>
+
+<h4>为什么要用X-UA-Compatible？</h4>
+
+<p>在 IE8 刚推出的时候，很多网页由于重构的问题，无法适应较高级的浏览器，所以使用 <code>X-UA-Compatible</code> 强制 IE8 采用低版本方式渲染。</p>
+
+<p>使用下面这段代码后，开发者无需考虑网页是否兼容 IE8 浏览器，只要确保网页在 IE6、IE7 下的表现就可以了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">&quot;X-UA-Compatible&quot;</span> <span class="na">content=</span><span class="s">&quot;IE=EmulateIE7&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>而下面这段代码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">&quot;X-UA-Compatible&quot;</span> <span class="na">content=</span><span class="s">&quot;IE=edge,chrome=1&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>IE=edge</code> 告诉 IE 使用最新的引擎渲染网页，<code>chrome=1</code> 则可以激活 Chrome Frame[1]。</p>
+
+<p><a href="https://msdn.microsoft.com/zh-cn/library/cc288325">https://msdn.microsoft.com/zh-cn/library/cc288325</a>(v=vs.85).aspx</p>
+
+<p><a href="http://lightcss.com/add-x-ua-compatible-meta-to-your-website/">http://lightcss.com/add-x-ua-compatible-meta-to-your-website/</a></p>
+
+<h3>mark</h3>
+
+<p><a href="http://www.amp-what.com/">http://www.amp-what.com/</a></p>
+
+<p><a href="http://blog.mirreal.net/note/2016-05-06.html">MORE</a></p>
+</div>
+
+  
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread"><div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'mirreal';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2016-05-06.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2016-05-06.html';
+  //var disqus_developer = 1;
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+  
+</article>
+
+       <footer role="contentinfo" class="copyright">
+    	<p>
+		Copyright &copy; 2016 - <span><a href="http://mirreal.net/">Mirreal Ellison</a></span>
+	</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
+

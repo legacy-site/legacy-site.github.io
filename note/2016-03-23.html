@@ -1,0 +1,154 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>2016-03-23 |  Mirreal Ellison</title>
+  <meta name="author" content="Mirreal Ellison">
+  
+
+  
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <!-- end CSS-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips &#8211;>
+
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="/javascripts/libs/modernizr-2.0.6.min.js"></script>
+</head>
+
+<body id="article">
+
+  <div id="container" style="margin-top: 30px;">
+    <nav role="navigation" ><ul class="main-navigation">
+  <li style='float:left;margin-right:5px'><a class='nav' href="http://mirreal.net/">HOME</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/">BLOG</a></li>
+  <li style='float:left;margin-right:7px'><a class='nav' href="/archives">ARCHIVES</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/note">NOTE</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
+</ul>
+<br><br>
+</nav>
+    <article>
+  <h1 class="article-title">2016-03-23</h1>
+  <div class="sharing">
+  
+  
+</div>
+
+  <div class="article-content"><h2>阅读</h2>
+
+<p><a href="http://taobaofed.org/blog/2016/03/23/the-growth-of-front-end/">一个前端的自我修养</a></p>
+
+<h2>three.js 笔记</h2>
+
+<h3>一堆名词</h3>
+
+<ul>
+<li>Renderer 渲染器</li>
+<li>Scene 场景</li>
+<li><p>Camera 照相机</p></li>
+<li><p>perspective 透视</p></li>
+<li>material 材质</li>
+<li>Geometry 几何体</li>
+</ul>
+
+
+<h3>照相机（Camera)</h3>
+
+<h4>正交投影照相机（Orthographic Camera)</h4>
+
+<p>一般说来，对于制图、建模软件通常使用正交投影，这样不会因为投影而改变物体比例；</p>
+
+<h4>透视投影照相机（Perspective Camera)</h4>
+
+<p>而对于其他大多数应用，通常使用透视投影，因为这更接近人眼的观察效果。</p>
+
+<h2>zoom 和 scale</h2>
+
+<ul>
+<li>zoom相当于是一个放大镜，缩放被zoom的元素不会影响初始或实际视口的大小。</li>
+</ul>
+
+
+<p>zoom的取值可以为数值和百分比值，不能取负值。</p>
+
+<ul>
+<li>transform的变换过程实际上是矩阵变换的过程，被transform的元素要经过一系列的矩阵运算最终确定其坐标.</li>
+</ul>
+
+
+<p>scale()是transform的一个属性值，这是一个缩放函数。当一个元素被定义了transform:scale(x,y)，可以控制其x方向和y方向上的缩放比例，如果只有一个参数，那么第二个参数与第一个参数相等。</p>
+
+<p>scale的取值只能是数值，但是可以为负数。</p>
+
+<h2>工具</h2>
+
+<ul>
+<li><a href="https://www.lingoapp.com/">Lingo</a>：一款整理视觉素材的 Mac App  <a href="https://www.lingoapp.com/">https://www.lingoapp.com/</a></li>
+</ul>
+
+
+<h2>一句话</h2>
+
+<p>Better</p>
+
+<p>to have a 100 people who love you than a million people who sort of like you.</p>
+
+<p>这是著名短租网站 Airbnb 创始人 Brian Chesky 在去年的一次演讲中的一个忠告。中文翻译过来就是：宁愿有100个“脑残粉”，也不要有100万人觉得你的产品还不错。</p>
+</div>
+
+  
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread"><div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'mirreal';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2016-03-23.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2016-03-23.html';
+  //var disqus_developer = 1;
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+  
+</article>
+
+       <footer role="contentinfo" class="copyright">
+    	<p>
+		Copyright &copy; 2016 - <span><a href="http://mirreal.net/">Mirreal Ellison</a></span>
+	</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
+

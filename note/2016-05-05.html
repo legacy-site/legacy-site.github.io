@@ -1,0 +1,170 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>2016-05-05 |  Mirreal Ellison</title>
+  <meta name="author" content="Mirreal Ellison">
+  
+
+  
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <!-- end CSS-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips &#8211;>
+
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="/javascripts/libs/modernizr-2.0.6.min.js"></script>
+</head>
+
+<body id="article">
+
+  <div id="container" style="margin-top: 30px;">
+    <nav role="navigation" ><ul class="main-navigation">
+  <li style='float:left;margin-right:5px'><a class='nav' href="http://mirreal.net/">HOME</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/">BLOG</a></li>
+  <li style='float:left;margin-right:7px'><a class='nav' href="/archives">ARCHIVES</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/note">NOTE</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
+</ul>
+<br><br>
+</nav>
+    <article>
+  <h1 class="article-title">2016-05-05</h1>
+  <div class="sharing">
+  
+  
+</div>
+
+  <div class="article-content"><h2>阅读</h2>
+
+<p><a href="http://blog.csdn.net/aimingoo/article/details/51136511">语句在JavaScript中的值</a></p>
+
+<p><a href="https://blog.wilddog.com/?p=680">10个“Chrome开发者工具”使用技巧</a></p>
+
+<p><a href="https://umaar.com/dev-tips/">dev tips</a></p>
+
+<p><a href="https://segmentfault.com/a/1190000005052495">一键收藏至Github</a></p>
+
+<p><a href="http://w3cboy.com/post/2014/08/free-over-the-wall-tools-and-mirrors/">免费翻墙镜像和工具</a></p>
+
+<p><a href="https://www.h5jun.com/post/functional-how-far.html">函数式编程离我们有多远</a></p>
+
+<p><a href="https://github.com/fex-team/fit/issues/1">贴吧 React 最佳实践</a></p>
+
+<p><a href="http://www.vaikan.com/10-scala-one-liners-to-impress-your-friends">震惊小伙伴的单行代码●Scala篇</a></p>
+
+<h2>轨迹</h2>
+
+<h3>红绿灯大战</h3>
+
+<p><a href="http://www.w3ctech.com/topic/951">http://www.w3ctech.com/topic/951</a></p>
+
+<p><a href="http://blog.csdn.net/aimingoo/article/details/45014325">http://blog.csdn.net/aimingoo/article/details/45014325</a></p>
+
+<h2>聚沙</h2>
+
+<h3>IE8 IE9 的控制台</h3>
+
+<p>遇到一个奇怪的问题（其实搞清楚原因，好像也很正常了），小蜜在 IE8 IE9 无法加载，提示 <code>script error</code></p>
+
+<p>第一反应就是又是哪个函数不支持，准备打开控制台看看，结果又什么事都没有了，NIMA，怎么调试</p>
+
+<p>什么东西会因为控制台就好了，到底会是什么呢。。。其实就是控制台本身</p>
+
+<blockquote><p>console.log is there in IE8, but the console object isn&rsquo;t created until you open DevTools. Therefore, a call to console.log may result in an error, for example if it occurs on page load before you have a chance to open the dev tools.</p></blockquote>
+
+<p>IE8/IE9 要开启 IE Dev Tools 才能使用 console</p>
+
+<p>切忌把 IE8/9 想成 Chrome/Firefox，以为永远有 window.console 可用</p>
+
+<p>PS: 终于，IE10 改邪归正向 Chrome/Firefox 看齐，console 不再像段誉的六脉神剑时有时无。</p>
+
+<p>但只要 IE8/9 还在一天，console 检查还是不能少</p>
+
+<p>事实上，IE8/9 从未死去，所以</p>
+
+<p>就像这样：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">console</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;log here&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>要是有一堆 <code>console.log</code>, <code>console.count</code>, <code>console.error</code>, <code>console.time</code>, <code>console.profile</code>，&hellip; 这样去写，那还不把人恶心死</p>
+
+<p>写个 console polyfill 吧</p>
+
+<p>当然其实也不会有那么多些奇奇怪怪的 console</p>
+
+<p>参考：</p>
+
+<p><a href="http://stackoverflow.com/questions/690251/what-happened-to-console-log-in-ie8">http://stackoverflow.com/questions/690251/what-happened-to-console-log-in-ie8</a></p>
+
+<p><a href="https://msdn.microsoft.com/library/gg589530">https://msdn.microsoft.com/library/gg589530</a>(v=vs.85).aspx</p>
+
+<p>另外一篇兼容 IE8 的文章：</p>
+
+<p><a href="http://www.zplan.net/news.php?id=232">http://www.zplan.net/news.php?id=232</a></p>
+
+<p><a href="http://blog.mirreal.net/note/2016-05-05.html">MORE</a></p>
+</div>
+
+  
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread"><div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'mirreal';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2016-05-05.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2016-05-05.html';
+  //var disqus_developer = 1;
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+  
+</article>
+
+       <footer role="contentinfo" class="copyright">
+    	<p>
+		Copyright &copy; 2016 - <span><a href="http://mirreal.net/">Mirreal Ellison</a></span>
+	</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
+
