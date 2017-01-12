@@ -1,0 +1,487 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>2017-01-12 |  Mirreal Ellison</title>
+  <meta name="author" content="Mirreal Ellison">
+  
+
+  
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <!-- end CSS-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips &#8211;>
+
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="/javascripts/libs/modernizr-2.0.6.min.js"></script>
+</head>
+
+<body id="article">
+
+  <div id="container" style="margin-top: 30px;">
+    <nav role="navigation" ><ul class="main-navigation">
+  <li style='float:left;margin-right:5px'><a class='nav' href="http://mirreal.net/">HOME</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/">BLOG</a></li>
+  <li style='float:left;margin-right:7px'><a class='nav' href="/archives">ARCHIVES</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/note">NOTE</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
+</ul>
+<br><br>
+</nav>
+    <article>
+  <h1 class="article-title">2017-01-12</h1>
+  <div class="sharing">
+  
+  
+</div>
+
+  <div class="article-content"><h2>Javascript code styles</h2>
+
+<h3>preset airbnb</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 在函数表达式前禁用空格（）或 {}</span>
+</span><span class='line'>    <span class="s2">&quot;disallowSpacesInNamedFunctionExpression&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// 对 () 禁用</span>
+</span><span class='line'>        <span class="s2">&quot;beforeOpeningRoundBrace&quot;</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="c1">// 在函数声明前禁用空格（）或 {}</span>
+</span><span class='line'>    <span class="s2">&quot;disallowSpacesInFunctionDeclaration&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="s2">&quot;beforeOpeningRoundBrace&quot;</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="c1">// 打开方括号后和关闭前不允许空格，报告所有括号，甚至属性访问器</span>
+</span><span class='line'>    <span class="s2">&quot;disallowSpacesInsideBrackets&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 禁用空块</span>
+</span><span class='line'>    <span class="s2">&quot;disallowEmptyBlocks&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在函数调用表达式前禁用 space</span>
+</span><span class='line'>    <span class="s2">&quot;disallowSpacesInCallExpression&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在数组方括号后和关闭之前禁用空格，仅报告数组，而不是属性访问器</span>
+</span><span class='line'>    <span class="s2">&quot;disallowSpacesInsideArrayBrackets&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 打开圆括号后和关闭之前禁用 space</span>
+</span><span class='line'>    <span class="s2">&quot;disallowSpacesInsideParentheses&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在对象中尽可能禁用引号</span>
+</span><span class='line'>    <span class="s2">&quot;disallowQuotedKeysInObjects&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在对象 key 后禁用 space</span>
+</span><span class='line'>    <span class="s2">&quot;disallowSpaceAfterObjectKeys&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在对象 value 前需要 space</span>
+</span><span class='line'>    <span class="s2">&quot;requireSpaceBeforeObjectValues&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在前置一元运算符后禁用 space</span>
+</span><span class='line'>    <span class="s2">&quot;disallowSpaceAfterPrefixUnaryOperators&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在后置一元运算符后禁用 space</span>
+</span><span class='line'>    <span class="s2">&quot;disallowSpaceBeforePostfixUnaryOperators&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在二元运算符前禁用 space</span>
+</span><span class='line'>    <span class="s2">&quot;disallowSpaceBeforeBinaryOperators&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s2">&quot;,&quot;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="c1">// 禁用混合使用 space 和 tab</span>
+</span><span class='line'>    <span class="s2">&quot;disallowMixedSpacesAndTabs&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 行尾不能以空白结束</span>
+</span><span class='line'>    <span class="s2">&quot;disallowTrailingWhitespace&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在 array 和 object 需要一个额外的分号</span>
+</span><span class='line'>    <span class="s2">&quot;requireTrailingComma&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;ignoreSingleLine&quot;</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
+</span><span class='line'>    <span class="c1">// 是否需要在分号后加空格</span>
+</span><span class='line'>    <span class="s2">&quot;requireSpaceAfterComma&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在进行布尔比较时，需要变量在左边</span>
+</span><span class='line'>    <span class="s2">&quot;disallowYodaConditions&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 禁用关键字</span>
+</span><span class='line'>    <span class="s2">&quot;disallowKeywords&quot;</span><span class="o">:</span> <span class="p">[</span> <span class="s2">&quot;with&quot;</span> <span class="p">],</span>
+</span><span class='line'>    <span class="c1">// 在新行禁用关键字</span>
+</span><span class='line'>    <span class="s2">&quot;disallowKeywordsOnNewLine&quot;</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;else&quot;</span><span class="p">],</span>
+</span><span class='line'>    <span class="c1">// 禁用多行空白</span>
+</span><span class='line'>    <span class="s2">&quot;disallowMultipleLineBreaks&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 禁用多行字符串不使用 +</span>
+</span><span class='line'>    <span class="s2">&quot;disallowMultipleLineStrings&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 禁用多个声明</span>
+</span><span class='line'>    <span class="s2">&quot;disallowMultipleVarDecl&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在逗号前禁用空格</span>
+</span><span class='line'>    <span class="s2">&quot;disallowSpaceBeforeComma&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在分号前禁用空格</span>
+</span><span class='line'>    <span class="s2">&quot;disallowSpaceBeforeSemicolon&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在模板字符串变量禁用空格</span>
+</span><span class='line'>    <span class="s2">&quot;disallowSpacesInsideTemplateStringPlaceholders&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 禁用数组解构</span>
+</span><span class='line'>    <span class="s2">&quot;disallowArrayDestructuringReturn&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在块语句是否需要括号</span>
+</span><span class='line'>    <span class="s2">&quot;requireSpaceBeforeBlockStatements&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 是否需要在立即调用函数表达式周围加括号</span>
+</span><span class='line'>    <span class="s2">&quot;requireParenthesesAroundIIFE&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 需要在立即调用的函数表达式周围加括号</span>
+</span><span class='line'>    <span class="s2">&quot;requireSpacesInAnonymousFunctionExpression&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="s2">&quot;beforeOpeningRoundBrace&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;allExcept&quot;</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;shorthand&quot;</span><span class="p">]</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="c1">// 在条件语句需要空格</span>
+</span><span class='line'>    <span class="s2">&quot;requireSpacesInConditionalExpression&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 需要块以换行开始和结束 ?</span>
+</span><span class='line'>    <span class="s2">&quot;requireBlocksOnNewline&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在换行时需要分号</span>
+</span><span class='line'>    <span class="s2">&quot;requireCommaBeforeLineBreak&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在二元运算符前需要空格</span>
+</span><span class='line'>    <span class="s2">&quot;requireSpaceBeforeBinaryOperators&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在二元运算符后需要空格</span>
+</span><span class='line'>    <span class="s2">&quot;requireSpaceAfterBinaryOperators&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 需要驼峰命名或者 UPPERCASE_WITH_UNDERSCORES</span>
+</span><span class='line'>    <span class="s2">&quot;requireCamelCaseOrUpperCaseIdentifiers&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;ignoreProperties&quot;</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
+</span><span class='line'>    <span class="c1">// 需要 $ 在 jquery 选择器元素</span>
+</span><span class='line'>    <span class="s2">&quot;requireDollarBeforejQueryAssignment&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在文件末需要换行符</span>
+</span><span class='line'>    <span class="s2">&quot;requireLineFeedAtFileEnd&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 需要大写构造函数</span>
+</span><span class='line'>    <span class="s2">&quot;requireCapitalizedConstructors&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 尽可能使用点表达式访问成员</span>
+</span><span class='line'>    <span class="s2">&quot;requireDotNotation&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在 for 表达式需要空格</span>
+</span><span class='line'>    <span class="s2">&quot;requireSpacesInForStatement&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// Requires space after opening object curly brace and before closing</span>
+</span><span class='line'>    <span class="s2">&quot;requireSpacesInsideObjectBrackets&quot;</span><span class="o">:</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在参数之间需要空格</span>
+</span><span class='line'>    <span class="s2">&quot;requireSpaceBetweenArguments&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 需要 {}</span>
+</span><span class='line'>    <span class="s2">&quot;requireCurlyBraces&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s2">&quot;do&quot;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="c1">// 在关键字后需要空格</span>
+</span><span class='line'>    <span class="s2">&quot;requireSpaceAfterKeywords&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s2">&quot;if&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;else&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;for&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;while&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;do&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;switch&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;case&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;return&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;try&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;catch&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;typeof&quot;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="c1">// 在行注释前需要新行</span>
+</span><span class='line'>    <span class="s2">&quot;requirePaddingNewLinesBeforeLineComments&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="s2">&quot;allExcept&quot;</span><span class="o">:</span> <span class="s2">&quot;firstAfterCurly&quot;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="c1">// 在块后需要新行</span>
+</span><span class='line'>    <span class="s2">&quot;requirePaddingNewLinesAfterBlocks&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;requireSemicolons&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 要求箭头函数在返回单个语句时使用表达式主体</span>
+</span><span class='line'>    <span class="s2">&quot;requireShorthandArrowFunctions&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// Requires space after opening object curly brace and before closing in import statements</span>
+</span><span class='line'>    <span class="s2">&quot;requireSpacesInsideImportedObjectBraces&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;safeContextKeyword&quot;</span><span class="o">:</span> <span class="s2">&quot;_this&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;validateLineBreaks&quot;</span><span class="o">:</span> <span class="s2">&quot;LF&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// Requires all quote marks to be either the supplied value, or consistent if true</span>
+</span><span class='line'>    <span class="s2">&quot;validateQuoteMarks&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;mark&quot;</span><span class="o">:</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;escape&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="s2">&quot;ignoreJSX&quot;</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
+</span><span class='line'>    <span class="s2">&quot;validateIndentation&quot;</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;maximumLineLength&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;allExcept&quot;</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;urlComments&quot;</span><span class="p">]</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>.jscsrc</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// JSCS 预置规则 ,这里采用 airbnb，其他包括 crockford、google、grunt、idiomatic、jquery、mdcs、node-style-guide、wordpress</span>
+</span><span class='line'>    <span class="s2">&quot;preset&quot;</span><span class="o">:</span> <span class="s2">&quot;airbnb&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 需要执行代码检查的文件后缀</span>
+</span><span class='line'>    <span class="s2">&quot;fileExtensions&quot;</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;.js&quot;</span><span class="p">,</span> <span class="s2">&quot;.jsx&quot;</span><span class="p">],</span>
+</span><span class='line'>    <span class="c1">// 不执行的文件</span>
+</span><span class='line'>    <span class="s2">&quot;excludeFiles&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s2">&quot;src/**/node_modules&quot;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="c1">// 最大错误，超出这个值将不在执行</span>
+</span><span class='line'>    <span class="s2">&quot;maxErrors&quot;</span><span class="o">:</span> <span class="mi">60</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 是否需要分号，建议设置成 false，即：不适用分号</span>
+</span><span class='line'>    <span class="s2">&quot;requireSemicolons&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 是否需要在立即调用函数表达式周围加括号</span>
+</span><span class='line'>    <span class="s2">&quot;requireParenthesesAroundIIFE&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 设置最大行长</span>
+</span><span class='line'>    <span class="s2">&quot;maximumLineLength&quot;</span><span class="o">:</span> <span class="mi">120</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 设置换行符，CR、LF、CRLF</span>
+</span><span class='line'>    <span class="s2">&quot;validateLineBreaks&quot;</span><span class="o">:</span> <span class="s2">&quot;LF&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 设置缩进长度，两个空格、四个空格、TAB 2、4、\t</span>
+</span><span class='line'>    <span class="s2">&quot;validateIndentation&quot;</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在数组或对象字面量的最后一个元素后面禁用一个额外的逗号</span>
+</span><span class='line'>    <span class="s2">&quot;disallowTrailingComma&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在函数表达式和函数声明中禁止未使用的参数</span>
+</span><span class='line'>    <span class="s2">&quot;disallowUnusedParams&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 在打开对象大括号和关闭之前禁用 space</span>
+</span><span class='line'>    <span class="s2">&quot;disallowSpacesInsideObjectBrackets&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 不允许隐式类型转换 &quot;numeric&quot;, &quot;boolean&quot;, &quot;binary&quot;, &quot;string&quot;</span>
+</span><span class='line'>    <span class="s2">&quot;disallowImplicitTypeConversion&quot;</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">],</span>
+</span><span class='line'>    <span class="c1">// 设置对 this 的引用 &quot;that&quot;, &quot;_this&quot;</span>
+</span><span class='line'>    <span class="s2">&quot;safeContextKeyword&quot;</span><span class="o">:</span> <span class="s2">&quot;ctx&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1">// 设置 jsDoc 规则</span>
+</span><span class='line'>    <span class="s2">&quot;jsDoc&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// 预设</span>
+</span><span class='line'>        <span class="s2">&quot;checkAnnotations&quot;</span><span class="o">:</span> <span class="s2">&quot;closurecompiler&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="c1">// 检查参数名字是否一致</span>
+</span><span class='line'>        <span class="s2">&quot;checkParamNames&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="c1">// 是否需要参数类型</span>
+</span><span class='line'>        <span class="s2">&quot;requireParamTypes&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="c1">// 是否检查荣誉参数</span>
+</span><span class='line'>        <span class="s2">&quot;checkRedundantParams&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="c1">// 是否检查返回类型</span>
+</span><span class='line'>        <span class="s2">&quot;checkReturnTypes&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="c1">// 是否检查冗余的返回类型</span>
+</span><span class='line'>        <span class="s2">&quot;checkRedundantReturns&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="c1">// 时候需要返回类型</span>
+</span><span class='line'>        <span class="s2">&quot;requireReturnTypes&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="c1">// 检查类型 ？</span>
+</span><span class='line'>        <span class="s2">&quot;checkTypes&quot;</span><span class="o">:</span> <span class="s2">&quot;capitalizedNativeCase&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="c1">// 检查冗余权限声明</span>
+</span><span class='line'>        <span class="s2">&quot;checkRedundantAccess&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="c1">// 是否需要在描述后隔行</span>
+</span><span class='line'>        <span class="s2">&quot;requireNewlineAfterDescription&quot;</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+  
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread"><div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'mirreal';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2017-01-12.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2017-01-12.html';
+  //var disqus_developer = 1;
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+  
+</article>
+
+       <footer role="contentinfo" class="copyright">
+    	<p>
+		Copyright &copy; 2017 - <span><a href="http://mirreal.net/">Mirreal Ellison</a></span>
+	</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
+
