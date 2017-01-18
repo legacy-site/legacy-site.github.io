@@ -601,6 +601,9 @@
 <loc>http://blog.mirreal.net/note/2017-01-16.html</loc>
 </url>
 <url>
+<loc>http://blog.mirreal.net/note/2017-01-18.html</loc>
+</url>
+<url>
 <loc>http://blog.mirreal.net/note/collection.html</loc>
 </url>
 <url>
@@ -631,10 +634,10 @@
 <loc>http://blog.mirreal.net/weekly/</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/note/</loc>
+<loc>http://blog.mirreal.net/project/</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/project/</loc>
+<loc>http://blog.mirreal.net/code/</loc>
 </url>
 <url>
 <loc>http://blog.mirreal.net/joke/</loc>
@@ -643,7 +646,7 @@
 <loc>http://blog.mirreal.net/about/</loc>
 </url>
 <url>
-<loc>http://blog.mirreal.net/code/</loc>
+<loc>http://blog.mirreal.net/note/</loc>
 </url>
 <url>
 <loc>http://blog.mirreal.net/note/io-list-insertion-sort.html</loc>
