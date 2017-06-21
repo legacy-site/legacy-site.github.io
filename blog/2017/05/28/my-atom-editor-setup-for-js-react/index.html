@@ -1,0 +1,341 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>JS/React 开发者的 Atom 终极配置 |  Mirreal Ellison</title>
+  <meta name="author" content="Mirreal Ellison">
+  
+
+  
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <!-- end CSS-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips &#8211;>
+
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="/javascripts/libs/modernizr-2.0.6.min.js"></script>
+</head>
+
+<body id="post">
+
+  <div id="container">
+    <nav role="navigation" ><ul class="main-navigation">
+  <li style='float:left;margin-right:5px'><a class='nav' href="http://mirreal.net/">HOME</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/">BLOG</a></li>
+  <li style='float:left;margin-right:7px'><a class='nav' href="/archives">ARCHIVES</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/note">NOTE</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
+</ul>
+<br><br>
+</nav>
+    <article>
+
+
+  <div class="header-line">
+    <h1 class="article-title">JS/React 开发者的 Atom 终极配置</h1>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">mirreal</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2017-05-28T18:00:00+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>6:00 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/translator/'>translator</a>
+  
+</span>
+
+
+    </p>
+  </div>
+
+  <div class="article-content"><blockquote><p>原文作者：Elad Ossadon</p>
+
+<p>原文链接：<a href="https://medium.com/productivity-freak/my-atom-editor-setup-for-js-react-9726cd69ad20">The Ultimate Atom Editor Setup (+for JS/React)</a></p></blockquote>
+
+<p>根据多年以来不断完善 Sublime Text 配置的经验，决定这次给 Atom 也来一个大改造。这个过程花费了好几个月的时间，但成果还是很卓有成效的，我现在非常满意这份配置。</p>
+
+<p>这份清单将分为实用工具和 React 专用，并涉及到快捷键绑定。</p>
+
+<h2>实用工具</h2>
+
+<h3><a href="https://atom.io/packages/atom-beautify">atom-beautify</a></h3>
+
+<p>可以在 Atom 中 美化 HTML，CSS，JavaScript，PHP，Python，Ruby，Java，C，C ++，C＃，Objective-C，CoffeeScript，TypeScript，Coldfusion，SQL等。</p>
+
+<p>快捷键：<code>⌃+⌥+B</code></p>
+
+<h3><a href="https://atom.io/packages/prettier-atom">prettier-atom</a></h3>
+
+<p>使用 Prettier 来格式化 JavaScript 代码，配有强大的 ESlint 集成。</p>
+
+<p>快捷键：<code>⌃+⌥+F</code></p>
+
+<h3><a href="https://atom.io/packages/atom-transpose">atom-transpose</a></h3>
+
+<p>Atom 的转置更像是字符串翻转。在 Sublime 可以将选中的两个字符串进行交换，看起来更有用。</p>
+
+<p>快捷键：<code>⌥+T</code></p>
+
+<h3><a href="https://atom.io/packages/case-keep-replace">case-keep-replace</a></h3>
+
+<p>使用这个插件可以在替换文本的时候可以保留原来的命名风格。</p>
+
+<p>快捷键：<code>⌘+⌃+R</code></p>
+
+<h3><a href="https://atom.io/packages/change-case">change-case</a></h3>
+
+<p>一个可以快速改变当前选择文本命名方式的工具。比如可以从 <code>camelCase</code> 转换到 <code>snake_case</code> 等。</p>
+
+<p>快捷键：<code>⌘+K ⌘+C/S</code></p>
+
+<h3><a href="https://atom.io/packages/copy-path">copy-path</a></h3>
+
+<p>可以灵活地复制文件路径。</p>
+
+<h3><a href="https://atom.io/packages/duplicate-line-or-selection">duplicate-line-or-selection</a></h3>
+
+<p>重复选择文本或者重复一行，跟 Sublime Text 的行为一致，Atom 可以重复一整行。</p>
+
+<p>快捷键：<code>⌘+⇧+D</code></p>
+
+<h3><a href="https://atom.io/packages/editorconfig">editorconfig</a></h3>
+
+<p>帮助开发人员在不同的编辑器之间保持一致的编码风格。</p>
+
+<h3><a href="https://atom.io/packages/file-icons">file-icons</a></h3>
+
+<p>Atom 的文件特定图标插件，便于区分不同文件类型。</p>
+
+<h3><a href="https://atom.io/packages/git-plus">git-plus</a></h3>
+
+<p>VIM 风格的 git 插件，在没有终端命令行的时候进行提交等其他 git 操作。</p>
+
+<h3><a href="https://atom.io/packages/highlight-selected">highlight-selected</a></h3>
+
+<p>通过双击一个词来高亮整个文件相同的词。</p>
+
+<h3><a href="https://atom.io/packages/local-history">local-history</a></h3>
+
+<p>用于维护本地文件历史的插件（对代码文件进行更改的历史记录）。</p>
+
+<h3><a href="https://atom.io/packages/project-manager">project-manager</a></h3>
+
+<p>轻松访问所有项目，还能对项目特定设置和选项进行管理。</p>
+
+<p>快捷键：<code>⌘+⌃+P</code></p>
+
+<h3><a href="https://atom.io/packages/atom-reveal-file-in-finder">atom-reveal-file-in-finder</a></h3>
+
+<p>可以在工作区或者文件选项卡上打开文件到 Finder 上，快捷命令已经添加到 <code>⌘+⇧*+P</code> 。</p>
+
+<p>快捷键：<code>⌘+⌃+P</code></p>
+
+<h3><a href="https://atom.io/packages/related">related</a></h3>
+
+<p>related 提供了访问与当前打开的文件相关的文件的快速方式。 例如，在 <code>.js</code> 和 <code>.spec.js</code> 文件之间切换。</p>
+
+<p>快捷键：<code>⌘+⇧+ R</code></p>
+
+<p>我的 JS 关联配置 (Menu > Packages > Related > Edit related patterns):</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>'([^\\/]+)(?!\\.spec).js(x?)$': [
+</span><span class='line'>  'tests/$1.spec.js$2#create',
+</span><span class='line'>]
+</span><span class='line'>'tests/(.+).spec.js(x?)$': [
+</span><span class='line'>  '$1.js$2',
+</span><span class='line'>]</span></code></pre></td></tr></table></div></figure>
+
+
+<h3><a href="https://atom.io/packages/set-syntax">set-syntax</a></h3>
+
+<p>一种简单的命令方式来设置当前文件语法，与 Sublime 类似。</p>
+
+<p>快捷键：<code>⌘+⇧+P</code></p>
+
+<h3><a href="https://atom.io/packages/sort-lines">sort-lines</a></h3>
+
+<p>排序/删除重复行。</p>
+
+<h3><a href="https://atom.io/packages/Sublime-Style-Column-Selection">sublime-style-column-selection</a></h3>
+
+<p>alt +单击跨行选择文本块，每行都有插入符号。</p>
+
+<p>快捷键：<code>⌥+Drag</code></p>
+
+<h3><a href="https://atom.io/packages/tab-foldername-index">tab-foldername-index</a></h3>
+
+<p>可以替换 TAB 标签内容的插件，在打开相同文件名的文件时保证更高的可读性。</p>
+
+<h3><a href="https://atom.io/packages/sync-settings">sync-settings</a></h3>
+
+<p>跨 Atom 实例同步设置，键盘映射，用户样式，初始化脚本，代码段和已安装的软件包。 我将所有设置备份到 Gist 并在工作/个人计算机之间进行同步。</p>
+
+<h3><a href="https://atom.io/packages/toggle-quotes">toggle-quotes</a></h3>
+
+<p>快速切换字符串的单引号和双引号。</p>
+
+<p>快捷键：<code>⌘+⇧+’</code></p>
+
+<h3><a href="https://atom.io/packages/atom-spotify2">atom-spotify2</a></h3>
+
+<p>在 Atom 状态栏中显示在 Spotify 中当前播放歌曲。 不是必要的，但很有趣。</p>
+
+<h2>HTML/CSS/JS/React Specific Packages</h2>
+
+<h3><a href="https://atom.io/packages/atom-ternjs">atom-ternjs</a></h3>
+
+<p>使用 Tern 为 Atom 提供 JavaScript 代码智能提示，支持 ES5，ES6，ES7，Node.js，jQuery，Angular等。</p>
+
+<h3><a href="https://atom.io/packages/atom-wrap-in-tag">atom-wrap-in-tag</a></h3>
+
+<p>为选择的文本增加标签。</p>
+
+<p>快捷键：<code>⌥+⇧+W</code></p>
+
+<h3><a href="https://atom.io/packages/autoclose-html">autoclose-html</a></h3>
+
+<p>自动添加关闭标签。</p>
+
+<h3><a href="https://atom.io/packages/autocomplete-modules">autocomplete-modules</a></h3>
+
+<p>自动补全 <code>require/import</code> 声明。</p>
+
+<h3><a href="https://atom.io/packages/color-picker">color-picker</a></h3>
+
+<p>很厉害的颜色选择器。</p>
+
+<p>快捷键：<code>⌘+⇧+D</code></p>
+
+<h3><a href="https://atom.io/packages/docblockr">docblockr</a></h3>
+
+<p>更容易的方式写文档注释。</p>
+
+<p>使用方式：<code>/** &lt;tab&gt;</code></p>
+
+<h3><a href="https://atom.io/packages/emmet">emmet</a></h3>
+
+<p>一个大大提高 HTML 和 CSS 工作流程的插件。 <a href="http://emmet.io/">关于 Emmet</a></p>
+
+<h3><a href="https://atom.io/packages/emmet-jsx-css-modules">emmet-jsx-css-modules</a></h3>
+
+<p>适用于 css 模块的 emmet 工具。 <code>.foo</code> 现在将扩展为 <code>&lt;div className = {style.foo}&gt; &lt;/ div&gt;</code>，而不是 <code>&lt;div className =“foo”&gt; &lt;/ div&gt;</code>。</p>
+
+<h3><a href="https://atom.io/packages/es6-javascript">es6-javascript</a></h3>
+
+<p>一组专注 ES6，用于优化现代 JavaScript 开发生产力的命令集， 目标是符合 <a href="https://github.com/airbnb/javascript">Airbnb 推荐的代码规范</a>。</p>
+
+<h3><a href="https://atom.io/packages/js-hyperclick">js-hyperclick</a> &amp; <a href="https://atom.io/packages/hyperclick">hyperclick</a></h3>
+
+<p>点击跳到变量或者 import 定义，js-hyperclick 依赖于 hyperclick。</p>
+
+<h3><a href="https://atom.io/packages/pigments">pigments</a></h3>
+
+<p>在项目文件中显示颜色。</p>
+
+<h3><a href="https://atom.io/packages/linter-eslint">linter-eslint</a></h3>
+
+<p>插件 <a href="https://github.com/AtomLinter/Linter">Linter</a> 为 <a href="http://eslint.org/">eslint</a> 提供 UI 接口，用于对 JavaScript 文件进行静态检查。</p>
+
+<h3><a href="https://atom.io/packages/tree-view-copy-relative-path">tree-view-copy-relative-path</a></h3>
+
+<p>允许从 tree view 复制文件的相对路径。</p>
+
+<h3><a href="https://atom.io/packages/lodash-snippets">lodash-snippets</a></h3>
+
+<p>在 Atom 中快速使用 lodash 的代码提示。</p>
+
+<h3><a href="https://atom.io/packages/language-babel">language-babel</a></h3>
+
+<p>支持 JavaScript ES201x，React JSX，Flow和GraphQL语法。</p>
+
+<h3><a href="https://atom.io/packages/react-es7-snippets">react-es7-snippets</a></h3>
+
+<p>React ES7 snippets for atom</p>
+
+<h3><a href="https://atom.io/packages/atom-jest-snippets">atom-jest-snippets</a></h3>
+
+<p>Jest 测试提示</p>
+
+<h2>我的主题</h2>
+
+<h3>UI Theme: <a href="https://atom.io/themes/one-dark-ui">one-dark-ui</a></h3>
+
+<h3>Syntax Theme: <a href="https://atom.io/themes/dracula-theme">dracula-theme</a></h3>
+
+<h2>Install EVERYTHING!</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>apm install atom-beautify prettier-atom atom-spotify2 atom-transpose case-keep-replace change-case copy-path duplicate-line-or-selection editorconfig file-icons git-plus highlight-selected local-history project-manager related set-syntax atom-reveal-file-in-finder sort-lines sublime-style-column-selection tab-foldername-index sync-settings toggle-quotes atom-wrap-in-tag atom-ternjs autoclose-html autocomplete-modules color-picker docblockr emmet emmet-jsx-css-modules es6-javascript js-hyperclick hyperclick pigments linter-eslint tree-view-copy-relative-path lodash-snippets language-babel react-es7-snippets atom-jest-snippets one-dark-ui dracula-theme</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+    <section>
+      <h1>Comments</h1>
+      <div id="disqus_thread"><div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'mirreal';
+  var disqus_identifier = 'http://blog.mirreal.net/blog/2017/05/28/my-atom-editor-setup-for-js-react/';
+  var disqus_url = 'http://blog.mirreal.net/blog/2017/05/28/my-atom-editor-setup-for-js-react/';
+  //var disqus_developer = 1;
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+    </section>
+  
+
+</article>
+
+    <p class="meta">
+      
+        <a class="basic-alignment left nav" href="/blog/2016/06/10/the-method-and-principle-of-breaking-the-wall/" title="Previous Post: 科学上网的方法和原理">&laquo; 科学上网的方法和原理</a>
+      
+      
+        <a class="basic-alignment right nav" href="/blog/2017/05/29/the-state-of-javascript/" title="Next Post: JavaScript 模块化现状">JavaScript 模块化现状 &raquo;</a>
+      
+    </p>
+  </div>
+</body>
+</html>

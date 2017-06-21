@@ -1,0 +1,520 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>JavaScript 模块化现状 |  Mirreal Ellison</title>
+  <meta name="author" content="Mirreal Ellison">
+  
+
+  
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <!-- end CSS-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips &#8211;>
+
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="/javascripts/libs/modernizr-2.0.6.min.js"></script>
+</head>
+
+<body id="post">
+
+  <div id="container">
+    <nav role="navigation" ><ul class="main-navigation">
+  <li style='float:left;margin-right:5px'><a class='nav' href="http://mirreal.net/">HOME</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/">BLOG</a></li>
+  <li style='float:left;margin-right:7px'><a class='nav' href="/archives">ARCHIVES</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/note">NOTE</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
+</ul>
+<br><br>
+</nav>
+    <article>
+
+
+  <div class="header-line">
+    <h1 class="article-title">JavaScript 模块化现状</h1>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">mirreal</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2017-05-29T18:00:00+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>6:00 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/translator/'>translator</a>
+  
+</span>
+
+
+    </p>
+  </div>
+
+  <div class="article-content"><blockquote><p>原文作者：Johannes Ewald <a href="https://twitter.com/Jhnnns">@Jhnnns</a></p>
+
+<p>原文链接：<a href="https://medium.com/webpack/the-state-of-javascript-modules-4636d1774358">The state of JavaScript modules</a></p>
+
+<p>已获原作者授权翻译及发布</p></blockquote>
+
+<p>ESM, CJS, UMD, AMD — 到底应该选择哪一个？</p>
+
+<p>最近 <a href="https://twitter.com/addyosmani/status/859296190323597313">在 twitter</a> 上有很多关于 <a href="http://2ality.com/2014/09/es6-modules-final.html">ES Module</a> 现状的讨论，<a href="https://twitter.com/bradleymeck/status/863061949021650944">尤其是在 Node.js 上</a>，他们计划引入新的文件扩展名 <code>*.mjs</code>。人们有足够理由对此感到 <a href="https://twitter.com/tankredhase/status/861864123922907136">担忧和不确定</a>，因为这个话题异常复杂，接下来会尽力阐述清楚问题。</p>
+
+<h2>来自远古的恐惧</h2>
+
+<p>大多数前端开发者应该还记得 <a href="https://medium.com/@trek/last-week-i-had-a-small-meltdown-on-twitter-about-npms-future-plans-around-front-end-packaging-b424dd8d367a">Javascript 依赖管理的黑暗时期</a>。那个时候，你需要把一个库复制粘贴到 vendor 文件夹，然后作为一个全局变量引入，要自己去按次序组合所有东西，可能还要管理命名空间。</p>
+
+<p>在过去的那些年，我们能深刻体会到公共模块格式化和中央模块管理的价值。</p>
+
+<p>在今天，不管是发布还是使用一个库都要容易得多，只需要使用 <code>npm publish</code> 和 <code>npm install</code> 命令就行。这就是人们会那么紧张两种模块系统兼容性问题的原因：他们不想失去已有的舒适区。</p>
+
+<p>接下来我会解释和总结现有实现的情况，以及为什么 Node 生态迁移到 ES Module（ESM）会那么难。在最后，总结这些变化对 webpack 使用者和模块作者有什么影响。</p>
+
+<h2>现有实现</h2>
+
+<p>目前，ESM 有三种方式的实现：</p>
+
+<ul>
+<li>浏览器</li>
+<li>webpack 以及类似的构建工具</li>
+<li>Node（未完成，<a href="https://twitter.com/rauschma/status/866334160218095617">但可能在年底作为一个实验功能</a>）</li>
+</ul>
+
+
+<p>为了更好地理解现在的讨论，首先要知道 ES2015 包含两种模式：</p>
+
+<ul>
+<li><code>script</code> 用于具有全局命名空间的常规脚本</li>
+<li><code>module</code> 用于具有明确导入和导出的模块化代码</li>
+</ul>
+
+
+<p>如果你试图在 <code>script</code> 标签使用 <code>import</code> 或者 <code>export</code> 语句，会抛出一个 SyntaxError。这种语句在全局环境下没有任何意义。另一方面，<code>module</code> 模式即意味着<a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Strict_mode">严格模式</a>，禁止使用某些语言特性，比如 <code>with</code> 语句。因此，需要在脚本被解析和执行之前定义模式。</p>
+
+<h2>浏览器中的 ESM</h2>
+
+<p>截至到 2017 年 5 月，所有主流浏览器都开始做了 ESM 的实现工作。不过，大部分仍处于在实验性质。这里不会做详细介绍，因为 <a href="https://jakearchibald.com/2017/es-modules-in-browsers/">Jake Archibald 已经写了一篇很厉害的文章</a>。</p>
+
+<p>除了一些小的困难，在浏览器中实现起来非常容易，因为以前并没有模块系统。想要指定 <code>module</code> 模式，需要在 <code>script</code> 标签添加 <code>type="module"</code> 属性，如下所示：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;module&quot;</span> <span class="na">src=</span><span class="s">&quot;main.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在一个模块中，现在只能使用有效的 <code>URL</code> 作为模块标识符。模块标识符是用于 require 或 import 其他模块的字符串。为了确保未来兼容 CJS 模块标识符，“纯” 导入标识符（如 <code>import "lodash"</code>）现在还不支持。模块标识符必须是绝对 <code>URL</code> 或者是以 <code>/</code>，  <code>./</code>,  <code>../</code> 开头：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// Supported:</span>
+</span><span class='line'><span class="kr">import</span> <span class="p">{</span><span class="nx">foo</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;https://jakearchibald.com/utils/bar.js&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="p">{</span><span class="nx">foo</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;/utils/bar.js&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="p">{</span><span class="nx">foo</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./bar.js&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="p">{</span><span class="nx">foo</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;../bar.js&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Not supported:</span>
+</span><span class='line'><span class="kr">import</span> <span class="p">{</span><span class="nx">foo</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;bar.js&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="p">{</span><span class="nx">foo</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;utils/bar.js&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="c1">// Example from https://jakearchibald.com/2017/es-modules-in-browsers/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>同样需要注意的是，一旦处在一个模块中，每个导入也将被解析为 <code>module</code>，而且没有办法 <code>import</code> 一个 <code>script</code>。</p>
+
+<h2>ESM 与 webpack</h2>
+
+<p>类似 webpack 这样的构建工具通常会尝试用 <code>module</code> 模式解析代码，有问题再切回到 <code>script</code> 模式。这些工具最终会生成一段 <code>script</code>，通常是在一定程度上模拟 CJS 和 ESM 行为的模块运行时。</p>
+
+<p>我们以这两个简单的 ESM 为例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// a.js</span>
+</span><span class='line'><span class="kr">export</span> <span class="kd">let</span> <span class="nx">number</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
+</span><span class='line'><span class="kr">export</span> <span class="kd">function</span> <span class="nx">incr</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">number</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// test.js</span>
+</span><span class='line'><span class="kr">import</span> <span class="p">{</span> <span class="nx">number</span> <span class="p">}</span> <span class="nx">from</span> <span class="s2">&quot;./a&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">number</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>webpack 使用函数包装器封装模块范围和对象引用来模拟 <a href="http://2ality.com/2015/07/es6-module-exports.html">ESM 实时绑定</a>。每次编译，还包括一个模块运行时，负责引导和缓存模块。此外，将模块标识转换为数字模块 ID。这样可以减少打包的大小和引导时间。</p>
+
+<p>这是什么意思呢？我们来看看编译输出：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">modules</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// This is the module runtime.</span>
+</span><span class='line'>    <span class="c1">// It&#39;s only included once per compilation.</span>
+</span><span class='line'>    <span class="c1">// Other chunks share the same runtime.</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">installedModules</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>    <span class="c1">// The require function</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">__webpack_require__</span><span class="p">(</span><span class="nx">moduleId</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">...</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">...</span>
+</span><span class='line'>    <span class="c1">// Load entry module and return exports</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">__webpack_require__</span><span class="p">(</span><span class="nx">__webpack_require__</span><span class="p">.</span><span class="nx">s</span> <span class="o">=</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'><span class="p">})</span>
+</span><span class='line'><span class="p">([</span> <span class="c1">// An array that maps module ids to functions</span>
+</span><span class='line'>    <span class="c1">// a.js as module id 0</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="p">(</span><span class="nx">module</span><span class="p">,</span> <span class="nx">__webpack_exports__</span><span class="p">,</span> <span class="nx">__webpack_require__</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'>        <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nx">__webpack_exports__</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">configurable</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">get</span><span class="o">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">number</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">number</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kd">function</span> <span class="nx">incr</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">number</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="c1">// test.js as module id 1</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="p">(</span><span class="nx">module</span><span class="p">,</span> <span class="nx">__webpack_exports__</span><span class="p">,</span> <span class="nx">__webpack_require__</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">__WEBPACK_IMPORTED_MODULE_0__a__</span> <span class="o">=</span> <span class="nx">__webpack_require__</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Object reference as &quot;live binding&quot;</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">__WEBPACK_IMPORTED_MODULE_0__a__</span><span class="p">[</span><span class="s2">&quot;a&quot;</span> <span class="cm">/* number */</span><span class="p">]);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">]);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>简化的 webpack 输出，模拟 ES Modules 行为</p>
+
+<p>结果已经简化并删除了一些与此示例无关的代码。你会发现，webpack 在 <code>exports</code> 对象上将所有 <code>export</code> 语句替换成 <code>Object.defineProperty</code>，并使用属性访问器替换对引入值的所有引用。还要注意每个 ESM 开始时的 <code>"use strict"</code> 指令，这是由 webpack 自动添加，在 ESM 中必须是严格模式。</p>
+
+<p>这种实现只是模拟，因为它试图模仿 ESM 和 CJS 的行为 &ndash; 但不是与其完全保持一致。比如，这种模拟并不符合某些边缘情况。看下面这个模块：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果你通过加上 <code>babel-preset-es2015</code> 的 Babel 来运行，结果是：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="kc">undefined</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>从输出结果可以看出，Babel 假设默认是 ESM，因为 <code>module</code> 模式即代表严格模式，在严格模式下会将 <code>this</code> 初始化为 <code>undefined</code>。</p>
+
+<p>然而，使用 webpack，结果是：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">module</span><span class="p">,</span> <span class="nx">exports</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在引导模块时，<code>this</code> 将指向 <code>exports</code> ，与 Node.js 使用的 CJS 行为一致。这是因为语法上不确定是 <code>script</code> 还是 <code>module</code>，解析器无法判断该模块是 ESM 还是 CJS。在不明确的时候，webpack 会模拟 CJS，因为它仍然是最受欢迎的模块风格。</p>
+
+<p>这种模拟其实已经包含了很多情况，因为模块作者通常会避免这种代码。然而，“很多情况”对于像 Node.js 这样的平台是不够的，因为它需要保证所有有效的 JavaScript 代码都能正常运行。</p>
+
+<h2>Node.js 中的 ESM</h2>
+
+<p>Node.js 在执行 ESM 时遇到了麻烦，因为仍然需要支持 CJS，语法看起来相似，但运行时行为完全不同。<a href="https://github.com/nodejs/CTC">Node.js 核心技术委员会</a>（CTC）成员 James M Snell 撰写了<a href="https://hackernoon.com/node-js-tc-39-and-modules-a1118aecf95e">一篇很好的文章来解释 CJS 与 ESM 之间的差异</a>。</p>
+
+<p>归结起来，CJS 是一个动态模块系统，ESM 是静态模块系统。</p>
+
+<h3>CJS</h3>
+
+<ul>
+<li>允许动态同步 <code>require()</code></li>
+<li>导出仅在模块执行后才知道</li>
+<li>导出可以在模块初始化后添加，替换和删除</li>
+</ul>
+
+
+<h3>ESM</h3>
+
+<ul>
+<li>只允许静态同步 <code>import</code></li>
+<li>在模块执行之前，导入和导出已经关联</li>
+<li>导入和导出是不可变的</li>
+</ul>
+
+
+<p>由于  CJS 早于 ES2015，所以一直在 <code>script</code> 模式下解析，封装通过使用函数包装器实现。在 Node.js 中加载 CJS，实际上会执行与此类似的代码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">module</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">exports</span><span class="o">:</span> <span class="p">{}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">require</span> <span class="o">=</span> <span class="nx">makeRequireFunction</span><span class="p">();</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">filename</span> <span class="o">=</span> <span class="s2">&quot;...&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">dirname</span> <span class="o">=</span> <span class="s2">&quot;...&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">exports</span><span class="p">,</span> <span class="nx">require</span><span class="p">,</span> <span class="nx">module</span><span class="p">,</span> <span class="nx">__filename</span><span class="p">,</span> <span class="nx">__dirname</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="cm">/* YOUR CODE */</span>
+</span><span class='line'><span class="p">})(</span><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">,</span> <span class="nx">require</span><span class="p">,</span> <span class="nx">module</span><span class="p">,</span> <span class="nx">filename</span><span class="p">,</span> <span class="nx">dirname</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对 Node.js 的 CommonJS 模块的简单函数包装</p>
+
+<p>问题出现了，将两个模块系统集成到同一个运行时时，ESM 和 CJS 之间的循环依赖可能会迅速导致类似死锁的情况。</p>
+
+<p>而且，由于现有 CJS 模块数量庞大，也不能直接放弃对 CJS 的支持。为了避免 Node.js 生态的中断，有两点已经很明显：</p>
+
+<ul>
+<li>现有的 CJS 代码必须以相同的方式继续工作</li>
+<li>两个模块系统都必须同时且尽可能无缝地工作</li>
+</ul>
+
+
+<h3>目前的权衡</h3>
+
+<p>2017 年 3 月，经过几个月的讨论，CTC 终于找到了一种解决问题的办法。由于在 ES 规范和引擎不改变的情况下无法进行无缝集成，<a href="https://github.com/bmeck/node-eps/blob/a1eab9bf023bbe13a79ddb18f0622a5d57215f9b/002-es-modules.md">CTC 决定开始一些权衡之后的实现工作</a>：</p>
+
+<h4>1.ESM 必须是 <code>*.mjs</code> 文件扩展名</h4>
+
+<p>这是由于上面提及的模糊语法问题，无法通过解析来确切知晓 JavaScript 代码是什么类型。为了 Node.js 向后兼容的目标，作者需要加入一种新模式。<a href="https://github.com/nodejs/node/wiki/ES6-Module-Detection-in-Node#detection-problem">已经有关于各种替代品的讨论</a>，但使用不同文件扩展名是解决目前问题的最佳权衡。</p>
+
+<h4>2.CJS 只能异步导入 ESM import()</h4>
+
+<p>Node.js 将异步加载 ESM，以便尽可能接近浏览器的行为。因此，同步的 <code>require()</code> 在 ESM 是不可能的，并且依赖于 ESM 的每个功能都需要异步：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">driverPromise</span> <span class="o">=</span> <span class="kr">import</span><span class="p">(</span><span class="s2">&quot;dbdriver&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">exports</span><span class="p">.</span><span class="nx">readFromDb</span> <span class="o">=</span> <span class="nx">async</span> <span class="p">(</span><span class="nx">query</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>   <span class="k">return</span> <span class="p">(</span><span class="nx">await</span> <span class="nx">driverPromise</span><span class="p">).</span><span class="nx">read</span><span class="p">(</span><span class="nx">query</span><span class="p">);</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>3. CJS 向 ESM 暴露一个不可变的默认导出</h4>
+
+<p>使用 Babel 或 Webpack，我们通常将 CJS 重构为 ESM，如下所示：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// CJS</span>
+</span><span class='line'><span class="kr">const</span> <span class="p">{</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="c1">// ESM</span>
+</span><span class='line'><span class="kr">import</span> <span class="p">{</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="p">}</span> <span class="nx">from</span> <span class="s2">&quot;c&quot;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再一次地，他们的语法看起来很相似，但忽略了 CJS 中没有命名导出的事实。只有一个叫做 <code>default</code> 的导出，等同于在 CJS 模块完成计算后一个不可变的 <code>module.exports</code> 。从技术上讲，有可能将 <code>module.exports</code> 解构成命名导入，但这需要对标准作更大的变更。<a href="https://github.com/bmeck/node-eps/blob/a1eab9bf023bbe13a79ddb18f0622a5d57215f9b/002-es-modules.md#461-default-imports">这就是现在 CTC 决定采取这种方式的原因</a>。</p>
+
+<h4>4.模块范围的变量类似 <code>module</code>，<code>require</code> 以及 <code>__filename</code> 在 ESM 不存在</h4>
+
+<p>Node.js 和浏览器会实现一些 ESM 的特性，<a href="https://github.com/whatwg/html/issues/1013">但标准化过程仍在进行中</a>。</p>
+
+<p>鉴于将 CJS 和 ESM 集成到一个运行时的工程挑战，CTC 在评估边缘情况和权衡方面做了非常好的工作。比如使用不同的文件扩展名是就是一个很简单的解决方案。</p>
+
+<p>实际上，一个文件扩展名可以认为是一个二进制文件如何解释的提示。如果一个 <code>module</code> 不是 <code>script</code>，我们应该使用不同的文件扩展名。其他工具（如 linter 或 IDE ）也可以获取相同信息。</p>
+
+<p>当然，引入新的文件扩展名有成本，但是一旦服务器和其他应用程序确认 <code>*.mjs</code> 为JavaScript，我们很快就会忘记这个争议。</p>
+
+<h2>将 * .mjs 作为 Node.js 的 Python 3？</h2>
+
+<p>考虑到所有这些限制，人们可能会问，这种过渡将对现在的生态造成什么样的损害。虽然 CTC 会努力解决问题，但社区如何采用这一点仍然存在很大不确定性。这种不确定性 <a href="https://twitter.com/sindresorhus/status/861987349529452545">被众多知名的 NPM 模块作者</a> 再次强调，他们声称将不会在模块中使用 <code>*.mjs</code>。</p>
+
+<p><a href="http://blog.thezerobit.com/2014/05/25/python-3-is-killing-python.html">Python 3 is killing Python</a></p>
+
+<p>很难预测社区如何反应，但是应该不会对现在的生态造成大破坏，甚至能看到从 CJS 平稳过渡到 ESM。主要有两个原因：</p>
+
+<h3>1.与 CJS 严格向后兼容</h3>
+
+<p>那些不喜欢 ESM 的模块作者可以继续使用 CJS，保证自己不被排挤出局。这样他们自己的代码不会受到采用 ESM 的影响，降低迁移到另一个运行时的可能性，让 NPM 迁移到新生态变得容易。从 CJS 到 ESM 的重构给包维护者带来额外工作，不能指望所有人都有时间。</p>
+
+<h3>2. CJS 在 ESM 中的无缝整合</h3>
+
+<p>从 ESM 导入 CJS 模块非常简单。需要注意的是，CJS 仅导出一个默认值。一旦处于 ESM，甚至可能根本不会注意到依赖关系使用的模块风格，尤其是与在 CJS 中使用 <code>await import()</code>相比。</p>
+
+<p>由于 ESM 的这个优点以及其他有点，比如开箱即用的 <a href="https://webpack.js.org/guides/tree-shaking/">tree shaking</a> 和浏览器兼容性，预计在未来几年内，我们可以看到向 ESM 的缓慢而稳定的过渡。CJS 的特性，如动态 <code>require()</code> 和猴子补丁导出，在 Node.js 社区一直是有争议的，不比 ESM 带来的好处。</p>
+
+<h2>这些对我来说意味着什么？</h2>
+
+<p>因为最近这些事情，很容易对目前存在的所有选择和限制感到困惑。在接下来，整理了开发人员面临的典型问题以及我们的回答：</p>
+
+<h3>现在需要重构现有的代码吗？</h3>
+
+<p><strong>不需要</strong>。Node.js 才刚刚开始实现 ESM，仍然有大量的工作要做。<a href="https://medium.com/the-node-js-collection/an-update-on-es6-modules-in-node-js-42c958b890c">James M Snell 预计至少还需要一年时间</a>，还有很多变化的余地，所以现在重构是不安全的。</p>
+
+<h3>应该在新代码中使用 ESM 吗？</h3>
+
+<ul>
+<li><strong>如果你已经有或者打算使用像 webpack 这样的构建工具，答案是肯定的</strong>。这将更容易完成代码库的过渡，并使 tree shaking 成为可能。但要小心：一旦 Node.js 支持原生 ESM，可能需要重构其中的一些部分。</li>
+<li><strong>如果你正在编写一个库，答案是也肯定的</strong>，你的模块使用者将受益于 tree shaking。</li>
+<li><strong>如果你不想进行构建操作，或者正在编写一个 Node.js 应用程序，还是用 CJS 吧</strong>。</li>
+</ul>
+
+
+<h3>现在应该使用 .mjs 吗？</h3>
+
+<p><strong>不要这样做</strong>，目前没有什么好处，工具支持依然薄弱。建议一旦原生 ESM 支持登陆 Node.js，尽快开始迁移。记住，<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types">浏览器只关心 MIME 类型，而不是文件扩展名</a>。</p>
+
+<h3>应该关心浏览器兼容性吗？</h3>
+
+<p>是的，需要在一定程度上关注这个问题。 不应该在导入语句中省略 <code>.js</code> 扩展名，因为浏览器需要完整的 URL，无法像 Node.js 这样执行路径查询。同样，应该避免 <code>index.js</code> 文件。不过，人们并不会很快在浏览器中使用 NPM 软件包，因为仍然不能 bare 导入。</p>
+
+<h3>作为库作者该怎么办？</h3>
+
+<p>用 ESM 编写代码，并使用 <a href="https://rollupjs.org/">Rollup</a> 或 Webpack 转换成单个 CJS 模块，然后在 <code>package.json</code> 将 <code>main</code> 字段指向此 CJS 包，并将 <a href="https://github.com/rollup/rollup/wiki/pkg.module"><code>module</code></a> 字段指向原始 ESM。如果还使用 ESM 之外的其他新语言功能，则应编译成 ES5，并提供 CJS 和 ESM 的打包。这样，你的库用户仍然可以从 tree shaking 获利而无需对代码进行转换。</p>
+
+<p>看一下这些完成 tree shaking 的模块</p>
+
+<h2>总结</h2>
+
+<p>关于 ES 模块有很多不确定性。由于目前 Node.js 在实现上的权衡，开发人员担心可能会破坏 Node.js 的生态。</p>
+
+<p>这些还不会发生，有两个原因：<strong>CJS 的严格的后向兼容和 CJS 在 ESM 中的无缝集成</strong>。</p>
+
+<p>在 Node.js 发布原生 ESM 支持之前，应该仍然使用 Rollup 和 Webpack 等工具。它们在一定程度上模拟了 ESM 环境，但要注意它们不完全符合规范。此外，使用打包仍然是个<a href="https://peerigon.github.io/talks/2016-08-26-jsconf-is-future-frontend-tooling/#36">很好的选择</a>，一旦可以在浏览器中使用 NPM 软件包。</p>
+
+<p>我们 webpack 团队正在努力做一些工作，帮助开发者平稳过渡。为了这个目标，我们计划在 Node.js 的 ESM 支持成熟后，模拟 Node.js 导入 CJS 的方式。</p>
+</div>
+  
+    <section>
+      <h1>Comments</h1>
+      <div id="disqus_thread"><div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'mirreal';
+  var disqus_identifier = 'http://blog.mirreal.net/blog/2017/05/29/the-state-of-javascript/';
+  var disqus_url = 'http://blog.mirreal.net/blog/2017/05/29/the-state-of-javascript/';
+  //var disqus_developer = 1;
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+    </section>
+  
+
+</article>
+
+    <p class="meta">
+      
+        <a class="basic-alignment left nav" href="/blog/2017/05/28/my-atom-editor-setup-for-js-react/" title="Previous Post: JS/React 开发者的 Atom 终极配置">&laquo; JS/React 开发者的 Atom 终极配置</a>
+      
+      
+        <a class="basic-alignment right nav" href="/blog/2017/06/02/writing-modern-javascript-code/" title="Next Post: 编写现代 JavaScript 代码">编写现代 JavaScript 代码 &raquo;</a>
+      
+    </p>
+  </div>
+</body>
+</html>

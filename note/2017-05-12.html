@@ -58,7 +58,155 @@
   
 </div>
 
-  <div class="article-content">
+  <div class="article-content"><h2>聚沙</h2>
+
+<h3>ES6 Modules</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>chrome://flags/#enable-javascript-harmony
+</span><span class='line'>chrome://flags/#enable-experimental-web-platform-features</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ES2015 remove strict mode</h3>
+
+<h3>严格模式</h3>
+
+<p>在编写代码的过程中，我们使用 <code>strict mode</code> 是一种不错的方式，严格模式会将 JavaScript 陷阱直接变成明显的错误，比如未声明导致的全局变量，可以让我们开发过程中就发现错误。</p>
+
+<p>众所周知，JavaScript 这门语言之前存在大量不好的设计，使用严格模式意味着在采用一种限制性更高的方式编写代码，同时更 “安全”。</p>
+
+<p>但这里所谓的安全在生产环境有可能是另外一回事，尤其是对于那些历史的代码，所以我们更倾向于在生产环境去除严格模式。</p>
+
+<h3>ES2015 +</h3>
+
+<p>现在越来越多的人已经在使用更强大，更具有表现力的 <code>ES2015 +</code> 编写代码，可能会使用到 <code>babel</code> 来转化成使用与生产环境运行，在使用 <code>preset es2015</code> 时，会自动加入 <code>'use strict'</code>。</p>
+
+<p><code>babel</code> 的处理方式是将 ES2015 模块转换成 <code>CommonJS</code> 格式的，然后再统一处理，即 <code>transform-es2015-modules-commonjs</code>，这个模块位于 <code>preset es2015</code> 中，并且依赖于 <code>babel-plugin-transform-strict-mode</code></p>
+
+<h3>也许你会想去掉严格模式</h3>
+
+<p>也许你会想去掉严格模式，毕竟对于一些历史代码，很难预测加入严格模式会导致什么异常。</p>
+
+<p>可以从两个方面来考虑：</p>
+
+<ul>
+<li>第一，在处理过程中去掉 <code>'use strict'</code>，这里不用我们自己去写了，借助这个插件 <code>transform-remove-strict-mode</code></li>
+<li>第二，不用 <code>transform-es2015-modules-commonjs</code>，可以使用 <code>webpack 2</code> 直接处理 ES6 模块</li>
+</ul>
+
+
+<h3>方案一</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>npm install babel-plugin-transform-remove-strict-mode --save-dev</span></code></pre></td></tr></table></div></figure>
+
+
+<p>修改 <code>.babelrc</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{
+</span><span class='line'>    "presets": [
+</span><span class='line'>        ["es2015"],
+</span><span class='line'>        "stage-0",
+</span><span class='line'>        "react"
+</span><span class='line'>    ],
+</span><span class='line'>    "plugins": [
+</span><span class='line'>        "transform-remove-strict-mode"
+</span><span class='line'>    ]
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>方案二</h3>
+
+<blockquote><p><a href="https://babeljs.io/docs/plugins/preset-es2015/#optionsmodules">modules</a></p>
+
+<p><code>"amd" | "umd" | "systemjs" | "commonjs" | false</code>, defaults to <code>"commonjs"</code>.</p>
+
+<p>Enable transformation of ES6 module syntax to another module type.</p>
+
+<p>Setting this to <code>false</code> will not transform modules.</p></blockquote>
+
+<p>我们去掉 <code>preset es2015</code> 的模块处理，改成 <code>webpack</code> 自己的</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{
+</span><span class='line'>    "presets": [
+</span><span class='line'>        ["es2015", { "modules": false }],
+</span><span class='line'>        "stage-0",
+</span><span class='line'>        "react"
+</span><span class='line'>    ]
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这种方案也能解决之前引发的问题，因为之前的模块是 ES5 编写的，使用 AMD。</p>
+
+<p>但是，参考 <a href="http://www.ecma-international.org/ecma-262/6.0/#sec-strict-mode-code">http://www.ecma-international.org/ecma-262/6.0/#sec-strict-mode-code</a> ，在 ES6 语法下，模块系统以及 class 等仍然都是工作在 <code>strict mode</code> 下的，而 webpack2 的也确实是这样处理的。</p>
+
+<p>实现对语言本身是没问题的，使用新语法意味着我们要抛弃掉以前一些设计不好的地方，编写高质量的代码。</p>
+
+<h2>对比</h2>
+
+<p>相比而言，方案二更合适，因为方案一处理的过程实际是删除所有<code>'use strict'</code>，有时候未必符合你本来的意愿。</p>
+
+<p>采用方案二还有一些好处，比如可以使用 <code>webpack2</code> 已经支持的 <code>Tree shaking</code> 优化技术，因为这项技术基于 <code>ES6 Modules</code>，得让 <code>webpack</code> 直接处理才能使用。</p>
+
+<h2>后续</h2>
+
+<p>这种属于历史遗留问题，不小心引入的全局变量，类似的代码质量问题还不少。</p>
+
+<p>所以，我们使用 lint 工具来帮助我们避免这种问题，对于代码质量的要求，我们必须苛刻。</p>
+
+<p>严格模式意味用一种更合理的编码方式，全局变量当然是不被允许的。</p>
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://babeljs.io/docs/plugins/preset-es2015/">https://babeljs.io/docs/plugins/preset-es2015/</a></li>
+<li><a href="https://babeljs.io/docs/plugins/transform-es2015-modules-commonjs/">https://babeljs.io/docs/plugins/transform-es2015-modules-commonjs/</a></li>
+<li><a href="https://github.com/webpack/webpack/issues/2512">https://github.com/webpack/webpack/issues/2512</a></li>
+<li><a href="http://stackoverflow.com/questions/29283935/which-ecmascript-6-features-imply-strict-mode">http://stackoverflow.com/questions/29283935/which-ecmascript-6-features-imply-strict-mode</a></li>
+<li><a href="http://www.ecma-international.org/ecma-262/6.0/#sec-strict-mode-code">http://www.ecma-international.org/ecma-262/6.0/#sec-strict-mode-code</a></li>
+<li><a href="https://github.com/webpack/webpack/issues/4039">https://github.com/webpack/webpack/issues/4039</a></li>
+</ul>
+
+
+<h2>阅读</h2>
+
+<h4><a href="http://insights.thoughtworkers.org/five-steps-of-developer/">开发者技能修炼的五个等级</a></h4>
+
+<h4><a href="http://insights.thoughtworkers.org/principles-of-refactoring/">重构之十六字心法</a></h4>
+
+<p>重构威力无边，就像是武侠小说中的一件插在石头上的上古神器，但同样也不是一般人可以轻松驾驭的。如果运用不当，造成的损害也会同样巨大。如何将重构这件神器运用自如，发挥其最大的威力，也是我门一直在探寻的，即重构的手法和心法。</p>
+
+<h4><a href="https://hacks.mozilla.org/2017/05/quantum-up-close-what-is-a-browser-engine/">Quantum Up Close: What is a browser engine?</a></h4>
+
+<p>Mozilla 正在改造 Firefox 全新的浏览器引擎 Quantum ，这篇文章通过这个过程介绍如何来打造浏览器引擎。</p>
+
+<h4><a href="https://medium.com/webpack/announcing-the-new-webpack-cli-75ce1d9b8663">Webpack Announces New Webpack CLI</a></h4>
+
+<p>Webpack 发布新的 Webpack CLI，还能很方便地自动将配置迁移到 Webapck2，快来尝试吧。</p>
+
+<h4><a href="https://www.visualstudio.com/en-us/news/releasenotes/vs2017-mac-relnotes">Visual Studio 2017 for Mac: Release Notes</a></h4>
+
+<p>微软在 Build 2017 大会发布 Visual Studio 2017 for Mac 正式版，开发者终于能在 Windows 和 Mac 环境之间实现无缝衔接，使用它同时开发服务端和客户端的应用程序。</p>
+
+<h4><a href="https://medium.com/dev-channel/es6-modules-in-chrome-canary-m60-ba588dfb8ab7">ES6 Modules in Chrome Canary (M60+)</a></h4>
 </div>
 
   
