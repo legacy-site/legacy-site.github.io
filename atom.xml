@@ -4,7 +4,7 @@
   <title><![CDATA[Mirreal Note]]></title>
   <link href="http://blog.mirreal.net/atom.xml" rel="self"/>
   <link href="http://blog.mirreal.net/"/>
-  <updated>2017-06-27T00:49:28+08:00</updated>
+  <updated>2017-06-27T00:57:01+08:00</updated>
   <id>http://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Mirreal Ellison]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[CSS Animations vs Web Animations API]]></title>
     <link href="http://blog.mirreal.net/blog/2017/06/26/css-animations-vs-web-animations-api-slash/"/>
-    <updated>2017-06-26T00:00:00+08:00</updated>
+    <updated>2017-06-26T20:47:08+08:00</updated>
     <id>http://blog.mirreal.net/blog/2017/06/26/css-animations-vs-web-animations-api-slash</id>
     <content type="html"><![CDATA[<blockquote><p>作者：Ollie Williams</p>
 
