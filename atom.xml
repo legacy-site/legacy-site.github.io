@@ -4,7 +4,7 @@
   <title><![CDATA[Mirreal Note]]></title>
   <link href="http://blog.mirreal.net/atom.xml" rel="self"/>
   <link href="http://blog.mirreal.net/"/>
-  <updated>2017-07-19T22:16:14+08:00</updated>
+  <updated>2017-07-26T19:02:54+08:00</updated>
   <id>http://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Mirreal Ellison]]></name>
@@ -12,6 +12,545 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[面向初学者的高阶组件介绍]]></title>
+    <link href="http://blog.mirreal.net/blog/2017/07/19/higher-order-components-for-beginners/"/>
+    <updated>2017-07-19T18:59:37+08:00</updated>
+    <id>http://blog.mirreal.net/blog/2017/07/19/higher-order-components-for-beginners</id>
+    <content type="html"><![CDATA[<blockquote><p>作者：Brandon Newton</p>
+
+<p>原文：<a href="https://btnwtn.com/articles/higher-order-components-for-beginners">Higher-Order Components (HOCs) for Beginners</a></p>
+
+<p>谈点：一篇面向初学者的 HOC 介绍。高阶组件听起来挺唬人的，只看名字恐怕不是那么容易明白究竟是何物，而且通常来讲高阶组件并不是组件，而是接受组件作为参数，并且返回组件的函数。早期利用 ES5 的 mixin 语法来做的事，基本都可以使用高阶组件代替，而且能做的还有更多。</p></blockquote>
+
+<h2>前言</h2>
+
+<p>写这篇文章的起因是其他关于高阶组件（Higher-Order Components）的文章，包含官方文档，都令初学者感到相当困惑。我知道有高阶组件这样一个东西，但不知道它到底有什么用。所以，想通过一篇文章来对高阶组件有一个更好的理解。</p>
+
+<p>在此之前，我们需要先来讲一下 JavaScript 中的函数。</p>
+
+<h2>ES6 箭头函数简介</h2>
+
+<p>接下来将提供一些箭头函数的简单示例，如果之前没有使用过，可以认为它们与普通函数基本一致。下面的代码会展示箭头函数与普通函数的区别。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="mi">42</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// same as:</span>
+</span><span class='line'><span class="p">()</span> <span class="o">=&gt;</span> <span class="mi">42</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// same as:</span>
+</span><span class='line'><span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="mi">42</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">person</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="nx">name</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// same as:</span>
+</span><span class='line'><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="nx">name</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>阅读 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions">MDN 的箭头函数文档</a> 了解更多信息。</p>
+
+<h2>作为值的函数与部分调用</h2>
+
+<p>就像是数字、字符串、布尔值 一样，函数也是值，意味着可以像传递其他数据一样传递函数，可以将函数作为参数传递给另外一个函数。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">execute</span> <span class="o">=</span> <span class="p">(</span><span class="nx">someFunction</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">someFunction</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">execute</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Executed&#39;</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也可以在在函数中返回一个函数：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">getOne</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="mi">1</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">getOne</span><span class="p">()()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>之所以在 <code>getOne</code> 后面有两个 <code>()</code> ，是因为第一个返回的返回值是一个函数。如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">getOne</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="mi">1</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">getOne</span>
+</span><span class='line'><span class="c1">//=&gt; () =&gt; () =&gt; 1</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">getOne</span><span class="p">()</span>
+</span><span class='line'><span class="c1">//=&gt; () =&gt; 1</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">getOne</span><span class="p">()()</span>
+</span><span class='line'><span class="c1">//=&gt; 1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>从函数返回函数可以帮助我们追踪初始输入函数。例如，下面的函数接受一个数字作为参数，并返回一个将该参数乘以新参数的函数：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">multiply</span> <span class="o">=</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="nx">y</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">y</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">multiply</span><span class="p">(</span><span class="mi">5</span><span class="p">)(</span><span class="mi">20</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个示例跟上述 <code>getOne</code> 一样，在下面这个例子，让 x = 5，y = 20。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">multiply</span> <span class="o">=</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="nx">y</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">y</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">multiply</span>
+</span><span class='line'><span class="c1">//=&gt; (x) =&gt; (y) =&gt; x * y</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">multiply</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span><span class='line'><span class="c1">//=&gt; (y) =&gt; 5 * y</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">multiply</span><span class="p">(</span><span class="mi">5</span><span class="p">)(</span><span class="mi">20</span><span class="p">)</span>
+</span><span class='line'><span class="c1">//=&gt; 5 * 20</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在只传入一个参数调用 <code>multiply</code> 函数时，即部分调用该函数。比如，<code>multiply(5)</code> 讲得到一个将其输入值乘以 5 的函数，<code>multiply(7)</code> 将得到一个将其输入值乘以 7 的函数。依此类推。通过部分调用可以创建一个预定义功能的新函数：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">multiply</span> <span class="o">=</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="nx">y</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">y</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">const</span> <span class="nx">multiplyByFive</span> <span class="o">=</span> <span class="nx">multiply</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">multiplyBy100</span> <span class="o">=</span> <span class="nx">multiply</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">multiplyByFive</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+</span><span class='line'><span class="c1">//=&gt; 100</span>
+</span><span class='line'><span class="nx">multiply</span><span class="p">(</span><span class="mi">5</span><span class="p">)(</span><span class="mi">20</span><span class="p">)</span>
+</span><span class='line'><span class="c1">//=&gt; 100</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">multiplyBy100</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span><span class='line'><span class="c1">//=&gt; 500</span>
+</span><span class='line'><span class="nx">multiply</span><span class="p">(</span><span class="mi">100</span><span class="p">)(</span><span class="mi">5</span><span class="p">)</span>
+</span><span class='line'><span class="c1">//=&gt; 500</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一开始看起来似乎没什么用，但是，通过部分调用这种方式可以编写可读性更高，更易于理解的代码。举个例子，可以用一种更清晰的方式来代替 <a href="https://www.styled-components.com/docs/basics#adapting-based-on-props">style-components</a> 的函数插入语法。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// before</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">Button</span> <span class="o">=</span> <span class="nx">styled</span><span class="p">.</span><span class="nx">button</span><span class="err">`</span>
+</span><span class='line'>  <span class="nx">background</span><span class="o">-</span><span class="nx">color</span><span class="o">:</span> <span class="nx">$</span><span class="p">{({</span> <span class="nx">theme</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="nx">theme</span><span class="p">.</span><span class="nx">bgColor</span><span class="p">}</span>
+</span><span class='line'>  <span class="nx">color</span><span class="o">:</span> <span class="nx">$</span><span class="p">{({</span> <span class="nx">theme</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="nx">theme</span><span class="p">.</span><span class="nx">textColor</span><span class="p">}</span>
+</span><span class='line'><span class="err">`</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">Button</span> <span class="nx">theme</span><span class="o">=</span><span class="p">{</span><span class="nx">themes</span><span class="p">.</span><span class="nx">primary</span><span class="p">}</span><span class="o">&gt;</span><span class="nx">Submit</span><span class="o">&lt;</span><span class="err">/Button&gt;</span>
+</span><span class='line'><span class="c1">// after</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">fromTheme</span> <span class="o">=</span> <span class="p">(</span><span class="nx">prop</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">({</span> <span class="nx">theme</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="nx">theme</span><span class="p">[</span><span class="nx">prop</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">const</span> <span class="nx">Button</span> <span class="o">=</span> <span class="nx">styled</span><span class="p">.</span><span class="nx">button</span><span class="err">`</span>
+</span><span class='line'>  <span class="nx">background</span><span class="o">-</span><span class="nx">color</span><span class="o">:</span> <span class="nx">$</span><span class="p">{</span><span class="nx">fromTheme</span><span class="p">(</span><span class="s2">&quot;bgColor&quot;</span><span class="p">)}</span>
+</span><span class='line'>  <span class="nx">color</span><span class="o">:</span> <span class="nx">$</span><span class="p">{</span><span class="nx">fromTheme</span><span class="p">(</span><span class="s2">&quot;textColor&quot;</span><span class="p">)}</span>
+</span><span class='line'><span class="err">`</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">Button</span> <span class="nx">theme</span><span class="o">=</span><span class="p">{</span><span class="nx">themes</span><span class="p">.</span><span class="nx">primary</span><span class="p">}</span><span class="o">&gt;</span><span class="nx">Submit</span><span class="o">&lt;</span><span class="err">/Button&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们创建一个接受一个字符串作为参数的函数 <code>fromTheme("textColor")</code>：它返回一个接受具有 <code>theme</code> 属性的对象的函数：<code>({ theme }) =&gt; theme[prop]</code>，然后再通过初始传入的字符串 <code>"textColor"</code> 进行查找。我们可以做得更多，写类似的 <code>backgroundColor</code> 和 <code>textColor</code> 这种部分调用 <code>fromTheme</code> 的函数：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">fromTheme</span> <span class="o">=</span> <span class="p">(</span><span class="nx">prop</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">({</span> <span class="nx">theme</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="nx">theme</span><span class="p">[</span><span class="nx">prop</span><span class="p">]</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">backgroundColor</span> <span class="o">=</span> <span class="nx">fromTheme</span><span class="p">(</span><span class="s2">&quot;bgColor&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">textColor</span> <span class="o">=</span> <span class="nx">fromTheme</span><span class="p">(</span><span class="s2">&quot;textColor&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">const</span> <span class="nx">Button</span> <span class="o">=</span> <span class="nx">styled</span><span class="p">.</span><span class="nx">button</span><span class="err">`</span>
+</span><span class='line'>  <span class="nx">background</span><span class="o">-</span><span class="nx">color</span><span class="o">:</span> <span class="nx">$</span><span class="p">{</span><span class="nx">backgroundColor</span><span class="p">}</span>
+</span><span class='line'>  <span class="nx">color</span><span class="o">:</span> <span class="nx">$</span><span class="p">{</span><span class="nx">textColor</span><span class="p">}</span>
+</span><span class='line'><span class="err">`</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">Button</span> <span class="nx">theme</span><span class="o">=</span><span class="p">{</span><span class="nx">themes</span><span class="p">.</span><span class="nx">primary</span><span class="p">}</span><span class="o">&gt;</span><span class="nx">Submit</span><span class="o">&lt;</span><span class="err">/Button&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>高阶函数</h2>
+
+<p>高阶函数的定义是，接受函数作为参数的函数。如果曾经使用过类似 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map">map</a> 这样的函数，可能已经很熟悉高阶函数。如果不熟悉 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map">map</a>，它是一个数组遍历的方法，接受一个函数作为参数应用到数组中的每个元素。例如，可以像这样对一个数组作平方：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">square</span> <span class="o">=</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="nx">square</span><span class="p">)</span>
+</span><span class='line'><span class="c1">//=&gt; [ 1, 4, 9 ]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以实现一个我们自己的 <code>map</code> 版本来说明这个概念：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">map</span> <span class="o">=</span> <span class="p">(</span><span class="nx">fn</span><span class="p">,</span> <span class="nx">array</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kr">const</span> <span class="nx">mappedArray</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">array</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">mappedArray</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span>
+</span><span class='line'>      <span class="c1">// apply fn with the current element of the array</span>
+</span><span class='line'>      <span class="nx">fn</span><span class="p">(</span><span class="nx">array</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">mappedArray</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后再使用我们的 map 版本来对一个数组作平方：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">square</span> <span class="o">=</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">map</span><span class="p">(</span><span class="nx">square</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span>
+</span><span class='line'><span class="c1">//=&gt; [ 1, 4, 9, 16, 25 ]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>译者注：我们也可以将 map 方法从对象中解耦出来：</p>
+
+<pre><code class="javascript">const map = (fn, array) =&gt; Array.prototype.map.call(array, fn)
+</code></pre>
+
+<p>这样也可以像上述例子一样调用。
+或者更函数式的做法，再来点柯里化：</p>
+
+<pre><code class="javascript">const map = array =&gt; fn =&gt; Array.prototype.map.call(array, fn)
+</code></pre></blockquote>
+
+<p>或者是返回一个 <code>&lt;li&gt;</code>的 React 元素数组：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">HeroList</span> <span class="o">=</span> <span class="p">({</span> <span class="nx">heroes</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">(</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">ul</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="p">{</span><span class="nx">map</span><span class="p">((</span><span class="nx">hero</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">key</span><span class="o">=</span><span class="p">{</span><span class="nx">hero</span><span class="p">}</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">hero</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/li&gt;</span>
+</span><span class='line'>    <span class="p">),</span> <span class="nx">heroes</span><span class="p">)}</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="err">/ul&gt;</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">HeroList</span> <span class="nx">heroes</span><span class="o">=</span><span class="p">[</span>
+</span><span class='line'>  <span class="s2">&quot;Wonder Woman&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;Black Widow&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;Spider Man&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;Storm&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;Deadpool&quot;</span>
+</span><span class='line'><span class="p">]</span><span class="o">/&gt;</span>
+</span><span class='line'><span class="cm">/*=&gt; (</span>
+</span><span class='line'><span class="cm">  &lt;ul&gt;</span>
+</span><span class='line'><span class="cm">    &lt;li&gt;Wonder Woman&lt;/li&gt;</span>
+</span><span class='line'><span class="cm">    &lt;li&gt;Black Widow&lt;/li&gt;</span>
+</span><span class='line'><span class="cm">    &lt;li&gt;Spider Man&lt;/li&gt;</span>
+</span><span class='line'><span class="cm">    &lt;li&gt;Storm&lt;/li&gt;</span>
+</span><span class='line'><span class="cm">    &lt;li&gt;Deadpool&lt;/li&gt;</span>
+</span><span class='line'><span class="cm">  &lt;/ul&gt;</span>
+</span><span class='line'><span class="cm">)*/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>高阶组件</h2>
+
+<p>我们知道，高阶函数是接受函数作为参数的函数。在 React 中，任何返回 <a href="https://facebook.github.io/react/docs/jsx-in-depth.html">JSX</a> 的函数都被称为无状态函数组件，简称为函数组件。基本的函数组件如下所示：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">Title</span> <span class="o">=</span> <span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">props</span><span class="p">.</span><span class="nx">children</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">Title</span><span class="o">&gt;</span><span class="nx">Higher</span><span class="o">-</span><span class="nx">Order</span> <span class="nx">Components</span><span class="p">(</span><span class="nx">HOCs</span><span class="p">)</span> <span class="k">for</span> <span class="nx">React</span> <span class="nx">Newbies</span><span class="o">&lt;</span><span class="err">/Title&gt;</span>
+</span><span class='line'><span class="c1">//=&gt; &lt;h1&gt;Higher-Order Components(HOCs) for React Newbies&lt;/h1&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>高阶组件则是<em>接受组件作为参数并返回组件的函数</em>。如何使用传入组件完全取决于你，甚至可以完全忽视它：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// Technically an HOC</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">ignore</span> <span class="o">=</span> <span class="p">(</span><span class="nx">anything</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;:</span><span class="p">)</span><span class="o">&lt;</span><span class="err">/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">const</span> <span class="nx">IgnoreHeroList</span> <span class="o">=</span> <span class="nx">ignore</span><span class="p">(</span><span class="nx">HeroList</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">IgnoreHeroList</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="c1">//=&gt; &lt;h1&gt;:)&lt;/h1&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以编写一个将输入转换成大写的 HOC：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">yell</span> <span class="o">=</span> <span class="p">(</span><span class="nx">PassedComponent</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class='line'>  <span class="p">({</span> <span class="nx">children</span><span class="p">,</span> <span class="p">...</span><span class="nx">props</span> <span class="p">})</span> <span class="o">=&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">PassedComponent</span> <span class="p">{...</span><span class="nx">props</span><span class="p">}</span><span class="o">&gt;</span>
+</span><span class='line'>      <span class="p">{</span><span class="nx">children</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">()}</span><span class="o">!</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="err">/PassedComponent&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">const</span> <span class="nx">Title</span> <span class="o">=</span> <span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">props</span><span class="p">.</span><span class="nx">children</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/h1&gt;</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">AngryTitle</span> <span class="o">=</span> <span class="nx">yell</span><span class="p">(</span><span class="nx">Title</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">AngryTitle</span><span class="o">&gt;</span><span class="nx">Whatever</span><span class="o">&lt;</span><span class="err">/AngryTitle&gt;</span>
+</span><span class='line'><span class="c1">//=&gt; &lt;h1&gt;WHATEVER!&lt;/h1&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你也可以返回一个有状态组件，因为 JavaScript 中的类不过是函数的语法糖。这样就可以使用到 React 生命周期的方法，比如 <code>componentDidMount</code>。这是 HOCs 真正有用的地方。我们现在可以做一些稍微有趣点的事，比如将 HTTP 请求的结果传递给函数组件。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">withGists</span> <span class="o">=</span> <span class="p">(</span><span class="nx">PassedComponent</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class='line'>  <span class="kr">class</span> <span class="nx">WithGists</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">state</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">gists</span><span class="o">:</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">componentDidMount</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">fetch</span><span class="p">(</span><span class="s2">&quot;https://api.github.com/gists/public&quot;</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">r</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+</span><span class='line'>      <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">gists</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span>
+</span><span class='line'>        <span class="nx">gists</span><span class="o">:</span> <span class="nx">gists</span>
+</span><span class='line'>      <span class="p">}))</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span>
+</span><span class='line'>        <span class="o">&lt;</span><span class="nx">PassedComponent</span>
+</span><span class='line'>          <span class="p">{...</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">}</span>
+</span><span class='line'>          <span class="nx">gists</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">gists</span><span class="p">}</span>
+</span><span class='line'>        <span class="o">/&gt;</span>
+</span><span class='line'>      <span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="kr">const</span> <span class="nx">Gists</span> <span class="o">=</span> <span class="p">({</span> <span class="nx">gists</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">(</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">gists</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="mi">2</span><span class="p">)}</span><span class="o">&lt;</span><span class="err">/pre&gt;</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">const</span> <span class="nx">GistsList</span> <span class="o">=</span> <span class="nx">withGists</span><span class="p">(</span><span class="nx">Gists</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">GistsList</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="c1">//=&gt; Before api request finishes:</span>
+</span><span class='line'><span class="c1">// &lt;Gists gists={[]} /&gt;</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">//=&gt; After api request finishes:</span>
+</span><span class='line'><span class="c1">// &lt;Gists gists={[</span>
+</span><span class='line'><span class="c1">//  { /* … */ },</span>
+</span><span class='line'><span class="c1">//  { /* … */ },</span>
+</span><span class='line'><span class="c1">//  { /* … */ }</span>
+</span><span class='line'><span class="c1">// ]} /&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>withGists</code> 会传递 gist api 调用的结果，并且你可以在任何组件上使用。<a href="https://codesandbox.io/embed/o2YpJnpDj">点击这里</a> 可以看到一个更加完整的例子。</p>
+
+<h2>结论：高阶组件是 🔥🔥🔥</h2>
+
+<p>react-redux 也是使用 HOC， <a href="https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options">connect</a> 将应用 store 的值传递到“已连接” 的组件。它还会执行一些错误检查和组件生命周期优化，如果手动完成将导致编写大量重复代码。</p>
+
+<p>如果你发现自己在不同地方编写了大量的代码，那么也可以将代码重构成可重用的 HOC。</p>
+
+<p>HOCs 非常具有表现力，可以使用它们创造很多很酷的东西。</p>
+
+<p>尽可能地保持你的 HOC 简单，<em>不要编写需要阅读长篇大论才能理解的代码</em>。</p>
+
+<h3>附加练习</h3>
+
+<p>下面有一些练习，来巩固对 HOC 的理解：</p>
+
+<ul>
+<li>写一个反转其输入的 HOC</li>
+<li>编写一个HOC，将 API 中的数据提供给组件</li>
+<li>写一个HOC来实现 <a href="https://facebook.github.io/react/docs/react-component.html#shouldcomponentupdate"><code>shouldComponentUpdate</code></a>，<a href="https://facebook.github.io/react/docs/optimizing-performance.html#avoid-reconciliation">以避免更新</a>。</li>
+<li>编写一个 HOC，使用 <a href="https://facebook.github.io/react/docs/react-api.html#react.children.toarray"><code>React.Children.toArray</code></a> 对传入组件子元素进行排序。</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[CSS Animations vs Web Animations API]]></title>
@@ -3933,420 +4472,6 @@
 </span><span class='line'>rake deploy
 </span></code></pre></td></tr></table></div></figure>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[康威生命游戏的简单实现]]></title>
-    <link href="http://blog.mirreal.net/blog/2014/08/21/game-of-life/"/>
-    <updated>2014-08-21T19:26:12+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2014/08/21/game-of-life</id>
-    <content type="html"><![CDATA[<p>生命游戏，数学家John Conway发明的一个游戏，又称康威生命演化，生命棋，细胞自动机。</p>
-
-<p>康威有许多好玩有趣的发明，最广为人知的一个是外观数列（Look-and-Say），这里不多说，另一个就是生命游戏（Game-of-Life）。</p>
-
-<p>关于康威，摘录一段Wikipedia的叙述:</p>
-
-<blockquote><p>約翰·何頓·康威（John Horton Conway，1937年12月26日－），生於英國利物浦，數學家，活躍於有限群的研究、趣味數學、紐結理論、數論、組合博弈論和編碼學等範疇。</p><p>康威年少時就對數學很有強烈的興趣：四歲時，其母發現他背誦二的次方；十一歲時，升讀中學的面試，被問及他成長後想幹甚麼，他回答想在劍橋當數學家。後來康威果然於劍橋大學修讀數學，現時為普林斯頓大學的教授。</p><footer><strong>約翰·何頓·康威</strong> <cite>Wikipedia</cite></footer></blockquote>
-
-
-<p>生命游戏模拟的是二维平面上生命的演化过程。</p>
-
-<!-- more -->
-
-
-<p>规则很简单：每个细胞有两种状态&ndash;存活或死亡，每个细胞与以自身为中心的周围八格细胞产生互动。</p>
-
-<ol>
-<li>如果一个活细胞周围有2至3个活细胞，在下一个阶段继续存活，否则死亡；</li>
-<li>如果一个死细胞周围有3个活细胞，在下一个阶段将变成活细胞，否则继续保持死亡</li>
-</ol>
-
-
-<p>康威生命游戏是简单规则产生复杂变化的典型例子。在演变过程中，可以看到一些非常美妙的变化，和一些优美的几何图形。</p>
-
-<h4>下面是用HTML5 Canvas实现的一个简单版本。</h4>
-
-<p>源码：<a href="https://github.com/mirreal/moon9/tree/master/GameOfLife">https://github.com/mirreal/moon9/tree/master/GameOfLife</a></p>
-
-<p>DEMO：<a href="http://mirreal.net/game-of-life/">http://mirreal.net/game-of-life/</a></p>
-
-<p>JS代码如下：</p>
-
-<figure class='code'><figcaption><span>life.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-<span class='line-number'>131</span>
-<span class='line-number'>132</span>
-<span class='line-number'>133</span>
-<span class='line-number'>134</span>
-<span class='line-number'>135</span>
-<span class='line-number'>136</span>
-<span class='line-number'>137</span>
-<span class='line-number'>138</span>
-<span class='line-number'>139</span>
-<span class='line-number'>140</span>
-<span class='line-number'>141</span>
-<span class='line-number'>142</span>
-<span class='line-number'>143</span>
-<span class='line-number'>144</span>
-<span class='line-number'>145</span>
-<span class='line-number'>146</span>
-<span class='line-number'>147</span>
-<span class='line-number'>148</span>
-<span class='line-number'>149</span>
-<span class='line-number'>150</span>
-<span class='line-number'>151</span>
-<span class='line-number'>152</span>
-<span class='line-number'>153</span>
-<span class='line-number'>154</span>
-<span class='line-number'>155</span>
-<span class='line-number'>156</span>
-<span class='line-number'>157</span>
-<span class='line-number'>158</span>
-<span class='line-number'>159</span>
-<span class='line-number'>160</span>
-<span class='line-number'>161</span>
-<span class='line-number'>162</span>
-<span class='line-number'>163</span>
-<span class='line-number'>164</span>
-<span class='line-number'>165</span>
-<span class='line-number'>166</span>
-<span class='line-number'>167</span>
-<span class='line-number'>168</span>
-<span class='line-number'>169</span>
-<span class='line-number'>170</span>
-<span class='line-number'>171</span>
-<span class='line-number'>172</span>
-<span class='line-number'>173</span>
-<span class='line-number'>174</span>
-<span class='line-number'>175</span>
-<span class='line-number'>176</span>
-<span class='line-number'>177</span>
-<span class='line-number'>178</span>
-<span class='line-number'>179</span>
-<span class='line-number'>180</span>
-<span class='line-number'>181</span>
-<span class='line-number'>182</span>
-<span class='line-number'>183</span>
-<span class='line-number'>184</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">Game</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">stones</span> <span class="o">=</span> <span class="p">[];</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">canvas</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Canvas</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">Game</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">init</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">createRandomStones</span><span class="p">();</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">getAroundStones</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">eventHandler</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">loop</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">self</span><span class="p">.</span><span class="nx">update</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">self</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
-</span><span class='line'>  <span class="p">},</span> <span class="mi">120</span><span class="p">);</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">Game</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">eventHandler</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">snapshotButton</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;snapshotButton&#39;</span><span class="p">),</span>
-</span><span class='line'>      <span class="nx">snapshotImageElement</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;snapshotImageElement&#39;</span><span class="p">),</span>
-</span><span class='line'>      <span class="nx">canvas</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;canvas&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">snapshotButton</span><span class="p">.</span><span class="nx">onclick</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">snapshotButton</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">==</span> <span class="s1">&#39;Snapshot&#39;</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">loop</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">dataUrl</span> <span class="o">=</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">toDataURL</span><span class="p">();</span>
-</span><span class='line'>      <span class="nx">snapshotImageElement</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">dataUrl</span><span class="p">;</span>
-</span><span class='line'>      <span class="nx">snapshotImageElement</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s1">&#39;inline&#39;</span><span class="p">;</span>
-</span><span class='line'>      <span class="nx">canvas</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span><span class="p">;</span>
-</span><span class='line'>      <span class="nx">snapshotButton</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="s1">&#39;Continue&#39;</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">self</span><span class="p">.</span><span class="nx">loop</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">update</span><span class="p">();</span>
-</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
-</span><span class='line'>      <span class="p">},</span> <span class="mi">120</span><span class="p">);</span>
-</span><span class='line'>      <span class="nx">canvas</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s1">&#39;inline&#39;</span><span class="p">;</span>
-</span><span class='line'>      <span class="nx">snapshotImageElement</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span><span class="p">;</span>
-</span><span class='line'>      <span class="nx">snapshotButton</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="s1">&#39;Snapshot&#39;</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">};</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">Game</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">createRandomStones</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">32</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="mi">32</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">status</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.2</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">stones</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">Stone</span><span class="p">({</span><span class="nx">x</span><span class="o">:</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="nx">j</span><span class="p">},</span> <span class="nx">status</span><span class="p">))</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">Game</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">draw</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">drawGrid</span><span class="p">(</span><span class="s2">&quot;lightgrey&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">stones</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">stone</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">stone</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">self</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">drawStone</span><span class="p">(</span><span class="nx">stone</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">Game</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getAroundStones</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">stones</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">stone</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">stone</span><span class="p">.</span><span class="nx">around</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">position</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">stone</span><span class="p">.</span><span class="nx">aroundStones</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">stones</span><span class="p">[</span><span class="mi">32</span><span class="o">*</span><span class="nx">position</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">position</span><span class="p">.</span><span class="nx">y</span><span class="p">]);</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">Game</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">update</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">stones</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">stone</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">stone</span><span class="p">.</span><span class="nx">aroundStones</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="kc">true</span><span class="p">)</span> <span class="nx">stone</span><span class="p">.</span><span class="nx">aliveCount</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">stone</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">stone</span><span class="p">.</span><span class="nx">aliveCount</span> <span class="o">===</span> <span class="mi">2</span> <span class="o">||</span> <span class="nx">stone</span><span class="p">.</span><span class="nx">aliveCount</span> <span class="o">===</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">stone</span><span class="p">.</span><span class="nx">nextStatus</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">stone</span><span class="p">.</span><span class="nx">nextStatus</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">stone</span><span class="p">.</span><span class="nx">aliveCount</span> <span class="o">===</span> <span class="mi">3</span><span class="p">)</span> <span class="nx">stone</span><span class="p">.</span><span class="nx">nextStatus</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-</span><span class='line'>      <span class="k">else</span> <span class="nx">stone</span><span class="p">.</span><span class="nx">nextStatus</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">stones</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">stone</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">stone</span><span class="p">.</span><span class="nx">status</span> <span class="o">=</span> <span class="nx">stone</span><span class="p">.</span><span class="nx">nextStatus</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">stone</span><span class="p">.</span><span class="nx">aliveCount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="kd">function</span> <span class="nx">Stone</span><span class="p">(</span><span class="nx">position</span><span class="p">,</span> <span class="nx">status</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">position</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">position</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">status</span> <span class="o">=</span> <span class="nx">status</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">nextStatus</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">aroundStones</span> <span class="o">=</span> <span class="p">[];</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">aliveCount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">around</span> <span class="o">=</span> <span class="p">[];</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">getAround</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">Stone</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getAround</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">x</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="k">this</span><span class="p">.</span><span class="nx">x</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">j</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">y</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;=</span> <span class="k">this</span><span class="p">.</span><span class="nx">y</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="o">==</span> <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">&amp;&amp;</span> <span class="nx">j</span> <span class="o">==</span> <span class="k">this</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">j</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">j</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">around</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="nx">x</span><span class="o">:</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="nx">j</span><span class="p">});</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="kd">function</span> <span class="nx">Canvas</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">canvas</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;canvas&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">context</span> <span class="o">=</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s1">&#39;2d&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">Canvas</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">drawGrid</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">color</span><span class="p">,</span> <span class="nx">stepx</span><span class="p">,</span> <span class="nx">stepy</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">canvas</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">canvas</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">ctx</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">context</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">clearRect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
-</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">strokeStyle</span> <span class="o">=</span> <span class="nx">color</span><span class="p">;</span>
-</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineWidth</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">stepx</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="nx">stepx</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">ctx</span><span class="p">.</span><span class="nx">beginPath</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">ctx</span><span class="p">.</span><span class="nx">moveTo</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineTo</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">ctx</span><span class="p">.</span><span class="nx">stroke</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">ctx</span><span class="p">.</span><span class="nx">closePath</span><span class="p">();</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">stepy</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="nx">stepy</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">ctx</span><span class="p">.</span><span class="nx">beginPath</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">ctx</span><span class="p">.</span><span class="nx">moveTo</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">i</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">ctx</span><span class="p">.</span><span class="nx">lineTo</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span> <span class="nx">i</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">ctx</span><span class="p">.</span><span class="nx">stroke</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">ctx</span><span class="p">.</span><span class="nx">closePath</span><span class="p">();</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">restore</span><span class="p">();</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">Canvas</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">drawStone</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">stone</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">ctx</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">context</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="nx">stone</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="mi">10</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="nx">stone</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="mi">10</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">fillStyle</span> <span class="o">=</span> <span class="s1">&#39;orange&#39;</span><span class="p">;</span>
-</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">beginPath</span><span class="p">();</span>
-</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">arc</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">closePath</span><span class="p">();</span>
-</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">fill</span><span class="p">();</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">new</span> <span class="nx">Game</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>TIPS:</h4>
-
-<p>在Google搜索 <code>Conway's Game of Life</code> ,会看到Google的一个实现。</p>
 ]]></content>
   </entry>
   

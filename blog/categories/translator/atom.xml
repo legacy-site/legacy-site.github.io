@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Translator | Mirreal Note]]></title>
   <link href="http://blog.mirreal.net/blog/categories/translator/atom.xml" rel="self"/>
   <link href="http://blog.mirreal.net/"/>
-  <updated>2017-07-19T22:16:14+08:00</updated>
+  <updated>2017-07-26T19:02:54+08:00</updated>
   <id>http://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Mirreal Ellison]]></name>
@@ -12,6 +12,333 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[面向初学者的高阶组件介绍]]></title>
+    <link href="http://blog.mirreal.net/blog/2017/07/19/higher-order-components-for-beginners/"/>
+    <updated>2017-07-19T18:59:37+08:00</updated>
+    <id>http://blog.mirreal.net/blog/2017/07/19/higher-order-components-for-beginners</id>
+    <content type="html"><![CDATA[<blockquote><p>作者：Brandon Newton</p>
+
+<p>原文：<a href="https://btnwtn.com/articles/higher-order-components-for-beginners">Higher-Order Components (HOCs) for Beginners</a></p>
+
+<p>谈点：一篇面向初学者的 HOC 介绍。高阶组件听起来挺唬人的，只看名字恐怕不是那么容易明白究竟是何物，而且通常来讲高阶组件并不是组件，而是接受组件作为参数，并且返回组件的函数。早期利用 ES5 的 mixin 语法来做的事，基本都可以使用高阶组件代替，而且能做的还有更多。</p></blockquote>
+
+<h2>前言</h2>
+
+<p>写这篇文章的起因是其他关于高阶组件（Higher-Order Components）的文章，包含官方文档，都令初学者感到相当困惑。我知道有高阶组件这样一个东西，但不知道它到底有什么用。所以，想通过一篇文章来对高阶组件有一个更好的理解。</p>
+
+<p>在此之前，我们需要先来讲一下 JavaScript 中的函数。</p>
+
+<h2>ES6 箭头函数简介</h2>
+
+<p>接下来将提供一些箭头函数的简单示例，如果之前没有使用过，可以认为它们与普通函数基本一致。下面的代码会展示箭头函数与普通函数的区别。</p>
+
+<pre><code class="javascript">function () {
+  return 42
+}
+
+// same as:
+() =&gt; 42
+
+// same as:
+() =&gt; {
+  return 42
+}
+
+function person(name) {
+  return { name: name }
+}
+
+// same as:
+(name) =&gt; {
+  return { name: name }
+}
+</code></pre>
+
+<p>阅读 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions">MDN 的箭头函数文档</a> 了解更多信息。</p>
+
+<h2>作为值的函数与部分调用</h2>
+
+<p>就像是数字、字符串、布尔值 一样，函数也是值，意味着可以像传递其他数据一样传递函数，可以将函数作为参数传递给另外一个函数。</p>
+
+<pre><code class="javascript">const execute = (someFunction) =&gt; someFunction()
+
+execute(() =&gt; alert('Executed'))
+</code></pre>
+
+<p>也可以在在函数中返回一个函数：</p>
+
+<pre><code class="javascript">const getOne = () =&gt; () =&gt; 1
+
+getOne()()
+</code></pre>
+
+<p>之所以在 <code>getOne</code> 后面有两个 <code>()</code> ，是因为第一个返回的返回值是一个函数。如下：</p>
+
+<pre><code class="javascript">const getOne = () =&gt; () =&gt; 1
+
+getOne
+//=&gt; () =&gt; () =&gt; 1
+
+getOne()
+//=&gt; () =&gt; 1
+
+getOne()()
+//=&gt; 1
+</code></pre>
+
+<p>从函数返回函数可以帮助我们追踪初始输入函数。例如，下面的函数接受一个数字作为参数，并返回一个将该参数乘以新参数的函数：</p>
+
+<pre><code class="javascript">const multiply = (x) =&gt; (y) =&gt; x * y
+
+multiply(5)(20)
+</code></pre>
+
+<p>这个示例跟上述 <code>getOne</code> 一样，在下面这个例子，让 x = 5，y = 20。</p>
+
+<pre><code class="javascript">const multiply = (x) =&gt; (y) =&gt; x * y
+
+multiply
+//=&gt; (x) =&gt; (y) =&gt; x * y
+
+multiply(5)
+//=&gt; (y) =&gt; 5 * y
+
+multiply(5)(20)
+//=&gt; 5 * 20
+</code></pre>
+
+<p>在只传入一个参数调用 <code>multiply</code> 函数时，即部分调用该函数。比如，<code>multiply(5)</code> 讲得到一个将其输入值乘以 5 的函数，<code>multiply(7)</code> 将得到一个将其输入值乘以 7 的函数。依此类推。通过部分调用可以创建一个预定义功能的新函数：</p>
+
+<pre><code class="javascript">const multiply = (x) =&gt; (y) =&gt; x * y
+
+const multiplyByFive = multiply(5)
+const multiplyBy100 = multiply(100)
+
+multiplyByFive(20)
+//=&gt; 100
+multiply(5)(20)
+//=&gt; 100
+
+multiplyBy100(5)
+//=&gt; 500
+multiply(100)(5)
+//=&gt; 500
+</code></pre>
+
+<p>一开始看起来似乎没什么用，但是，通过部分调用这种方式可以编写可读性更高，更易于理解的代码。举个例子，可以用一种更清晰的方式来代替 <a href="https://www.styled-components.com/docs/basics#adapting-based-on-props">style-components</a> 的函数插入语法。</p>
+
+<pre><code class="javascript">// before
+const Button = styled.button`
+  background-color: ${({ theme }) =&gt; theme.bgColor}
+  color: ${({ theme }) =&gt; theme.textColor}
+`
+
+&lt;Button theme={themes.primary}&gt;Submit&lt;/Button&gt;
+// after
+const fromTheme = (prop) =&gt; ({ theme }) =&gt; theme[prop]
+
+const Button = styled.button`
+  background-color: ${fromTheme("bgColor")}
+  color: ${fromTheme("textColor")}
+`
+
+&lt;Button theme={themes.primary}&gt;Submit&lt;/Button&gt;
+</code></pre>
+
+<p>我们创建一个接受一个字符串作为参数的函数 <code>fromTheme("textColor")</code>：它返回一个接受具有 <code>theme</code> 属性的对象的函数：<code>({ theme }) =&gt; theme[prop]</code>，然后再通过初始传入的字符串 <code>"textColor"</code> 进行查找。我们可以做得更多，写类似的 <code>backgroundColor</code> 和 <code>textColor</code> 这种部分调用 <code>fromTheme</code> 的函数：</p>
+
+<pre><code class="javascript">const fromTheme = (prop) =&gt; ({ theme }) =&gt; theme[prop]
+const backgroundColor = fromTheme("bgColor")
+const textColor = fromTheme("textColor")
+
+const Button = styled.button`
+  background-color: ${backgroundColor}
+  color: ${textColor}
+`
+
+&lt;Button theme={themes.primary}&gt;Submit&lt;/Button&gt;
+</code></pre>
+
+<h2>高阶函数</h2>
+
+<p>高阶函数的定义是，接受函数作为参数的函数。如果曾经使用过类似 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map">map</a> 这样的函数，可能已经很熟悉高阶函数。如果不熟悉 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map">map</a>，它是一个数组遍历的方法，接受一个函数作为参数应用到数组中的每个元素。例如，可以像这样对一个数组作平方：</p>
+
+<pre><code class="javascript">const square = (x) =&gt; x * x
+
+[1, 2, 3].map(square)
+//=&gt; [ 1, 4, 9 ]
+</code></pre>
+
+<p>可以实现一个我们自己的 <code>map</code> 版本来说明这个概念：</p>
+
+<pre><code class="javascript">const map = (fn, array) =&gt; {
+  const mappedArray = []
+
+  for (let i = 0; i &lt; array.length; i++) {
+    mappedArray.push(
+      // apply fn with the current element of the array
+      fn(array[i])
+    )
+  }
+
+  return mappedArray
+}
+</code></pre>
+
+<p>然后再使用我们的 map 版本来对一个数组作平方：</p>
+
+<pre><code class="javascript">const square = (x) =&gt; x * x
+
+console.log(map(square, [1, 2, 3, 4, 5]))
+//=&gt; [ 1, 4, 9, 16, 25 ]
+</code></pre>
+
+<blockquote><p>译者注：我们也可以将 map 方法从对象中解耦出来：</p>
+
+<pre><code class="javascript">const map = (fn, array) =&gt; Array.prototype.map.call(array, fn)
+</code></pre>
+
+<p>这样也可以像上述例子一样调用。
+或者更函数式的做法，再来点柯里化：</p>
+
+<pre><code class="javascript">const map = array =&gt; fn =&gt; Array.prototype.map.call(array, fn)
+</code></pre></blockquote>
+
+<p>或者是返回一个 <code>&lt;li&gt;</code>的 React 元素数组：</p>
+
+<pre><code class="javascript">const HeroList = ({ heroes }) =&gt; (
+  &lt;ul&gt;
+    {map((hero) =&gt; (
+      &lt;li key={hero}&gt;{hero}&lt;/li&gt;
+    ), heroes)}
+  &lt;/ul&gt;
+)
+
+&lt;HeroList heroes=[
+  "Wonder Woman",
+  "Black Widow",
+  "Spider Man",
+  "Storm",
+  "Deadpool"
+]/&gt;
+/*=&gt; (
+  &lt;ul&gt;
+    &lt;li&gt;Wonder Woman&lt;/li&gt;
+    &lt;li&gt;Black Widow&lt;/li&gt;
+    &lt;li&gt;Spider Man&lt;/li&gt;
+    &lt;li&gt;Storm&lt;/li&gt;
+    &lt;li&gt;Deadpool&lt;/li&gt;
+  &lt;/ul&gt;
+)*/
+</code></pre>
+
+<h2>高阶组件</h2>
+
+<p>我们知道，高阶函数是接受函数作为参数的函数。在 React 中，任何返回 <a href="https://facebook.github.io/react/docs/jsx-in-depth.html">JSX</a> 的函数都被称为无状态函数组件，简称为函数组件。基本的函数组件如下所示：</p>
+
+<pre><code class="javascript">const Title = (props) =&gt; &lt;h1&gt;{props.children}&lt;/h1&gt;
+
+&lt;Title&gt;Higher-Order Components(HOCs) for React Newbies&lt;/Title&gt;
+//=&gt; &lt;h1&gt;Higher-Order Components(HOCs) for React Newbies&lt;/h1&gt;
+</code></pre>
+
+<p>高阶组件则是<em>接受组件作为参数并返回组件的函数</em>。如何使用传入组件完全取决于你，甚至可以完全忽视它：</p>
+
+<pre><code class="javascript">// Technically an HOC
+const ignore = (anything) =&gt; (props) =&gt; &lt;h1&gt;:)&lt;/h1&gt;
+
+const IgnoreHeroList = ignore(HeroList)
+&lt;IgnoreHeroList /&gt;
+//=&gt; &lt;h1&gt;:)&lt;/h1&gt;
+</code></pre>
+
+<p>可以编写一个将输入转换成大写的 HOC：</p>
+
+<pre><code class="javascript">const yell = (PassedComponent) =&gt;
+  ({ children, ...props }) =&gt;
+    &lt;PassedComponent {...props}&gt;
+      {children.toUpperCase()}!
+    &lt;/PassedComponent&gt;
+
+const Title = (props) =&gt; &lt;h1&gt;{props.children}&lt;/h1&gt;
+const AngryTitle = yell(Title)
+
+&lt;AngryTitle&gt;Whatever&lt;/AngryTitle&gt;
+//=&gt; &lt;h1&gt;WHATEVER!&lt;/h1&gt;
+</code></pre>
+
+<p>你也可以返回一个有状态组件，因为 JavaScript 中的类不过是函数的语法糖。这样就可以使用到 React 生命周期的方法，比如 <code>componentDidMount</code>。这是 HOCs 真正有用的地方。我们现在可以做一些稍微有趣点的事，比如将 HTTP 请求的结果传递给函数组件。</p>
+
+<pre><code class="javascript">const withGists = (PassedComponent) =&gt;
+  class WithGists extends React.Component {
+    state = {
+      gists: []
+    }
+
+    componentDidMount() {
+      fetch("https://api.github.com/gists/public")
+      .then((r) =&gt; r.json())
+      .then((gists) =&gt; this.setState({
+        gists: gists
+      }))
+    }
+
+    render() {
+      return (
+        &lt;PassedComponent
+          {...this.props}
+          gists={this.state.gists}
+        /&gt;
+      )
+    }
+  }
+
+
+const Gists = ({ gists }) =&gt; (
+  &lt;pre&gt;{JSON.stringify(gists, null, 2)}&lt;/pre&gt;
+)
+
+const GistsList = withGists(Gists)
+
+&lt;GistsList /&gt;
+//=&gt; Before api request finishes:
+// &lt;Gists gists={[]} /&gt;
+//
+//=&gt; After api request finishes:
+// &lt;Gists gists={[
+//  { /* … */ },
+//  { /* … */ },
+//  { /* … */ }
+// ]} /&gt;
+</code></pre>
+
+<p><code>withGists</code> 会传递 gist api 调用的结果，并且你可以在任何组件上使用。<a href="https://codesandbox.io/embed/o2YpJnpDj">点击这里</a> 可以看到一个更加完整的例子。</p>
+
+<h2>结论：高阶组件是 🔥🔥🔥</h2>
+
+<p>react-redux 也是使用 HOC， <a href="https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options">connect</a> 将应用 store 的值传递到“已连接” 的组件。它还会执行一些错误检查和组件生命周期优化，如果手动完成将导致编写大量重复代码。</p>
+
+<p>如果你发现自己在不同地方编写了大量的代码，那么也可以将代码重构成可重用的 HOC。</p>
+
+<p>HOCs 非常具有表现力，可以使用它们创造很多很酷的东西。</p>
+
+<p>尽可能地保持你的 HOC 简单，<em>不要编写需要阅读长篇大论才能理解的代码</em>。</p>
+
+<h3>附加练习</h3>
+
+<p>下面有一些练习，来巩固对 HOC 的理解：</p>
+
+<ul>
+<li>写一个反转其输入的 HOC</li>
+<li>编写一个HOC，将 API 中的数据提供给组件</li>
+<li>写一个HOC来实现 <a href="https://facebook.github.io/react/docs/react-component.html#shouldcomponentupdate"><code>shouldComponentUpdate</code></a>，<a href="https://facebook.github.io/react/docs/optimizing-performance.html#avoid-reconciliation">以避免更新</a>。</li>
+<li>编写一个 HOC，使用 <a href="https://facebook.github.io/react/docs/react-api.html#react.children.toarray"><code>React.Children.toArray</code></a> 对传入组件子元素进行排序。</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[CSS Animations vs Web Animations API]]></title>
@@ -996,232 +1323,6 @@ import { a, b } from "c";
 <p>在 Node.js 发布原生 ESM 支持之前，应该仍然使用 Rollup 和 Webpack 等工具。它们在一定程度上模拟了 ESM 环境，但要注意它们不完全符合规范。此外，使用打包仍然是个<a href="https://peerigon.github.io/talks/2016-08-26-jsconf-is-future-frontend-tooling/#36">很好的选择</a>，一旦可以在浏览器中使用 NPM 软件包。</p>
 
 <p>我们 webpack 团队正在努力做一些工作，帮助开发者平稳过渡。为了这个目标，我们计划在 Node.js 的 ESM 支持成熟后，模拟 Node.js 导入 CJS 的方式。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[JS/React 开发者的 Atom 终极配置]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/05/28/my-atom-editor-setup-for-js-react/"/>
-    <updated>2017-05-28T18:00:00+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/05/28/my-atom-editor-setup-for-js-react</id>
-    <content type="html"><![CDATA[<blockquote><p>原文作者：Elad Ossadon</p>
-
-<p>原文链接：<a href="https://medium.com/productivity-freak/my-atom-editor-setup-for-js-react-9726cd69ad20">The Ultimate Atom Editor Setup (+for JS/React)</a></p></blockquote>
-
-<p>根据多年以来不断完善 Sublime Text 配置的经验，决定这次给 Atom 也来一个大改造。这个过程花费了好几个月的时间，但成果还是很卓有成效的，我现在非常满意这份配置。</p>
-
-<p>这份清单将分为实用工具和 React 专用，并涉及到快捷键绑定。</p>
-
-<h2>实用工具</h2>
-
-<h3><a href="https://atom.io/packages/atom-beautify">atom-beautify</a></h3>
-
-<p>可以在 Atom 中 美化 HTML，CSS，JavaScript，PHP，Python，Ruby，Java，C，C ++，C＃，Objective-C，CoffeeScript，TypeScript，Coldfusion，SQL等。</p>
-
-<p>快捷键：<code>⌃+⌥+B</code></p>
-
-<h3><a href="https://atom.io/packages/prettier-atom">prettier-atom</a></h3>
-
-<p>使用 Prettier 来格式化 JavaScript 代码，配有强大的 ESlint 集成。</p>
-
-<p>快捷键：<code>⌃+⌥+F</code></p>
-
-<h3><a href="https://atom.io/packages/atom-transpose">atom-transpose</a></h3>
-
-<p>Atom 的转置更像是字符串翻转。在 Sublime 可以将选中的两个字符串进行交换，看起来更有用。</p>
-
-<p>快捷键：<code>⌥+T</code></p>
-
-<h3><a href="https://atom.io/packages/case-keep-replace">case-keep-replace</a></h3>
-
-<p>使用这个插件可以在替换文本的时候可以保留原来的命名风格。</p>
-
-<p>快捷键：<code>⌘+⌃+R</code></p>
-
-<h3><a href="https://atom.io/packages/change-case">change-case</a></h3>
-
-<p>一个可以快速改变当前选择文本命名方式的工具。比如可以从 <code>camelCase</code> 转换到 <code>snake_case</code> 等。</p>
-
-<p>快捷键：<code>⌘+K ⌘+C/S</code></p>
-
-<h3><a href="https://atom.io/packages/copy-path">copy-path</a></h3>
-
-<p>可以灵活地复制文件路径。</p>
-
-<h3><a href="https://atom.io/packages/duplicate-line-or-selection">duplicate-line-or-selection</a></h3>
-
-<p>重复选择文本或者重复一行，跟 Sublime Text 的行为一致，Atom 可以重复一整行。</p>
-
-<p>快捷键：<code>⌘+⇧+D</code></p>
-
-<h3><a href="https://atom.io/packages/editorconfig">editorconfig</a></h3>
-
-<p>帮助开发人员在不同的编辑器之间保持一致的编码风格。</p>
-
-<h3><a href="https://atom.io/packages/file-icons">file-icons</a></h3>
-
-<p>Atom 的文件特定图标插件，便于区分不同文件类型。</p>
-
-<h3><a href="https://atom.io/packages/git-plus">git-plus</a></h3>
-
-<p>VIM 风格的 git 插件，在没有终端命令行的时候进行提交等其他 git 操作。</p>
-
-<h3><a href="https://atom.io/packages/highlight-selected">highlight-selected</a></h3>
-
-<p>通过双击一个词来高亮整个文件相同的词。</p>
-
-<h3><a href="https://atom.io/packages/local-history">local-history</a></h3>
-
-<p>用于维护本地文件历史的插件（对代码文件进行更改的历史记录）。</p>
-
-<h3><a href="https://atom.io/packages/project-manager">project-manager</a></h3>
-
-<p>轻松访问所有项目，还能对项目特定设置和选项进行管理。</p>
-
-<p>快捷键：<code>⌘+⌃+P</code></p>
-
-<h3><a href="https://atom.io/packages/atom-reveal-file-in-finder">atom-reveal-file-in-finder</a></h3>
-
-<p>可以在工作区或者文件选项卡上打开文件到 Finder 上，快捷命令已经添加到 <code>⌘+⇧*+P</code> 。</p>
-
-<p>快捷键：<code>⌘+⌃+P</code></p>
-
-<h3><a href="https://atom.io/packages/related">related</a></h3>
-
-<p>related 提供了访问与当前打开的文件相关的文件的快速方式。 例如，在 <code>.js</code> 和 <code>.spec.js</code> 文件之间切换。</p>
-
-<p>快捷键：<code>⌘+⇧+ R</code></p>
-
-<p>我的 JS 关联配置 (Menu > Packages > Related > Edit related patterns):</p>
-
-<pre><code>'([^\\/]+)(?!\\.spec).js(x?)$': [
-  'tests/$1.spec.js$2#create',
-]
-'tests/(.+).spec.js(x?)$': [
-  '$1.js$2',
-]
-</code></pre>
-
-<h3><a href="https://atom.io/packages/set-syntax">set-syntax</a></h3>
-
-<p>一种简单的命令方式来设置当前文件语法，与 Sublime 类似。</p>
-
-<p>快捷键：<code>⌘+⇧+P</code></p>
-
-<h3><a href="https://atom.io/packages/sort-lines">sort-lines</a></h3>
-
-<p>排序/删除重复行。</p>
-
-<h3><a href="https://atom.io/packages/Sublime-Style-Column-Selection">sublime-style-column-selection</a></h3>
-
-<p>alt +单击跨行选择文本块，每行都有插入符号。</p>
-
-<p>快捷键：<code>⌥+Drag</code></p>
-
-<h3><a href="https://atom.io/packages/tab-foldername-index">tab-foldername-index</a></h3>
-
-<p>可以替换 TAB 标签内容的插件，在打开相同文件名的文件时保证更高的可读性。</p>
-
-<h3><a href="https://atom.io/packages/sync-settings">sync-settings</a></h3>
-
-<p>跨 Atom 实例同步设置，键盘映射，用户样式，初始化脚本，代码段和已安装的软件包。 我将所有设置备份到 Gist 并在工作/个人计算机之间进行同步。</p>
-
-<h3><a href="https://atom.io/packages/toggle-quotes">toggle-quotes</a></h3>
-
-<p>快速切换字符串的单引号和双引号。</p>
-
-<p>快捷键：<code>⌘+⇧+’</code></p>
-
-<h3><a href="https://atom.io/packages/atom-spotify2">atom-spotify2</a></h3>
-
-<p>在 Atom 状态栏中显示在 Spotify 中当前播放歌曲。 不是必要的，但很有趣。</p>
-
-<h2>HTML/CSS/JS/React Specific Packages</h2>
-
-<h3><a href="https://atom.io/packages/atom-ternjs">atom-ternjs</a></h3>
-
-<p>使用 Tern 为 Atom 提供 JavaScript 代码智能提示，支持 ES5，ES6，ES7，Node.js，jQuery，Angular等。</p>
-
-<h3><a href="https://atom.io/packages/atom-wrap-in-tag">atom-wrap-in-tag</a></h3>
-
-<p>为选择的文本增加标签。</p>
-
-<p>快捷键：<code>⌥+⇧+W</code></p>
-
-<h3><a href="https://atom.io/packages/autoclose-html">autoclose-html</a></h3>
-
-<p>自动添加关闭标签。</p>
-
-<h3><a href="https://atom.io/packages/autocomplete-modules">autocomplete-modules</a></h3>
-
-<p>自动补全 <code>require/import</code> 声明。</p>
-
-<h3><a href="https://atom.io/packages/color-picker">color-picker</a></h3>
-
-<p>很厉害的颜色选择器。</p>
-
-<p>快捷键：<code>⌘+⇧+D</code></p>
-
-<h3><a href="https://atom.io/packages/docblockr">docblockr</a></h3>
-
-<p>更容易的方式写文档注释。</p>
-
-<p>使用方式：<code>/** &lt;tab&gt;</code></p>
-
-<h3><a href="https://atom.io/packages/emmet">emmet</a></h3>
-
-<p>一个大大提高 HTML 和 CSS 工作流程的插件。 <a href="http://emmet.io/">关于 Emmet</a></p>
-
-<h3><a href="https://atom.io/packages/emmet-jsx-css-modules">emmet-jsx-css-modules</a></h3>
-
-<p>适用于 css 模块的 emmet 工具。 <code>.foo</code> 现在将扩展为 <code>&lt;div className = {style.foo}&gt; &lt;/ div&gt;</code>，而不是 <code>&lt;div className =“foo”&gt; &lt;/ div&gt;</code>。</p>
-
-<h3><a href="https://atom.io/packages/es6-javascript">es6-javascript</a></h3>
-
-<p>一组专注 ES6，用于优化现代 JavaScript 开发生产力的命令集， 目标是符合 <a href="https://github.com/airbnb/javascript">Airbnb 推荐的代码规范</a>。</p>
-
-<h3><a href="https://atom.io/packages/js-hyperclick">js-hyperclick</a> &amp; <a href="https://atom.io/packages/hyperclick">hyperclick</a></h3>
-
-<p>点击跳到变量或者 import 定义，js-hyperclick 依赖于 hyperclick。</p>
-
-<h3><a href="https://atom.io/packages/pigments">pigments</a></h3>
-
-<p>在项目文件中显示颜色。</p>
-
-<h3><a href="https://atom.io/packages/linter-eslint">linter-eslint</a></h3>
-
-<p>插件 <a href="https://github.com/AtomLinter/Linter">Linter</a> 为 <a href="http://eslint.org/">eslint</a> 提供 UI 接口，用于对 JavaScript 文件进行静态检查。</p>
-
-<h3><a href="https://atom.io/packages/tree-view-copy-relative-path">tree-view-copy-relative-path</a></h3>
-
-<p>允许从 tree view 复制文件的相对路径。</p>
-
-<h3><a href="https://atom.io/packages/lodash-snippets">lodash-snippets</a></h3>
-
-<p>在 Atom 中快速使用 lodash 的代码提示。</p>
-
-<h3><a href="https://atom.io/packages/language-babel">language-babel</a></h3>
-
-<p>支持 JavaScript ES201x，React JSX，Flow和GraphQL语法。</p>
-
-<h3><a href="https://atom.io/packages/react-es7-snippets">react-es7-snippets</a></h3>
-
-<p>React ES7 snippets for atom</p>
-
-<h3><a href="https://atom.io/packages/atom-jest-snippets">atom-jest-snippets</a></h3>
-
-<p>Jest 测试提示</p>
-
-<h2>我的主题</h2>
-
-<h3>UI Theme: <a href="https://atom.io/themes/one-dark-ui">one-dark-ui</a></h3>
-
-<h3>Syntax Theme: <a href="https://atom.io/themes/dracula-theme">dracula-theme</a></h3>
-
-<h2>Install EVERYTHING!</h2>
-
-<pre><code>apm install atom-beautify prettier-atom atom-spotify2 atom-transpose case-keep-replace change-case copy-path duplicate-line-or-selection editorconfig file-icons git-plus highlight-selected local-history project-manager related set-syntax atom-reveal-file-in-finder sort-lines sublime-style-column-selection tab-foldername-index sync-settings toggle-quotes atom-wrap-in-tag atom-ternjs autoclose-html autocomplete-modules color-picker docblockr emmet emmet-jsx-css-modules es6-javascript js-hyperclick hyperclick pigments linter-eslint tree-view-copy-relative-path lodash-snippets language-babel react-es7-snippets atom-jest-snippets one-dark-ui dracula-theme
-</code></pre>
 ]]></content>
   </entry>
   
