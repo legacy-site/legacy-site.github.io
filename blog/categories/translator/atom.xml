@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Translator | Mirreal Note]]></title>
   <link href="http://blog.mirreal.net/blog/categories/translator/atom.xml" rel="self"/>
   <link href="http://blog.mirreal.net/"/>
-  <updated>2017-09-17T17:45:07+08:00</updated>
+  <updated>2017-09-18T22:01:01+08:00</updated>
   <id>http://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Mirreal Ellison]]></name>
@@ -12,6 +12,451 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[在 Node.js 中使用原生 ES 模块]]></title>
+    <link href="http://blog.mirreal.net/blog/2017/09/13/using-es-modules-natively-in-node-dot-js/"/>
+    <updated>2017-09-13T16:19:59+08:00</updated>
+    <id>http://blog.mirreal.net/blog/2017/09/13/using-es-modules-natively-in-node-dot-js</id>
+    <content type="html"><![CDATA[<blockquote><p>原文：<a href="http://2ality.com/2017/09/native-esm-node.html">Using ES modules natively in Node.js</a></p>
+
+<p>作者：<a href="https://twitter.com/rauschma">Axel Rauschmayer</a></p></blockquote>
+
+<p>从版本 8.5.0 开始，Node.js 开始支持原生 ES 模块，可以通过命令行选项打开该功能。新功能很大程度上得归功于 <a href="https://twitter.com/bradleymeck">Bradley Farias</a>。</p>
+
+<h2>1.演示</h2>
+
+<p>这个示例的代码目录结构如下：</p>
+
+<pre><code>esm-demo/
+    lib.mjs
+    main.mjs
+</code></pre>
+
+<p>lib.mjs：</p>
+
+<pre><code class="javascript">export function add(x, y) {
+    return x + y;
+}
+</code></pre>
+
+<p>main.mjs：</p>
+
+<pre><code class="javascript">import {add} from './lib.mjs';
+
+console.log('Result: '+add(2, 3));
+</code></pre>
+
+<p>运行演示：</p>
+
+<pre><code class="sh">$ node --experimental-modules main.mjs
+Result: 5
+</code></pre>
+
+<h2>2.清单：需要注意的事情</h2>
+
+<h3>ES 模块：</h3>
+
+<ul>
+<li><p>不能动态导入模块。但是 <a href="http://2ality.com/2017/01/import-operator.html">动态 import()</a> 的相关工作正在进行中，应该很快就能提供支持。</p></li>
+<li><p>没有元变量，如 <code>__dirname</code> 和 <code>__filename</code>。但是，有一个的类似功能的提案：“<a href="https://github.com/tc39/proposal-import-meta">import.meta</a>”。看起来可能是这样：</p></li>
+</ul>
+
+
+<pre><code class="javascript">console.log(import.meta.url);
+</code></pre>
+
+<ul>
+<li>现在所有模块标识符都是 URL（这部分在 Node.js 是新增的）：
+
+<ul>
+<li>文件 - 带文件扩展名的相对路径： <code>../util/tools.mjs</code></li>
+<li>库 - 没有文件扩展名，也没有路径 <code>lodash</code></li>
+<li>如何更好地使 npm 库在浏览器中也可用（不使用 bundler）仍有待观察。一种可能性是引入 RequireJS 风格的配置数据，将路径映射到实际路径。目前，在浏览器中使用 bare path 的模块标识符是非法的。</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>与 CJS 模块的互操作性</h3>
+
+<ul>
+<li>你可以导入 CJS 模块，但它们总是只有默认的导出 - 即 <code>module.exports</code> 的值。让 CJS 模块支持命名导出已经在做了，但可能需要一段时间。如果你能帮忙，<a href="https://twitter.com/bradleymeck/status/906210545145184257">可以来做</a>。</li>
+</ul>
+
+
+<pre><code class="javascript">import fs1 from 'fs';
+console.log(Object.keys(fs1).length); // 86
+
+import * as fs2 from 'fs';
+console.log(Object.keys(fs2)); // ['default']
+</code></pre>
+
+<ul>
+<li>不能在 ES 模块中使用 require()。主要原因是：
+
+<ul>
+<li>路径解析工作稍有不同：ESM 不支持 <code>NODE_PATH</code> 和 <code>require.extensions</code>。而且，它的标识符始终是 URL 也会导致一些细微差异。</li>
+<li>ES 模块始终以异步方式加载，这确保了与 Web 的最大兼容性。这种加载风格并不能通过 require() 混合使用同步加载 CJS 模块。</li>
+<li>禁止同步模块加载也可以为 Top-level await 导入 ES 模块保留后路（一个当前正在考虑的功能）。</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>3.早期版本的 Node.js 上的 ES 模块</h2>
+
+<p>如果要在 8.5.0 之前的 Node.js 版本上使用 ES 模块，请参阅 John-David Dalton 的 <a href="https://github.com/standard-things/esm">@std/esm</a>。</p>
+
+<p>提示：如果不启用任何可解锁的额外功能，将在 Node.js 保持 100％ 兼容原生 ES 模块.</p>
+
+<h2>FAQ</h2>
+
+<h3>什么时候可以不带命令行选项使用ES 模块？</h3>
+
+<p>目前的计划是在 Node.js 10 LTS 中默认可使用 ES 模块。</p>
+
+<h2>进一步阅读  </h2>
+
+<p>有关 Node.js 和浏览器中 ES 模块的更多信息：</p>
+
+<ul>
+<li>“<a href="http://2ality.com/2017/01/babel-esm-spec-mode.html">Making transpiled ES modules more spec-compliant</a>” [using ES modules natively vs. transpiling them via Babel]</li>
+<li>“<a href="http://2ality.com/2017/05/es-module-specifiers.html">Module specifiers: what’s new with ES modules?</a>” [Why <code>.mjs</code>? How are module specifiers resolved? Etc.]</li>
+<li>“<a href="http://exploringjs.com/es6/ch_modules.html">Modules</a>” [in-depth chapter on ES modules in “Exploring ES6”]</li>
+</ul>
+
+
+<p>即将到来的 ECMAScript 提案：</p>
+
+<ul>
+<li>博客: “<a href="http://2ality.com/2017/01/import-operator.html">ES proposal: <code>import()</code> – dynamically importing ES modules</a>”</li>
+<li>提案: “<a href="https://github.com/tc39/proposal-import-meta"><code>import.meta</code></a>”</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[在工作中学习]]></title>
+    <link href="http://blog.mirreal.net/blog/2017/09/02/learning-at-work/"/>
+    <updated>2017-09-02T21:49:52+08:00</updated>
+    <id>http://blog.mirreal.net/blog/2017/09/02/learning-at-work</id>
+    <content type="html"><![CDATA[<blockquote><p>原文；<a href="https://jvns.ca/blog/2017/08/06/learning-at-work/">Learning at work</a></p>
+
+<p>作者：Julia Evans</p>
+
+<p>谈点：学习是一件没有尽头的事，虽然在工作中很多时候被淹没在没玩没了的需求里面，加班是常态，或许很多人不知不觉放弃学习的心思。这篇文章中提到的一些方法我很赞同，很多点也是我的做事方式，这里也希望所有人都能找到适合自己的学习方式。</p></blockquote>
+
+<p>在 Twitter 上我提了一个问题，“你是如何花时间用于自身学习”（<a href="https://twitter.com/b0rk/status/887111177062555648">这个推文</a>)，这些回答有一些相同之处：</p>
+
+<ul>
+<li>阅读博客文章</li>
+<li>去参加业界大会</li>
+<li>读书</li>
+<li>在洗碗时看一些演讲</li>
+<li>在一些不那么重要的项目里运用你想要学习的技术</li>
+</ul>
+
+
+<p>这些方法都挺管用的。为了个人职业发展，在工作之外花时间学习新技能是非常普遍的事，在这方面我也有不少经验。</p>
+
+<p>另一方面，我知道有一些很厉害的程序员在工作之外完全不写代码。于是我开始思考，如果你想变得更牛，但又不想工作之外花太多额外时间要怎么办？</p>
+
+<p>这些是我以及在 Twitter 上的朋友提到的一些观点，并且都是能在工作时候做的事情。</p>
+
+<h2>不要学习工作之外的编程语言/框架</h2>
+
+<p>这一点听起来有些消极，但确实还是很有用的。对于学习编程语言，我的观点是：</p>
+
+<ul>
+<li>我很熟悉几种编程语言（python，scala，ruby）</li>
+<li>学习新的编程语言需要相当长的时间</li>
+<li>我不想把空闲时间花在上面</li>
+</ul>
+
+
+<p>最近我在做一些 Go 方面的工作，还挺有趣的，我也喜欢做这件事。但是又觉得在上面花费太多个人时间，所以显得不是那么有趣了。通过编写代码学习编程，阅读别人的代码掌握一些模式，然后自己审查代码，然而这些都不是必须的，因为完全可以在工作中去做这些事情。</p>
+
+<h2>选择一些可以从中学习的项目</h2>
+
+<p>这些是我在过去三年学到的一些东西：</p>
+
+<ul>
+<li>Scala/Ruby/Go</li>
+<li>hadoop/mapreduce/scalding</li>
+<li>如何使用 Java 并发库，以及如何配置一个 Java 程序</li>
+<li>关于各种 AWS 服务的工作原理</li>
+<li>很多机器学习的东西</li>
+<li>网络/ CDN / TLS 如何工作</li>
+<li>docker/容器/rkt/kubernetes</li>
+<li>服务发现 / DNS / jenkins</li>
+</ul>
+
+
+<p>一个关于如何选择项目的例子：如果在工作使用一个不能很好并行的程序，这时候问题就来了。我可以选择去问写这个程序的人为什么不使用并行编程，但是如果我也很想学习一下并行编程的话，就可以自己去完成这件事。所以后来我就 <a href="https://jvns.ca/blog/2016/03/29/thread-pools-part-ii-i-love-blocking/">学到了如何在 Java 中使用线程池</a>。</p>
+
+<p>我只为此工作了几天，但却因此学到了新东西。</p>
+
+<p>现在我正在从事 Kubernetes 相关的工作，当时选择它并不是因为可以在这里面学到很多东西。但是我确实学到很多有关分布式系统的东西，还在工作中使用 Go 语言，我觉得这很很棒。</p>
+
+<p>当人们说像“嘿，我们使用 X 技术，需要有相关经验的人才能在这里工作”时，这其实相当愚蠢。现在我在网络/ puppet / kubernetes / docker / AWS 上花了很多时间，在这项工作之前没有任何相关工作经验。</p>
+
+<h2>观察那些高级人员是如何做事的</h2>
+
+<p>我会观察那些我敬佩的人在工作中的做事方式，然后尝试模仿他们或者是向他们寻求建议。例如，当 <a href="http://onemogin.com/">Cory</a> 加入时，我注意到，在引进新技术的时候，他会这样做：</p>
+
+<ul>
+<li>找到另一个有类似问题需要解决的团队</li>
+<li>与他们合作，确保技术真正解决问题</li>
+</ul>
+
+
+<p>现在我正在开展一个新项目，一直在考虑这些工作可以帮到谁以及如何帮助，这样做就会感觉好很多。</p>
+
+<h2>阅读每个 pull request</h2>
+
+<p>在这个主题下引用两个我很喜欢的观点：</p>
+
+<blockquote><p>我在一个小团队，所以会阅读所有的 pull request，直到完全了解问题和解决方案</p></blockquote>
+
+<p>和</p>
+
+<blockquote><p>我也是一样！我跟踪检查，看看人们如何解决各种问题</p></blockquote>
+
+<p>事实上，我并没有阅读团队中的每一个 pull request。但是那确实很有用，通过跟踪别人在这方面做的工作来学习这个领域的东西。</p>
+
+<p>但我并不是能完全做到。我曾经从事机器学习方面的工作，发现理论也很有趣，就想跟踪人们在这方面的情况，但对我来说有太多要注意的东西。我只能尽量注意那些比较接近我的东西，像是其中网络团队的一些工作。</p>
+
+<h2>阅读源代码</h2>
+
+<blockquote><p>阅读我用到的源代码对我而言是一个大块头。了解它在内部在做什么，主要是为什么可以通过某种方式工作。</p></blockquote>
+
+<p>这是很重要的一点，也非常重要。很多库、框架、工具并没有很好的文档，在没有阅读源代码的情况下根本无法了解其工作原理。</p>
+
+<h2>跟进你无法解决的 bug</h2>
+
+<p>有时我会遇到一些自己没办法解决的 bug。后来，可能别人会找到解决方法，在这时候，就值得花时间去搞清楚具体的解决方法是什么，以及他们如何想出来的。</p>
+
+<p>例如，最近有一个我没有调试出来的网络问题，刚好有人在上周搞清楚这个问题。现在想一想，大概明白造成这个 bug 的原因，但是我并不清楚他们用什么工具来获取调试所需的信息。当我重新开始工作时，必须确保我真的搞清楚这个问题，这样下次就可以做得更好。</p>
+
+<p>Jessica Kerr 评论道</p>
+
+<blockquote><p>每当我在故障排除时，除了解决这个问题，还会更深入或更广泛地延伸开去。</p></blockquote>
+
+<p>我也喜欢这个回复：</p>
+
+<blockquote><p>有时候，想解决一个与工作有关的问题，但并没有真的在实际工作中发生，只是看看我能不能在某方面有所突破。</p></blockquote>
+
+<h2>运用好通勤时间</h2>
+
+<p>对我而言，其实并没有通勤时间。但很多人提到他们会利用通勤时间来听播客/阅读报纸/阅读有趣的文章。这似乎是一个很不错的方式，来做一些你感兴趣的事情。</p>
+
+<h2>花时间在工作中学习</h2>
+
+<p>Twitter上有人说“我希望每天可以花 1 小时来学习”。我的观点是，我的工作就是要在工作日中抽出时间来学习东西。像现在我正在工作中使用 Kubernetes，这是一个很复杂的系统需要很长时间才能理解，我得花时间了解它是如何工作的。例如，在开始的时候，没什么目的地在做集群测试，只是想了解容器的网络如何工作的，同时也在项目上取得进展。</p>
+
+<p>这可能对我来说挺容易的，因为我的工作跟别人隔得很远，没有人真的知道我具体在做什么，他们只是关心在大方面做的是什么。</p>
+
+<p>实际上，如果要是提前多花点时间阅读，可能效果会更好。就像我刚刚在阅读 Kelsey Hightower 的“learn kubernetes the hard way”的文档，读完不需花太长时间，而且其中有一个关于如何设置一个集群的很好的点，这样就可以很节省我很多时间。</p>
+
+<p>关于这个点，有些人还要想得更远。比如，我的朋友 Dan 就提到好几次，说他喜欢在工作中阅读技术书籍。最初觉得这是一件令人惊讶的事情，但它确实很有用。事实上，有很多跟我工作相关的书籍，找不到理由为什么不能在工作中阅读它们。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript 中的匿名递归]]></title>
+    <link href="http://blog.mirreal.net/blog/2017/08/09/anonymous-recursion-in-javascript/"/>
+    <updated>2017-08-09T14:54:22+08:00</updated>
+    <id>http://blog.mirreal.net/blog/2017/08/09/anonymous-recursion-in-javascript</id>
+    <content type="html"><![CDATA[<blockquote><p>原文：<a href="https://dev.to/simov/anonymous-recursion-in-javascript">Anonymous Recursion in JavaScript</a></p>
+
+<p>作者：Simeon Velichkov</p></blockquote>
+
+<pre><code class="javascript">(
+  (
+    (f) =&gt; f(f)
+  )
+  (
+    (f) =&gt;
+      (l) =&gt; {
+        console.log(l)
+        if (l.length) f(f)(l.slice(1))
+        console.log(l)
+      }
+  )
+)
+(
+  [1, 2, 3]
+)
+</code></pre>
+
+<p>是的，这就是想要分享给大家的一个有趣的示例。这个例子包含以下特性：<a href="https://en.wikipedia.org/wiki/Closure_(computer_programming">闭包</a>)，<a href="https://en.wikipedia.org/wiki/Immediately-invoked_function_expression">自执行函数</a>，<a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions">箭头函数</a>，<a href="https://en.wikipedia.org/wiki/Functional_programming">函数式编程</a> 和 <a href="https://en.wikipedia.org/wiki/Anonymous_recursion">匿名递归</a>。</p>
+
+<p>你可以复制粘贴上述代码到浏览器控制台，会看到打印结果如下：</p>
+
+<pre><code>[ 1, 2, 3 ]
+[ 2, 3 ]
+[ 3 ]
+[]
+[]
+[ 3 ]
+[ 2, 3 ]
+[ 1, 2, 3 ]
+</code></pre>
+
+<p>说到函数式编程，这里有一个使用 <a href="https://en.wikipedia.org/wiki/Scheme_(programming_language">Scheme</a>) (JavaScript 借鉴过的其中一门语言)编写的类似例子：</p>
+
+<pre><code class="scheme">(
+  (
+    (lambda (f) (f f))
+    (lambda (f)
+      (lambda (l)
+        (print l)
+        (if (not (null? l)) ((f f) (cdr l)))
+        (print l)
+      )
+    )
+  )
+  '(1 2 3)
+)
+</code></pre>
+
+<h2>Unwind</h2>
+
+<p>像其他很多编程语言一样，函数调用是通过在函数名称后添加括号 <code>()</code> 来完成的：</p>
+
+<pre><code class="javascript">function foo () { return 'hey' }
+foo()
+</code></pre>
+
+<p>在 JavaScript 中我们可以使用括号包裹任意数量的表达式：</p>
+
+<pre><code class="javascript">('hey', 2+5, 'dev.to')
+</code></pre>
+
+<p>上面代码返回结果是 <code>'dev.to'</code>，原因是 JavaScript 返回最后一个表达式作为结果。</p>
+
+<p>使用括号 <code>()</code> 包裹一个匿名函数表示其结果就是 <a href="https://en.wikipedia.org/wiki/Anonymous_function">匿名函数</a> 本身。</p>
+
+<pre><code class="javascript">(function () { return 'hey' })
+</code></pre>
+
+<p>这本身并没有用处，因为匿名函数没有命名，无法被引用，除非在初始化的时候立即调用它。</p>
+
+<p>就像是普通函数一样，我们可以在其后面添加括号 <code>()</code> 来进行调用。</p>
+
+<pre><code class="javascript">(function () { return 'hey' })()
+</code></pre>
+
+<p>也可以使用箭头函数：</p>
+
+<pre><code class="javascript">(() =&gt; 'hey')()
+</code></pre>
+
+<p>同样地，在匿名函数后添加括号 <code>()</code> 来执行函数，这被称为 <a href="https://en.wikipedia.org/wiki/Immediately-invoked_function_expression">自执行函数</a>。</p>
+
+<h2>闭包</h2>
+
+<p><a href="https://en.wikipedia.org/wiki/Closure_(computer_programming">闭包</a>) 指的是函数和该函数声明词法环境的组合。结合 <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions">箭头功能</a>，我们可以定义如下：</p>
+
+<pre><code class="javascript">var foo = (hi) =&gt; (dev) =&gt; hi + ' ' + dev
+</code></pre>
+
+<p>在控制台调用上述函数会打印 <code>hey dev.to</code>:</p>
+
+<pre><code class="javascript">foo('hey')('dev.to')
+</code></pre>
+
+<p>注意，我们可以在内部函数作用域访问外部函数的参数 <code>hi</code>。</p>
+
+<p>以下代码跟上述代码一样：</p>
+
+<pre><code class="javascript">function foo (hi) {
+  return function (dev) { return hi + ' ' + dev }
+}
+</code></pre>
+
+<p>自执行的版本如下：</p>
+
+<pre><code class="javascript">(
+  (hi) =&gt;
+    (
+      (dev) =&gt; `${hi} ${dev}`
+    )
+    ('dev.to')
+)
+('hey')
+</code></pre>
+
+<p>首先，将 <code>hey</code> 作为参数 <code>hi</code> 的值传给最外层作用域的函数，然后这个函数返回另一个自执行函数。<code>dev.to</code> 作为参数 <code>dev</code> 的值传给内部函数，最后这个函数返回最终值：<code>'hey dev.to'</code>。</p>
+
+<h2>再深入一点</h2>
+
+<p>这个一个上述自执行函数的修改版本：</p>
+
+<pre><code class="javascript">(
+  (
+    (dev) =&gt;
+      (hi) =&gt; `${hi} ${dev}`
+  )
+  ('dev.to')
+)
+('hey')
+</code></pre>
+
+<p>需要注意的是，<a href="https://en.wikipedia.org/wiki/Immediately-invoked_function_expression">自执行函数</a> 和 <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming">闭包</a>) 用作初始化和封装状态，接下来我们来看另外一个例子。</p>
+
+<h2>匿名递归</h2>
+
+<p>回到我们最初的例子，这次加点注释：</p>
+
+<pre><code class="javascript">(
+  (
+    (f) =&gt; f(f) // 3.
+  )
+  (
+    (f) =&gt; // 2.
+      (l) =&gt; { // 4.
+        console.log(l)
+        if (l.length) f(f)(l.slice(1))
+        console.log(l)
+      }
+  )
+)
+(
+  [1, 2, 3] // 1.
+)
+</code></pre>
+
+<ol>
+<li>输入函数 <code>[1, 2, 3]</code> 传给最外层作用域</li>
+<li>整个函数作为参数传给上面函数</li>
+<li>这个函数接收下面函数作为参数 <code>f</code> 的值，然后自身调用</li>
+<li><code>2.</code>将被调用被作为 <code>3.</code>的结果然后返回函数 <code>4.</code> ，该函数是满足最外层作用域的函数，因此接收输入数组作为 <code>l</code> 参数的值</li>
+</ol>
+
+
+<p>至于结果为什么是那样子，原因是在递归内部有一个对函数 <code>f</code> 的引用来接收输入数组 <code>l</code>。所以能那样调用：</p>
+
+<pre><code class="javascript">f(f)(l.slice(1))
+</code></pre>
+
+<p>注意，<code>f</code> 是一个闭包，所以我们只需要调用它就可以访问到操作输入数组的最里面的函数。</p>
+
+<p>为了说明目的，第一个 <code>console.log(l)</code> 语句表示递归自上而下，第二个语句表示递归自下而上。</p>
+
+<h2>结论</h2>
+
+<p>希望你喜欢这篇文章，并从中学到了新的东西。闭包、自执行函数、函数式编程模式不是黑魔法。它们遵循一套易于理解和玩乐的简单原则。</p>
+
+<p>话虽如此，你必须培养自己何时使用它们，何时不用的这样一种感觉。如果你的代码变得难以维护，那这可能会成为重构中一些好点子。</p>
+
+<p>然而，理解这些基本技术对于创建清晰优雅的解决方案以及提升自我是至关重要的。</p>
+
+<p>Happy Coding！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[面向初学者的高阶组件介绍]]></title>
@@ -587,742 +1032,6 @@ myCSSAnimation.reverse();
 <h2>未来</h2>
 
 <p>本文中提到的功能只是一个开始。从目前的规范和实施来看，未来会有一个很强大动画 API。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[喜欢用 Git 做的一些小事]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/06/12/little-things-i-like-to-do-with-git/"/>
-    <updated>2017-06-12T18:00:00+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/06/12/little-things-i-like-to-do-with-git</id>
-    <content type="html"><![CDATA[<blockquote><p>作者：<a href="https://twitter.com/csswizardry">@csswizardry</a></p>
-
-<p>原文：<a href="https://csswizardry.com/2017/05/little-things-i-like-to-do-with-git/">Little Things I Like to Do with Git</a></p>
-
-<p>随便说点：这篇文章主要从管理者的角度谈论了使用 git 的心得，使用大量篇幅介绍 <code>git log</code> 的一些方法和技巧。</p>
-
-<p>同样地，发现很多人其实并没有深入全面地去了解过 git 的用法，作为一名开发人员，大多数时候只要会使用 <code>git pull</code>，<code>git add</code>，<code>git commit</code>，<code>git push</code> 似乎就足够，还有很大一部分人只使用特定的图形化工具。但事实上真的是这样吗，可能在遇到某个稍微高级一点的问题或者需求就手足无措。对于某个特定个体而言，很多场景我们未必会遇到，即使碰到也可以现场寻求搜索工具的帮助，这也是一种学习方式，无意否定这种方式，但最大的问题就是只见一叶而难以窥见森林。在这里推荐一个小工具 <a href="https://github.com/Gazler/githug">githug</a>，通过一种比较轻松的游戏的方式来一探全貌。</p></blockquote>
-
-<p>在跟我的朋友 Tim 聊天的时候，谈到我有多喜欢 Git。作为经常使用的一个工具，它强大而优雅。在这里，介绍一下我个人使用得最多，同时也是最有用的一些小技巧。</p>
-
-<h2>管理者面板</h2>
-
-<p>无论你认为在工作中的游戏化（gamification）和竞争是好是坏，对于这个话题在不同的时间可能是完全不同的结论。但如果你对团队成员在项目中的提交数量感兴趣，使用 <code>shortlog</code> 就可以找到答案：</p>
-
-<p>（请忽略我）</p>
-
-<p>（我只是占位的）</p>
-
-<pre><code class="sh">$ git shortlog -sn
-    80  Harry Roberts
-    34  Samantha Peters
-     3  Tom Smith
-</code></pre>
-
-<p><code>shortlog</code> 可以视作对 <code>git log</code> 的概要。</p>
-
-<ul>
-<li><code>-s</code>选项将隐藏提交描述，仅提供提交计数摘要</li>
-<li><code>-n</code> 选项将根据每个作者的提交数对输出进行排序，而不是默认的按作者字母顺序。</li>
-</ul>
-
-
-<p>上面显示的是项目生命周期的所有提交，但是如果想查看在特定时间内的情况，可以使用 <code>--since</code> 和 <code>--until</code> 选项：</p>
-
-<pre><code class="sh">$ git shortlog -sn --since='10 weeks' --until='2 weeks'
-    59  Harry Roberts
-    24  Samantha Peters
-</code></pre>
-
-<p>我为此配置了别名 <code>$ git stats</code></p>
-
-<h2>责任人</h2>
-
-<p>Git 有一个非常有用的 <code>blame</code> 功能，允许我们查看特定代码段的负责开发人员：</p>
-
-<pre><code class="sh"># See who last changed lines 5 through 10 of the buttons’ CSS:
-$ git blame -L5,10 _components.buttons.scss
-</code></pre>
-
-<p>这一条放在这里讲好像有点过头，像是我们在找开发人员哪些地方做错了。但也不完全是这样，另一方面，他们可能已经做了一些我们想要了解的特别厉害或是印象深刻的事情。我们原本会问，哇！我之前还没有看到这个功能，还想知道是谁做的。</p>
-
-<p>由于是从 SVN 转到 Git，我使用 <code>praise</code> 作为 <code>blame</code> 的别名，这样二者都可以使用：</p>
-
-<pre><code class="sh">$ git config --global alias.praise blame
-</code></pre>
-
-<p>即，我也可以这样做：</p>
-
-<pre><code class="sh"># Find out who implemented Resource Hints and buy them a coffee:
-$ git praise -L18,23 _includes/head.html
-</code></pre>
-
-<p>只是一点小变化，但效果不错。</p>
-
-<h2>隐藏空白提示</h2>
-
-<p>当使用 <code>diff</code> 或 <code>show</code> 查看具有大量空白变化的版本对比时，会有很多视觉噪音干扰我们，使得很难看到更重要的变化内容。</p>
-
-<p>幸运的是，去除这种空白提示非常容易，在 <code>git diff</code> 和 <code>git show</code> 使用 <code>-w</code> 选项就可以轻松搞定。比如，之前：</p>
-
-<pre><code> a {
-   color: $color-links;
-
--&amp;:hover {
--  color: $color-links-hover;
--}
-+  &amp;:hover {
-+    color: $color-links-hover;
-+    text-decoration: underline;
-+  }
-
-}
-</code></pre>
-
-<p>使用 <code>-w</code> 之后：</p>
-
-<pre><code> a {
-   color: $color-links;
-
-   &amp;:hover {
-     color: $color-links-hover;
-+    text-decoration: underline;
-   }
-
-}
-</code></pre>
-
-<p>现在可以很容易看出，唯一有意义的变化是增加了 <code>text-decoration: underline;</code>，而其余​​的 <code>diff</code> 是有点误导性的。</p>
-
-<h2>仅显示单词的变化而不是整行</h2>
-
-<p>写代码跟写文章不同，查看变化的单词而不是整行通常会更有用; 这在编辑 markdown 文档时尤其有用，就像现在。</p>
-
-<p>幸运的是，我们只要使用 <code>--word-diff</code> 选项就能显示单词的变化：</p>
-
-<pre><code class="sh">$ git diff --word-diff
-</code></pre>
-
-<p>跟不使用 <code>--word-diff</code> 选项的区别还是很大的：</p>
-
-<pre><code>-My friend Tom recently gave an excellent talk
-+My good friend Tom gave an excellent talk
-</code></pre>
-
-<p>如果启用 <code>--word-diff</code>，我们能得到更便于理解和更有用的概览：</p>
-
-<pre><code>My {+good+} friend Tom [-recently-] gave an excellent talk
-</code></pre>
-
-<p>注意只有变化的文本被突出显示（通过 <code>{+ +}</code> 和 <code>[- -]</code>)</p>
-
-<h2>查看最近工作的分支</h2>
-
-<p>在任何给定的项目，在许多不同的分支之间切换是很常见的，并且跟踪它们可能相当棘手。我们可以让 Git 帮助我们解决这个问题：</p>
-
-<pre><code class="sh">$ git for-each-ref --count=10 --sort=-committerdate refs/heads/ --format="%(refname:short)"
-</code></pre>
-
-<p>通过这个命令可以知道最近在工作的 10（&ndash;count=10）个分支，按照上次工作的时间排序。只显示本地分支（<code>refs/heads/</code>），并通过 <code>--format</code> 选项获得更友好的呈现方式。</p>
-
-<p>这是一个有点冗长的命令，所以我为此配置别名 <code>$ git recent</code>。</p>
-
-<pre><code class="sh">git config --global alias.recent "for-each-ref --count=10 --sort=-committerdate refs/heads/ --format=\"%(refname:short)\""
-</code></pre>
-
-<h2>看到每个人都在做什么</h2>
-
-<p>有时候，特别是对于团队领导，了解团队成员在所有分支的行为概览是很有用的。再一次地，Git 可以让这一切变得很容易：</p>
-
-<pre><code class="sh">$ git log --all --oneline --no-merges
-</code></pre>
-
-<p>这可以得到一份关于所有人的日志报告简化版（带有 <code>--no-merges</code> 选项）</p>
-
-<p>我们也可以通过 <code>--since</code> 选项来限制返回的提交数量：</p>
-
-<pre><code class="sh">$ git log --all --since='2 weeks' --oneline --no-merges
-</code></pre>
-
-<p>这样我们可以看到，在过去的两个星期里，每个人都在做什么。</p>
-
-<p>可以配置一个别名 <code>$ git overview</code></p>
-
-<pre><code class="sh">git config --global alias.overview "log --all --since='2 weeks' --oneline --no-merges"
-</code></pre>
-
-<h2>提醒你自己已经做了什么</h2>
-
-<p>当你回到一个比较旧的项目，或是在长时间休息之后回到办公室，可能不知道你最后在做什么工作，这种情况时常发生。我们可以通过 Git 轻松获得我们在项目中的工作情况：</p>
-
-<pre><code class="sh">$ git log --all --oneline --no-merges --author=&lt;your email address&gt;
-</code></pre>
-
-<p>和上一条很类似，只是我们将日志限制于我们自己的提交，也可以增加 <code>--since</code> 限制。</p>
-
-<p>这也有一个别名 <code>$ git recap</code>。</p>
-
-<pre><code class="sh">git config --global alias.recap "log --all --oneline --no-merges --author=name@mail.com"
-</code></pre>
-
-<h2>今天的工作</h2>
-
-<p>同样地，不在这里讨论如何衡量开发人员的生产力，但我觉得让客户知道我在任何一天的工作情况是很有用的。不是要你保留完成任务的详细列表，我们可以使用 Git 获取所有这些信息：</p>
-
-<pre><code class="sh">$ git log --since=00:00:00 --all --no-merges --oneline --author=&lt;your email address&gt;
-</code></pre>
-
-<p>这将记录（<code>log</code>） 你工作的所有（<code>--all</code>）分支，谁（<code>--author</code>）从（<code>--since</code>）午夜开始都做了什么，（不包括合并提交 <code>--no-merges</code>），并提供一个简单的一行 （<code>--oneline</code>） 概述。</p>
-
-<p>我有这个别名 <code>$ git today</code>。</p>
-
-<pre><code class="sh">git config --global alias.today "log --since=00:00:00 --all --no-merges --oneline --author=name@mail.com"
-</code></pre>
-
-<h2>生成更改日志</h2>
-
-<p>维护一份 CHANGELOG 可能有点乏味，我们必须查看自上次发布以来所做的所有工作，然后提取其中有用的部分。幸运的是，我们可以使用 Git 来给我们一个好的开头：</p>
-
-<pre><code class="sh">$ git log --oneline --no-merges &lt;last tag&gt;..HEAD
-</code></pre>
-
-<p>注意：<code>HEAD</code> 是可选的，如果你省略（即&hellip; &ndash;no-merges <last tag>..），<code>HEAD</code> 会是隐含的，当然这样可以节省几次敲击键盘的时间。</p>
-
-<p>这将创建一个简化的日志，显示最后一个发布版本和 <code>HEAD</code> 之间的所有提交（不包括合并提交）。</p>
-
-<p>例如：</p>
-
-<pre><code class="sh">$ git log --oneline --no-merges 1.0.0..
-1257b95 [refs #00019] Bump version
-2b9b28e [refs #00019] Add auto width class
-17b8eb1 [refs #00015] Tidy up README.md
-bbe7d05 [refs #00012] Rename Supercell main mixin
-</code></pre>
-
-<p>这告诉我，自从上次发布（1.0.0）到当前项目状态（<code>HEAD</code>），已经完成哪些工作。这对于 CHANGELOG 来说是一个很好的参考。</p>
-
-<p>注意：不仅仅适用于 tag，还可以使用提交哈希。</p>
-
-<h2>检查需要拉取哪些变化</h2>
-
-<p>如果你在一段时间内不在项目，可能需要先检查上游的变更，然后再将这些更新下载到本地分支。</p>
-
-<pre><code class="sh">$ git log --oneline --no-merges HEAD..&lt;remote&gt;/&lt;branch&gt;
-</code></pre>
-
-<p>注意：同样地，<code>HEAD</code> 在这里是可选的，省略将使其隐含。</p>
-
-<p>例如，让我们来看看你在度假时在特性分支做了什么：</p>
-
-<pre><code class="sh">$ git checkout feature/fonts
-$ git fetch
-$ git log --oneline --no-merges ..origin/feature/fonts
-</code></pre>
-
-<p>我使用这个别名 <code>$ git upstream</code>。</p>
-
-<h2>检查即将上传的内容</h2>
-
-<p>最好的情况是可以经常提交和上传，但如果某种原因导致有大量的本地提交尚未上传，可以快速回顾一下都是什么。</p>
-
-<p>为了做到这一点，我们反转之前的命令就能轻松实现：</p>
-
-<pre><code class="sh">$ git log --oneline --no-merges &lt;remote&gt;/&lt;branch&gt;..HEAD
-</code></pre>
-
-<p>例如：</p>
-
-<pre><code class="sh">$ git fetch
-$ git log --oneline --no-merges origin/feature/fonts..HEAD
-</code></pre>
-
-<p>注意：同样地，<code>HEAD</code> 在这里是可选的，省略将使其隐含。</p>
-
-<p>这将记录 <code>HEAD</code> 需要上传到 <code>&lt;remote&gt;/&lt;branch&gt;</code> 的提交。</p>
-
-<p>我使用这个别名 <code>$ git local</code>。</p>
-
-<h2>查看复杂日志</h2>
-
-<p>上面的每一个例子都使用简化的日志，因为只想快速了解发生了什么。对于更多细节，我使用带有 <code>--graph</code> 选项的日志和一些额外的选项：</p>
-
-<pre><code class="sh">$ git log --graph --all --decorate --stat --date=iso
-</code></pre>
-
-<p>这将给出所有（<code>--all</code>）分支基于 <code>--graph</code> 的提交记录 <code>--stat</code>（添加，删除）日志。<code>--decorate</code> 选项会告诉我们提交信息适用于那些分支，还包含一个更加严格的日期格式。</p>
-
-<p>我使用这个别名 <code>$ git graph</code>。</p>
-
-<pre><code class="sh">git config --global alias.graph "log --graph --all --decorate --stat --date=iso"
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[编写现代 JavaScript 代码]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/06/02/writing-modern-javascript-code/"/>
-    <updated>2017-06-02T18:00:00+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/06/02/writing-modern-javascript-code</id>
-    <content type="html"><![CDATA[<blockquote><p>原文作者：<a href="https://twitter.com/scastiel">Sébastien Castiel</a></p>
-
-<p>原文链接：<a href="https://dev.to/scastiel/writing-modern-javascript-code">Writing modern JavaScript code</a></p>
-
-<p>说点什么：这是一篇很朴素的文章，讲的道理都懂，但实际上，在工作中遇到类似的情形却未必如此，编写可维护，可阅读，更安全的代码是我们应有的责任。</p></blockquote>
-
-<p>是不是还认为 JavaScript 是一门用于在光标悬浮时改变页面元素的语言？这些日子已经不复存在，每一种语言都在随着时间推移而发展，我们使用语言的方式同样也在发展。看一下你一两年前写的代码：会感到羞愧吗？如果是的话，这篇文章应该很适合你。</p>
-
-<p>这里会列出一些所谓的最佳实践，目的是让你的 JavaScript 代码更容易编写，阅读和维护。</p>
-
-<h2>使用可格式化代码的 linter</h2>
-
-<p>第一个建议是使用 linter 工具，可以帮助你检查在不同文件是否遵守一致的规则，尤其是当不同开发人员在同一个项目上工作：缩进，括号中的空格，替换 <code>==</code> 为 <code>===</code> &hellip;</p>
-
-<p>但更重要的是，尽可能使用 linter 工具自动修复代码。<a href="http://eslint.org/">ESLint</a> 就做得很好（带有 <code>--fix</code> 选项），而且与所有主流 IDE 完美集成，可以在保存时自动修复文件。</p>
-
-<p>还可以使用 <a href="https://github.com/prettier/prettier">Prettier</a>，不过这款工具更注重格式化而不是静态检查，但处理后的结果基本相同。</p>
-
-<p>下一步将介绍与 linter 工具一起使用的规则：</p>
-
-<h2>为你的 linter 定制现代化的规则</h2>
-
-<p>如果不知道你的代码需要什么样的规则，可以参考：<a href="https://standardjs.com/">StandardJS</a>。这是一个<strong>非常</strong>严格的 linter，无法修改配置，但里面的每一条规则已经越来越多地被社区接纳。比如：</p>
-
-<ul>
-<li>使用 2 个空格缩进（我曾经使用 4 个空格，但实际使用起来 2 个空格很不错）</li>
-<li>不使用分号（一开始可能会觉得奇怪，但几天后就再也回不去了）</li>
-<li>在关键字（如 if）和花括号使用空格，在括号不使用空格</li>
-<li><a href="https://standardjs.com/rules.html">等等</a>。</li>
-</ul>
-
-
-<p>StandardJS 是一个独立的 Node 模块，可以进行 lint 和修复代码，但如果要在现有的大型项目中使用，并且想要停用一些规则（因为有些地方可能需要作大量修改），还可以使用 <a href="https://github.com/feross/eslint-config-standard">ESLint 预定配置</a>。比如，我就停用了规则 <a href="http://eslint.org/docs/rules/no-mixed-operators">no-mixed-operators</a> 和 <a href="https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-webpack-loader-syntax.md">import / no-webpack-loader-syntax</a>。</p>
-
-<h2>使用 ES2015+ 的新特性</h2>
-
-<p>如果你在使用 JavaScript 开发，根本没办法不听说 ES2015 +（或 ES6，ES7 &hellip;）的特性。有的已经是我离不开的：</p>
-
-<ul>
-<li>箭头函数：对于函数式编程，比如写 <code>x =&gt; x * 2</code> 这样的函数非常有用（见下一点）</li>
-<li>类：停止使用原型函数，使用类更酷炫（但不要滥用，JavaScript 比任何面向对象的语言好多了）</li>
-<li>对数组和对象的操作：</li>
-</ul>
-
-
-<pre><code class="javascript">function doSomething() {
-  const a = doSomethingElse()
-  const b = doSomethingWithA(a)
-  const otherResults = { c: '😺', d: '🐶' }
-  return { a, b, ...otherResults } // equivalent to { a: a, b: b }
-}
-const { a, c, ...rest } = doSomething() // Also works with arrays!
-// `rest` looks like { b: ..., d: '🐶' }
-</code></pre>
-
-<ul>
-<li>使用 <code>async/await</code> 编写更简单的异步处理：</li>
-</ul>
-
-
-<pre><code class="javascript">// Please try to write the same code with classic promises ;)
-async function doSomething() {
-  const a = await getValueForA()
-  const b = await getValueForBFromA(a)
-  const [c, d] = await Promise.all([
-    // parallel execution
-    getValueForC(), getValueForDFromB(b)
-  ])
-  const total = await calculateTotal(a, b, c, d)
-  return total / 1000
-}
-</code></pre>
-
-<p>想知道如何使用这些特性呢？<a href="https://blog.castiel.me/posts/002-use-the-coolest-es6-features-everywhere.html">我的另一篇文章能给一些建议</a>。（顺便说一下，使用最新版本的 Node.js，可能不再需要 Babel 就能使用这些新特性）</p>
-
-<h2>使用函数式编程</h2>
-
-<p>函数式编程最近很热门，取得不少成就，而且不仅仅是在 JavaScript 中。为什么呢？函数式编程能使代码更具可预测性，确定性，更安全，一旦习惯这种方式，代码会更容易维护。这里有一些简单的建议：</p>
-
-<p>首先，停止使用 for 循环，在大多数（可能是所有？）情况下根本不需要。例如：</p>
-
-<pre><code class="javascript">const arr = [{ name: 'first', value: 13 }, { name: 'second', value: 7 }]
-
-// Instead of:
-const res = {}
-for (let i = 0; i &lt; arr.length; i++) {
-  const calculatedValue = arr[i].value * 10
-  if (calculatedValue &gt; 100) {
-    res[arr[i].name] = calculatedValue
-  }
-}
-
-// Prefer:
-const res = arr
-  .map(elem =&gt; ({ name: elem.name, calculatedValue: elem.value * 10 }))
-  .filter(elem =&gt; elem.calculatedValue &gt; 100)
-  .reduce((acc, elem) =&gt; ({
-    [elem.name]: elem.calculatedValue,
-    ...acc
-  }), {})
-</code></pre>
-
-<p>好吧，这实际上是一个非常极端的例子，对于不习惯函数式编程的人而言，可能看起来更加复杂。但我们可以稍微简化一下：</p>
-
-<pre><code class="javascript">const enrichElementWithCalculatedValue =
-  elem =&gt; ({ name: elem.name, calculatedValue: elem.value * 10 })
-const filterElementsByValue = value =&gt;
-  elem =&gt; elem.calculatedValue &gt; value
-const aggregateElementInObject = (acc, elem) =&gt; ({
-  ...acc
-})
-const res = arr
-  .map(enrichElementWithCalculatedValue)
-  .filter(filterElementsByValue(100))
-  .reduce(aggregateElementInObject, {})
-</code></pre>
-
-<p>在这里，我们定义了三个函数，其功能基本上与其名字一致。第二个建议：创建局部函数（即使是在已经存在的函数中）来说明代码的功能，不需要使用注释。</p>
-
-<p>注意，三个局部函数不修改它们的执行上下文。没有外部变量被修改，没有其他服务被调用&hellip;在函数式编程中，它们被称为<em>纯函数</em>。纯函数具有很大的优势：</p>
-
-<ul>
-<li>很容易测试，因为从给定参数只有一个可能的结果，不管被调用了多少次;</li>
-<li>无论应用状态如何，都能保证相同的结果;</li>
-<li>应用状态在函数调用之前和之后保持不变。</li>
-</ul>
-
-
-<p>所以我的第三个建议是：尽可能地使用纯函数。</p>
-
-<h2>其他的一些建议</h2>
-
-<ul>
-<li>习惯于使用异步代码，并多使用 promise，看看 <a href="http://reactivex.io/rxjs/">RxJS</a> 的 observales（有<a href="http://reactivex.io/learnrx/">一个很棒的教程关于从函数式编程到响应式编程</a>）</li>
-<li>写测试！这应该是很明显的，但是据我所知很多项目都有未经测试的代码，尽管测试 JavaScript（前端或后端）并不困难。</li>
-<li>使用最新的语言特性：比如不要再写 <code>arr.indexOf(elem) !== -1</code>，而应该写成 <code>arr.includes(elem)</code>。</li>
-<li>大量阅读技术文章：<a href="https://www.reddit.com/r/javascript/">JavaScript subreddit</a> 是了解目前社区最酷做法的一个很好的来源。</li>
-</ul>
-
-
-<p>总而言之，最好的建议就是：<strong>总是重构你的代码</strong>。比如改进你一年前写过的模块？借此机会，用 <code>const</code> 取代 <code>var</code>，使用箭头函数或 <code>async/await</code> 简化代码&hellip;&hellip;和你喜欢的代码工作一件很愉悦的事。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[JavaScript 模块化现状]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/05/29/the-state-of-javascript/"/>
-    <updated>2017-05-29T18:00:00+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/05/29/the-state-of-javascript</id>
-    <content type="html"><![CDATA[<blockquote><p>原文作者：Johannes Ewald <a href="https://twitter.com/Jhnnns">@Jhnnns</a></p>
-
-<p>原文链接：<a href="https://medium.com/webpack/the-state-of-javascript-modules-4636d1774358">The state of JavaScript modules</a></p>
-
-<p>已获原作者授权翻译及发布</p></blockquote>
-
-<p>ESM, CJS, UMD, AMD — 到底应该选择哪一个？</p>
-
-<p>最近 <a href="https://twitter.com/addyosmani/status/859296190323597313">在 twitter</a> 上有很多关于 <a href="http://2ality.com/2014/09/es6-modules-final.html">ES Module</a> 现状的讨论，<a href="https://twitter.com/bradleymeck/status/863061949021650944">尤其是在 Node.js 上</a>，他们计划引入新的文件扩展名 <code>*.mjs</code>。人们有足够理由对此感到 <a href="https://twitter.com/tankredhase/status/861864123922907136">担忧和不确定</a>，因为这个话题异常复杂，接下来会尽力阐述清楚问题。</p>
-
-<h2>来自远古的恐惧</h2>
-
-<p>大多数前端开发者应该还记得 <a href="https://medium.com/@trek/last-week-i-had-a-small-meltdown-on-twitter-about-npms-future-plans-around-front-end-packaging-b424dd8d367a">Javascript 依赖管理的黑暗时期</a>。那个时候，你需要把一个库复制粘贴到 vendor 文件夹，然后作为一个全局变量引入，要自己去按次序组合所有东西，可能还要管理命名空间。</p>
-
-<p>在过去的那些年，我们能深刻体会到公共模块格式化和中央模块管理的价值。</p>
-
-<p>在今天，不管是发布还是使用一个库都要容易得多，只需要使用 <code>npm publish</code> 和 <code>npm install</code> 命令就行。这就是人们会那么紧张两种模块系统兼容性问题的原因：他们不想失去已有的舒适区。</p>
-
-<p>接下来我会解释和总结现有实现的情况，以及为什么 Node 生态迁移到 ES Module（ESM）会那么难。在最后，总结这些变化对 webpack 使用者和模块作者有什么影响。</p>
-
-<h2>现有实现</h2>
-
-<p>目前，ESM 有三种方式的实现：</p>
-
-<ul>
-<li>浏览器</li>
-<li>webpack 以及类似的构建工具</li>
-<li>Node（未完成，<a href="https://twitter.com/rauschma/status/866334160218095617">但可能在年底作为一个实验功能</a>）</li>
-</ul>
-
-
-<p>为了更好地理解现在的讨论，首先要知道 ES2015 包含两种模式：</p>
-
-<ul>
-<li><code>script</code> 用于具有全局命名空间的常规脚本</li>
-<li><code>module</code> 用于具有明确导入和导出的模块化代码</li>
-</ul>
-
-
-<p>如果你试图在 <code>script</code> 标签使用 <code>import</code> 或者 <code>export</code> 语句，会抛出一个 SyntaxError。这种语句在全局环境下没有任何意义。另一方面，<code>module</code> 模式即意味着<a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Strict_mode">严格模式</a>，禁止使用某些语言特性，比如 <code>with</code> 语句。因此，需要在脚本被解析和执行之前定义模式。</p>
-
-<h2>浏览器中的 ESM</h2>
-
-<p>截至到 2017 年 5 月，所有主流浏览器都开始做了 ESM 的实现工作。不过，大部分仍处于在实验性质。这里不会做详细介绍，因为 <a href="https://jakearchibald.com/2017/es-modules-in-browsers/">Jake Archibald 已经写了一篇很厉害的文章</a>。</p>
-
-<p>除了一些小的困难，在浏览器中实现起来非常容易，因为以前并没有模块系统。想要指定 <code>module</code> 模式，需要在 <code>script</code> 标签添加 <code>type="module"</code> 属性，如下所示：</p>
-
-<p>&#8220;`html</p>
-
-<script type="module" src="main.js"></script>
-
-
-<pre><code>
-在一个模块中，现在只能使用有效的 `URL` 作为模块标识符。模块标识符是用于 require 或 import 其他模块的字符串。为了确保未来兼容 CJS 模块标识符，“纯” 导入标识符（如 `import "lodash"`）现在还不支持。模块标识符必须是绝对 `URL` 或者是以 `/`，  `./`,  `../` 开头：
-</code></pre>
-
-<p>// Supported:
-import {foo} from &lsquo;<a href="https://jakearchibald.com/utils/bar.js">https://jakearchibald.com/utils/bar.js</a>&rsquo;;
-import {foo} from &lsquo;/utils/bar.js&rsquo;;
-import {foo} from &lsquo;./bar.js&rsquo;;
-import {foo} from &lsquo;../bar.js&rsquo;;</p>
-
-<p>// Not supported:
-import {foo} from &lsquo;bar.js&rsquo;;
-import {foo} from &lsquo;utils/bar.js&rsquo;;
-// Example from <a href="https://jakearchibald.com/2017/es-modules-in-browsers/">https://jakearchibald.com/2017/es-modules-in-browsers/</a>
-&#8220;`</p>
-
-<p>同样需要注意的是，一旦处在一个模块中，每个导入也将被解析为 <code>module</code>，而且没有办法 <code>import</code> 一个 <code>script</code>。</p>
-
-<h2>ESM 与 webpack</h2>
-
-<p>类似 webpack 这样的构建工具通常会尝试用 <code>module</code> 模式解析代码，有问题再切回到 <code>script</code> 模式。这些工具最终会生成一段 <code>script</code>，通常是在一定程度上模拟 CJS 和 ESM 行为的模块运行时。</p>
-
-<p>我们以这两个简单的 ESM 为例：</p>
-
-<pre><code class="javascript">// a.js
-export let number = 42;
-export function incr() {
-    number++;
-}
-</code></pre>
-
-<pre><code class="javascript">// test.js
-import { number } from "./a";
-
-console.log(number);
-</code></pre>
-
-<p>webpack 使用函数包装器封装模块范围和对象引用来模拟 <a href="http://2ality.com/2015/07/es6-module-exports.html">ESM 实时绑定</a>。每次编译，还包括一个模块运行时，负责引导和缓存模块。此外，将模块标识转换为数字模块 ID。这样可以减少打包的大小和引导时间。</p>
-
-<p>这是什么意思呢？我们来看看编译输出：</p>
-
-<pre><code class="javascript">(function(modules) {
-    // This is the module runtime.
-    // It's only included once per compilation.
-    // Other chunks share the same runtime.
-    var installedModules = {};
-    // The require function
-    function __webpack_require__(moduleId) {
-        ...
-    }
-    ...
-    // Load entry module and return exports
-    return __webpack_require__(__webpack_require__.s = 1);
-})
-([ // An array that maps module ids to functions
-    // a.js as module id 0
-    function (module, __webpack_exports__, __webpack_require__) {
-        "use strict";
-        Object.defineProperty(__webpack_exports__, "a", {
-            configurable: false,
-            enumerable: true,
-            get: () =&gt; number
-        });
-
-        let number = 42;
-
-        function incr() {
-            number++;
-        }
-    },
-    // test.js as module id 1
-    function (module, __webpack_exports__, __webpack_require__) {
-        "use strict";
-        var __WEBPACK_IMPORTED_MODULE_0__a__ = __webpack_require__(0);
-
-        // Object reference as "live binding"
-        console.log(__WEBPACK_IMPORTED_MODULE_0__a__["a" /* number */]);
-    }
-]);
-</code></pre>
-
-<p>简化的 webpack 输出，模拟 ES Modules 行为</p>
-
-<p>结果已经简化并删除了一些与此示例无关的代码。你会发现，webpack 在 <code>exports</code> 对象上将所有 <code>export</code> 语句替换成 <code>Object.defineProperty</code>，并使用属性访问器替换对引入值的所有引用。还要注意每个 ESM 开始时的 <code>"use strict"</code> 指令，这是由 webpack 自动添加，在 ESM 中必须是严格模式。</p>
-
-<p>这种实现只是模拟，因为它试图模仿 ESM 和 CJS 的行为 &ndash; 但不是与其完全保持一致。比如，这种模拟并不符合某些边缘情况。看下面这个模块：</p>
-
-<pre><code class="javascript">console.log(this);
-</code></pre>
-
-<p>如果你通过加上 <code>babel-preset-es2015</code> 的 Babel 来运行，结果是：</p>
-
-<pre><code class="javascript">"use strict";
-console.log(undefined);
-</code></pre>
-
-<p>从输出结果可以看出，Babel 假设默认是 ESM，因为 <code>module</code> 模式即代表严格模式，在严格模式下会将 <code>this</code> 初始化为 <code>undefined</code>。</p>
-
-<p>然而，使用 webpack，结果是：</p>
-
-<pre><code class="javascript">(function(module, exports) {
-
-console.log(this);
-
-})
-</code></pre>
-
-<p>在引导模块时，<code>this</code> 将指向 <code>exports</code> ，与 Node.js 使用的 CJS 行为一致。这是因为语法上不确定是 <code>script</code> 还是 <code>module</code>，解析器无法判断该模块是 ESM 还是 CJS。在不明确的时候，webpack 会模拟 CJS，因为它仍然是最受欢迎的模块风格。</p>
-
-<p>这种模拟其实已经包含了很多情况，因为模块作者通常会避免这种代码。然而，“很多情况”对于像 Node.js 这样的平台是不够的，因为它需要保证所有有效的 JavaScript 代码都能正常运行。</p>
-
-<h2>Node.js 中的 ESM</h2>
-
-<p>Node.js 在执行 ESM 时遇到了麻烦，因为仍然需要支持 CJS，语法看起来相似，但运行时行为完全不同。<a href="https://github.com/nodejs/CTC">Node.js 核心技术委员会</a>（CTC）成员 James M Snell 撰写了<a href="https://hackernoon.com/node-js-tc-39-and-modules-a1118aecf95e">一篇很好的文章来解释 CJS 与 ESM 之间的差异</a>。</p>
-
-<p>归结起来，CJS 是一个动态模块系统，ESM 是静态模块系统。</p>
-
-<h3>CJS</h3>
-
-<ul>
-<li>允许动态同步 <code>require()</code></li>
-<li>导出仅在模块执行后才知道</li>
-<li>导出可以在模块初始化后添加，替换和删除</li>
-</ul>
-
-
-<h3>ESM</h3>
-
-<ul>
-<li>只允许静态同步 <code>import</code></li>
-<li>在模块执行之前，导入和导出已经关联</li>
-<li>导入和导出是不可变的</li>
-</ul>
-
-
-<p>由于  CJS 早于 ES2015，所以一直在 <code>script</code> 模式下解析，封装通过使用函数包装器实现。在 Node.js 中加载 CJS，实际上会执行与此类似的代码：</p>
-
-<pre><code class="javascript">const module = {
-    exports: {}
-};
-const require = makeRequireFunction();
-const filename = "...";
-const dirname = "...";
-(function (exports, require, module, __filename, __dirname) {
-/* YOUR CODE */
-})(module.exports, require, module, filename, dirname);
-</code></pre>
-
-<p>对 Node.js 的 CommonJS 模块的简单函数包装</p>
-
-<p>问题出现了，将两个模块系统集成到同一个运行时时，ESM 和 CJS 之间的循环依赖可能会迅速导致类似死锁的情况。</p>
-
-<p>而且，由于现有 CJS 模块数量庞大，也不能直接放弃对 CJS 的支持。为了避免 Node.js 生态的中断，有两点已经很明显：</p>
-
-<ul>
-<li>现有的 CJS 代码必须以相同的方式继续工作</li>
-<li>两个模块系统都必须同时且尽可能无缝地工作</li>
-</ul>
-
-
-<h3>目前的权衡</h3>
-
-<p>2017 年 3 月，经过几个月的讨论，CTC 终于找到了一种解决问题的办法。由于在 ES 规范和引擎不改变的情况下无法进行无缝集成，<a href="https://github.com/bmeck/node-eps/blob/a1eab9bf023bbe13a79ddb18f0622a5d57215f9b/002-es-modules.md">CTC 决定开始一些权衡之后的实现工作</a>：</p>
-
-<h4>1.ESM 必须是 <code>*.mjs</code> 文件扩展名</h4>
-
-<p>这是由于上面提及的模糊语法问题，无法通过解析来确切知晓 JavaScript 代码是什么类型。为了 Node.js 向后兼容的目标，作者需要加入一种新模式。<a href="https://github.com/nodejs/node/wiki/ES6-Module-Detection-in-Node#detection-problem">已经有关于各种替代品的讨论</a>，但使用不同文件扩展名是解决目前问题的最佳权衡。</p>
-
-<h4>2.CJS 只能异步导入 ESM import()</h4>
-
-<p>Node.js 将异步加载 ESM，以便尽可能接近浏览器的行为。因此，同步的 <code>require()</code> 在 ESM 是不可能的，并且依赖于 ESM 的每个功能都需要异步：</p>
-
-<pre><code class="javascript">const driverPromise = import("dbdriver");
-
-exports.readFromDb = async (query) =&gt; {
-   return (await driverPromise).read(query);
-};
-</code></pre>
-
-<h4>3. CJS 向 ESM 暴露一个不可变的默认导出</h4>
-
-<p>使用 Babel 或 Webpack，我们通常将 CJS 重构为 ESM，如下所示：</p>
-
-<pre><code class="javascript">// CJS
-const { a, b } = require("c");
-// ESM
-import { a, b } from "c";
-</code></pre>
-
-<p>再一次地，他们的语法看起来很相似，但忽略了 CJS 中没有命名导出的事实。只有一个叫做 <code>default</code> 的导出，等同于在 CJS 模块完成计算后一个不可变的 <code>module.exports</code> 。从技术上讲，有可能将 <code>module.exports</code> 解构成命名导入，但这需要对标准作更大的变更。<a href="https://github.com/bmeck/node-eps/blob/a1eab9bf023bbe13a79ddb18f0622a5d57215f9b/002-es-modules.md#461-default-imports">这就是现在 CTC 决定采取这种方式的原因</a>。</p>
-
-<h4>4.模块范围的变量类似 <code>module</code>，<code>require</code> 以及 <code>__filename</code> 在 ESM 不存在</h4>
-
-<p>Node.js 和浏览器会实现一些 ESM 的特性，<a href="https://github.com/whatwg/html/issues/1013">但标准化过程仍在进行中</a>。</p>
-
-<p>鉴于将 CJS 和 ESM 集成到一个运行时的工程挑战，CTC 在评估边缘情况和权衡方面做了非常好的工作。比如使用不同的文件扩展名是就是一个很简单的解决方案。</p>
-
-<p>实际上，一个文件扩展名可以认为是一个二进制文件如何解释的提示。如果一个 <code>module</code> 不是 <code>script</code>，我们应该使用不同的文件扩展名。其他工具（如 linter 或 IDE ）也可以获取相同信息。</p>
-
-<p>当然，引入新的文件扩展名有成本，但是一旦服务器和其他应用程序确认 <code>*.mjs</code> 为JavaScript，我们很快就会忘记这个争议。</p>
-
-<h2>将 * .mjs 作为 Node.js 的 Python 3？</h2>
-
-<p>考虑到所有这些限制，人们可能会问，这种过渡将对现在的生态造成什么样的损害。虽然 CTC 会努力解决问题，但社区如何采用这一点仍然存在很大不确定性。这种不确定性 <a href="https://twitter.com/sindresorhus/status/861987349529452545">被众多知名的 NPM 模块作者</a> 再次强调，他们声称将不会在模块中使用 <code>*.mjs</code>。</p>
-
-<p><a href="http://blog.thezerobit.com/2014/05/25/python-3-is-killing-python.html">Python 3 is killing Python</a></p>
-
-<p>很难预测社区如何反应，但是应该不会对现在的生态造成大破坏，甚至能看到从 CJS 平稳过渡到 ESM。主要有两个原因：</p>
-
-<h3>1.与 CJS 严格向后兼容</h3>
-
-<p>那些不喜欢 ESM 的模块作者可以继续使用 CJS，保证自己不被排挤出局。这样他们自己的代码不会受到采用 ESM 的影响，降低迁移到另一个运行时的可能性，让 NPM 迁移到新生态变得容易。从 CJS 到 ESM 的重构给包维护者带来额外工作，不能指望所有人都有时间。</p>
-
-<h3>2. CJS 在 ESM 中的无缝整合</h3>
-
-<p>从 ESM 导入 CJS 模块非常简单。需要注意的是，CJS 仅导出一个默认值。一旦处于 ESM，甚至可能根本不会注意到依赖关系使用的模块风格，尤其是与在 CJS 中使用 <code>await import()</code>相比。</p>
-
-<p>由于 ESM 的这个优点以及其他有点，比如开箱即用的 <a href="https://webpack.js.org/guides/tree-shaking/">tree shaking</a> 和浏览器兼容性，预计在未来几年内，我们可以看到向 ESM 的缓慢而稳定的过渡。CJS 的特性，如动态 <code>require()</code> 和猴子补丁导出，在 Node.js 社区一直是有争议的，不比 ESM 带来的好处。</p>
-
-<h2>这些对我来说意味着什么？</h2>
-
-<p>因为最近这些事情，很容易对目前存在的所有选择和限制感到困惑。在接下来，整理了开发人员面临的典型问题以及我们的回答：</p>
-
-<h3>现在需要重构现有的代码吗？</h3>
-
-<p><strong>不需要</strong>。Node.js 才刚刚开始实现 ESM，仍然有大量的工作要做。<a href="https://medium.com/the-node-js-collection/an-update-on-es6-modules-in-node-js-42c958b890c">James M Snell 预计至少还需要一年时间</a>，还有很多变化的余地，所以现在重构是不安全的。</p>
-
-<h3>应该在新代码中使用 ESM 吗？</h3>
-
-<ul>
-<li><strong>如果你已经有或者打算使用像 webpack 这样的构建工具，答案是肯定的</strong>。这将更容易完成代码库的过渡，并使 tree shaking 成为可能。但要小心：一旦 Node.js 支持原生 ESM，可能需要重构其中的一些部分。</li>
-<li><strong>如果你正在编写一个库，答案是也肯定的</strong>，你的模块使用者将受益于 tree shaking。</li>
-<li><strong>如果你不想进行构建操作，或者正在编写一个 Node.js 应用程序，还是用 CJS 吧</strong>。</li>
-</ul>
-
-
-<h3>现在应该使用 .mjs 吗？</h3>
-
-<p><strong>不要这样做</strong>，目前没有什么好处，工具支持依然薄弱。建议一旦原生 ESM 支持登陆 Node.js，尽快开始迁移。记住，<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types">浏览器只关心 MIME 类型，而不是文件扩展名</a>。</p>
-
-<h3>应该关心浏览器兼容性吗？</h3>
-
-<p>是的，需要在一定程度上关注这个问题。 不应该在导入语句中省略 <code>.js</code> 扩展名，因为浏览器需要完整的 URL，无法像 Node.js 这样执行路径查询。同样，应该避免 <code>index.js</code> 文件。不过，人们并不会很快在浏览器中使用 NPM 软件包，因为仍然不能 bare 导入。</p>
-
-<h3>作为库作者该怎么办？</h3>
-
-<p>用 ESM 编写代码，并使用 <a href="https://rollupjs.org/">Rollup</a> 或 Webpack 转换成单个 CJS 模块，然后在 <code>package.json</code> 将 <code>main</code> 字段指向此 CJS 包，并将 <a href="https://github.com/rollup/rollup/wiki/pkg.module"><code>module</code></a> 字段指向原始 ESM。如果还使用 ESM 之外的其他新语言功能，则应编译成 ES5，并提供 CJS 和 ESM 的打包。这样，你的库用户仍然可以从 tree shaking 获利而无需对代码进行转换。</p>
-
-<p>看一下这些完成 tree shaking 的模块</p>
-
-<h2>总结</h2>
-
-<p>关于 ES 模块有很多不确定性。由于目前 Node.js 在实现上的权衡，开发人员担心可能会破坏 Node.js 的生态。</p>
-
-<p>这些还不会发生，有两个原因：<strong>CJS 的严格的后向兼容和 CJS 在 ESM 中的无缝集成</strong>。</p>
-
-<p>在 Node.js 发布原生 ESM 支持之前，应该仍然使用 Rollup 和 Webpack 等工具。它们在一定程度上模拟了 ESM 环境，但要注意它们不完全符合规范。此外，使用打包仍然是个<a href="https://peerigon.github.io/talks/2016-08-26-jsconf-is-future-frontend-tooling/#36">很好的选择</a>，一旦可以在浏览器中使用 NPM 软件包。</p>
-
-<p>我们 webpack 团队正在努力做一些工作，帮助开发者平稳过渡。为了这个目标，我们计划在 Node.js 的 ESM 支持成熟后，模拟 Node.js 导入 CJS 的方式。</p>
 ]]></content>
   </entry>
   

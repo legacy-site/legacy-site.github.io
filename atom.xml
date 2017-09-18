@@ -4,7 +4,7 @@
   <title><![CDATA[Mirreal Note]]></title>
   <link href="http://blog.mirreal.net/atom.xml" rel="self"/>
   <link href="http://blog.mirreal.net/"/>
-  <updated>2017-09-17T17:45:07+08:00</updated>
+  <updated>2017-09-18T22:01:01+08:00</updated>
   <id>http://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Mirreal Ellison]]></name>
@@ -12,6 +12,569 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[在 Node.js 中使用原生 ES 模块]]></title>
+    <link href="http://blog.mirreal.net/blog/2017/09/13/using-es-modules-natively-in-node-dot-js/"/>
+    <updated>2017-09-13T16:19:59+08:00</updated>
+    <id>http://blog.mirreal.net/blog/2017/09/13/using-es-modules-natively-in-node-dot-js</id>
+    <content type="html"><![CDATA[<blockquote><p>原文：<a href="http://2ality.com/2017/09/native-esm-node.html">Using ES modules natively in Node.js</a></p>
+
+<p>作者：<a href="https://twitter.com/rauschma">Axel Rauschmayer</a></p></blockquote>
+
+<p>从版本 8.5.0 开始，Node.js 开始支持原生 ES 模块，可以通过命令行选项打开该功能。新功能很大程度上得归功于 <a href="https://twitter.com/bradleymeck">Bradley Farias</a>。</p>
+
+<h2>1.演示</h2>
+
+<p>这个示例的代码目录结构如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>esm-demo/
+</span><span class='line'>    lib.mjs
+</span><span class='line'>    main.mjs</span></code></pre></td></tr></table></div></figure>
+
+
+<p>lib.mjs：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">export</span> <span class="kd">function</span> <span class="nx">add</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>main.mjs：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">import</span> <span class="p">{</span><span class="nx">add</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./lib.mjs&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Result: &#39;</span><span class="o">+</span><span class="nx">add</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行演示：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>node --experimental-modules main.mjs
+</span><span class='line'>Result: 5
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>2.清单：需要注意的事情</h2>
+
+<h3>ES 模块：</h3>
+
+<ul>
+<li><p>不能动态导入模块。但是 <a href="http://2ality.com/2017/01/import-operator.html">动态 import()</a> 的相关工作正在进行中，应该很快就能提供支持。</p></li>
+<li><p>没有元变量，如 <code>__dirname</code> 和 <code>__filename</code>。但是，有一个的类似功能的提案：“<a href="https://github.com/tc39/proposal-import-meta">import.meta</a>”。看起来可能是这样：</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="kr">import</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nx">url</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>现在所有模块标识符都是 URL（这部分在 Node.js 是新增的）：
+
+<ul>
+<li>文件 - 带文件扩展名的相对路径： <code>../util/tools.mjs</code></li>
+<li>库 - 没有文件扩展名，也没有路径 <code>lodash</code></li>
+<li>如何更好地使 npm 库在浏览器中也可用（不使用 bundler）仍有待观察。一种可能性是引入 RequireJS 风格的配置数据，将路径映射到实际路径。目前，在浏览器中使用 bare path 的模块标识符是非法的。</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>与 CJS 模块的互操作性</h3>
+
+<ul>
+<li>你可以导入 CJS 模块，但它们总是只有默认的导出 - 即 <code>module.exports</code> 的值。让 CJS 模块支持命名导出已经在做了，但可能需要一段时间。如果你能帮忙，<a href="https://twitter.com/bradleymeck/status/906210545145184257">可以来做</a>。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">import</span> <span class="nx">fs1</span> <span class="nx">from</span> <span class="s1">&#39;fs&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">fs1</span><span class="p">).</span><span class="nx">length</span><span class="p">);</span> <span class="c1">// 86</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">import</span> <span class="o">*</span> <span class="nx">as</span> <span class="nx">fs2</span> <span class="nx">from</span> <span class="s1">&#39;fs&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">fs2</span><span class="p">));</span> <span class="c1">// [&#39;default&#39;]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>不能在 ES 模块中使用 require()。主要原因是：
+
+<ul>
+<li>路径解析工作稍有不同：ESM 不支持 <code>NODE_PATH</code> 和 <code>require.extensions</code>。而且，它的标识符始终是 URL 也会导致一些细微差异。</li>
+<li>ES 模块始终以异步方式加载，这确保了与 Web 的最大兼容性。这种加载风格并不能通过 require() 混合使用同步加载 CJS 模块。</li>
+<li>禁止同步模块加载也可以为 Top-level await 导入 ES 模块保留后路（一个当前正在考虑的功能）。</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>3.早期版本的 Node.js 上的 ES 模块</h2>
+
+<p>如果要在 8.5.0 之前的 Node.js 版本上使用 ES 模块，请参阅 John-David Dalton 的 <a href="https://github.com/standard-things/esm">@std/esm</a>。</p>
+
+<p>提示：如果不启用任何可解锁的额外功能，将在 Node.js 保持 100％ 兼容原生 ES 模块.</p>
+
+<h2>FAQ</h2>
+
+<h3>什么时候可以不带命令行选项使用ES 模块？</h3>
+
+<p>目前的计划是在 Node.js 10 LTS 中默认可使用 ES 模块。</p>
+
+<h2>进一步阅读  </h2>
+
+<p>有关 Node.js 和浏览器中 ES 模块的更多信息：</p>
+
+<ul>
+<li>“<a href="http://2ality.com/2017/01/babel-esm-spec-mode.html">Making transpiled ES modules more spec-compliant</a>” [using ES modules natively vs. transpiling them via Babel]</li>
+<li>“<a href="http://2ality.com/2017/05/es-module-specifiers.html">Module specifiers: what’s new with ES modules?</a>” [Why <code>.mjs</code>? How are module specifiers resolved? Etc.]</li>
+<li>“<a href="http://exploringjs.com/es6/ch_modules.html">Modules</a>” [in-depth chapter on ES modules in “Exploring ES6”]</li>
+</ul>
+
+
+<p>即将到来的 ECMAScript 提案：</p>
+
+<ul>
+<li>博客: “<a href="http://2ality.com/2017/01/import-operator.html">ES proposal: <code>import()</code> – dynamically importing ES modules</a>”</li>
+<li>提案: “<a href="https://github.com/tc39/proposal-import-meta"><code>import.meta</code></a>”</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[在工作中学习]]></title>
+    <link href="http://blog.mirreal.net/blog/2017/09/02/learning-at-work/"/>
+    <updated>2017-09-02T21:49:52+08:00</updated>
+    <id>http://blog.mirreal.net/blog/2017/09/02/learning-at-work</id>
+    <content type="html"><![CDATA[<blockquote><p>原文；<a href="https://jvns.ca/blog/2017/08/06/learning-at-work/">Learning at work</a></p>
+
+<p>作者：Julia Evans</p>
+
+<p>谈点：学习是一件没有尽头的事，虽然在工作中很多时候被淹没在没玩没了的需求里面，加班是常态，或许很多人不知不觉放弃学习的心思。这篇文章中提到的一些方法我很赞同，很多点也是我的做事方式，这里也希望所有人都能找到适合自己的学习方式。</p></blockquote>
+
+<p>在 Twitter 上我提了一个问题，“你是如何花时间用于自身学习”（<a href="https://twitter.com/b0rk/status/887111177062555648">这个推文</a>)，这些回答有一些相同之处：</p>
+
+<ul>
+<li>阅读博客文章</li>
+<li>去参加业界大会</li>
+<li>读书</li>
+<li>在洗碗时看一些演讲</li>
+<li>在一些不那么重要的项目里运用你想要学习的技术</li>
+</ul>
+
+
+<p>这些方法都挺管用的。为了个人职业发展，在工作之外花时间学习新技能是非常普遍的事，在这方面我也有不少经验。</p>
+
+<p>另一方面，我知道有一些很厉害的程序员在工作之外完全不写代码。于是我开始思考，如果你想变得更牛，但又不想工作之外花太多额外时间要怎么办？</p>
+
+<p>这些是我以及在 Twitter 上的朋友提到的一些观点，并且都是能在工作时候做的事情。</p>
+
+<h2>不要学习工作之外的编程语言/框架</h2>
+
+<p>这一点听起来有些消极，但确实还是很有用的。对于学习编程语言，我的观点是：</p>
+
+<ul>
+<li>我很熟悉几种编程语言（python，scala，ruby）</li>
+<li>学习新的编程语言需要相当长的时间</li>
+<li>我不想把空闲时间花在上面</li>
+</ul>
+
+
+<p>最近我在做一些 Go 方面的工作，还挺有趣的，我也喜欢做这件事。但是又觉得在上面花费太多个人时间，所以显得不是那么有趣了。通过编写代码学习编程，阅读别人的代码掌握一些模式，然后自己审查代码，然而这些都不是必须的，因为完全可以在工作中去做这些事情。</p>
+
+<h2>选择一些可以从中学习的项目</h2>
+
+<p>这些是我在过去三年学到的一些东西：</p>
+
+<ul>
+<li>Scala/Ruby/Go</li>
+<li>hadoop/mapreduce/scalding</li>
+<li>如何使用 Java 并发库，以及如何配置一个 Java 程序</li>
+<li>关于各种 AWS 服务的工作原理</li>
+<li>很多机器学习的东西</li>
+<li>网络/ CDN / TLS 如何工作</li>
+<li>docker/容器/rkt/kubernetes</li>
+<li>服务发现 / DNS / jenkins</li>
+</ul>
+
+
+<p>一个关于如何选择项目的例子：如果在工作使用一个不能很好并行的程序，这时候问题就来了。我可以选择去问写这个程序的人为什么不使用并行编程，但是如果我也很想学习一下并行编程的话，就可以自己去完成这件事。所以后来我就 <a href="https://jvns.ca/blog/2016/03/29/thread-pools-part-ii-i-love-blocking/">学到了如何在 Java 中使用线程池</a>。</p>
+
+<p>我只为此工作了几天，但却因此学到了新东西。</p>
+
+<p>现在我正在从事 Kubernetes 相关的工作，当时选择它并不是因为可以在这里面学到很多东西。但是我确实学到很多有关分布式系统的东西，还在工作中使用 Go 语言，我觉得这很很棒。</p>
+
+<p>当人们说像“嘿，我们使用 X 技术，需要有相关经验的人才能在这里工作”时，这其实相当愚蠢。现在我在网络/ puppet / kubernetes / docker / AWS 上花了很多时间，在这项工作之前没有任何相关工作经验。</p>
+
+<h2>观察那些高级人员是如何做事的</h2>
+
+<p>我会观察那些我敬佩的人在工作中的做事方式，然后尝试模仿他们或者是向他们寻求建议。例如，当 <a href="http://onemogin.com/">Cory</a> 加入时，我注意到，在引进新技术的时候，他会这样做：</p>
+
+<ul>
+<li>找到另一个有类似问题需要解决的团队</li>
+<li>与他们合作，确保技术真正解决问题</li>
+</ul>
+
+
+<p>现在我正在开展一个新项目，一直在考虑这些工作可以帮到谁以及如何帮助，这样做就会感觉好很多。</p>
+
+<h2>阅读每个 pull request</h2>
+
+<p>在这个主题下引用两个我很喜欢的观点：</p>
+
+<blockquote><p>我在一个小团队，所以会阅读所有的 pull request，直到完全了解问题和解决方案</p></blockquote>
+
+<p>和</p>
+
+<blockquote><p>我也是一样！我跟踪检查，看看人们如何解决各种问题</p></blockquote>
+
+<p>事实上，我并没有阅读团队中的每一个 pull request。但是那确实很有用，通过跟踪别人在这方面做的工作来学习这个领域的东西。</p>
+
+<p>但我并不是能完全做到。我曾经从事机器学习方面的工作，发现理论也很有趣，就想跟踪人们在这方面的情况，但对我来说有太多要注意的东西。我只能尽量注意那些比较接近我的东西，像是其中网络团队的一些工作。</p>
+
+<h2>阅读源代码</h2>
+
+<blockquote><p>阅读我用到的源代码对我而言是一个大块头。了解它在内部在做什么，主要是为什么可以通过某种方式工作。</p></blockquote>
+
+<p>这是很重要的一点，也非常重要。很多库、框架、工具并没有很好的文档，在没有阅读源代码的情况下根本无法了解其工作原理。</p>
+
+<h2>跟进你无法解决的 bug</h2>
+
+<p>有时我会遇到一些自己没办法解决的 bug。后来，可能别人会找到解决方法，在这时候，就值得花时间去搞清楚具体的解决方法是什么，以及他们如何想出来的。</p>
+
+<p>例如，最近有一个我没有调试出来的网络问题，刚好有人在上周搞清楚这个问题。现在想一想，大概明白造成这个 bug 的原因，但是我并不清楚他们用什么工具来获取调试所需的信息。当我重新开始工作时，必须确保我真的搞清楚这个问题，这样下次就可以做得更好。</p>
+
+<p>Jessica Kerr 评论道</p>
+
+<blockquote><p>每当我在故障排除时，除了解决这个问题，还会更深入或更广泛地延伸开去。</p></blockquote>
+
+<p>我也喜欢这个回复：</p>
+
+<blockquote><p>有时候，想解决一个与工作有关的问题，但并没有真的在实际工作中发生，只是看看我能不能在某方面有所突破。</p></blockquote>
+
+<h2>运用好通勤时间</h2>
+
+<p>对我而言，其实并没有通勤时间。但很多人提到他们会利用通勤时间来听播客/阅读报纸/阅读有趣的文章。这似乎是一个很不错的方式，来做一些你感兴趣的事情。</p>
+
+<h2>花时间在工作中学习</h2>
+
+<p>Twitter上有人说“我希望每天可以花 1 小时来学习”。我的观点是，我的工作就是要在工作日中抽出时间来学习东西。像现在我正在工作中使用 Kubernetes，这是一个很复杂的系统需要很长时间才能理解，我得花时间了解它是如何工作的。例如，在开始的时候，没什么目的地在做集群测试，只是想了解容器的网络如何工作的，同时也在项目上取得进展。</p>
+
+<p>这可能对我来说挺容易的，因为我的工作跟别人隔得很远，没有人真的知道我具体在做什么，他们只是关心在大方面做的是什么。</p>
+
+<p>实际上，如果要是提前多花点时间阅读，可能效果会更好。就像我刚刚在阅读 Kelsey Hightower 的“learn kubernetes the hard way”的文档，读完不需花太长时间，而且其中有一个关于如何设置一个集群的很好的点，这样就可以很节省我很多时间。</p>
+
+<p>关于这个点，有些人还要想得更远。比如，我的朋友 Dan 就提到好几次，说他喜欢在工作中阅读技术书籍。最初觉得这是一件令人惊讶的事情，但它确实很有用。事实上，有很多跟我工作相关的书籍，找不到理由为什么不能在工作中阅读它们。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript 中的匿名递归]]></title>
+    <link href="http://blog.mirreal.net/blog/2017/08/09/anonymous-recursion-in-javascript/"/>
+    <updated>2017-08-09T14:54:22+08:00</updated>
+    <id>http://blog.mirreal.net/blog/2017/08/09/anonymous-recursion-in-javascript</id>
+    <content type="html"><![CDATA[<blockquote><p>原文：<a href="https://dev.to/simov/anonymous-recursion-in-javascript">Anonymous Recursion in JavaScript</a></p>
+
+<p>作者：Simeon Velichkov</p></blockquote>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">(</span>
+</span><span class='line'>  <span class="p">(</span>
+</span><span class='line'>    <span class="p">(</span><span class="nx">f</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">f</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">)</span>
+</span><span class='line'>  <span class="p">(</span>
+</span><span class='line'>    <span class="p">(</span><span class="nx">f</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class='line'>      <span class="p">(</span><span class="nx">l</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">l</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">l</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="nx">f</span><span class="p">(</span><span class="nx">f</span><span class="p">)(</span><span class="nx">l</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">l</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">)</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'><span class="p">(</span>
+</span><span class='line'>  <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</span><span class='line'><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>是的，这就是想要分享给大家的一个有趣的示例。这个例子包含以下特性：<a href="https://en.wikipedia.org/wiki/Closure_(computer_programming">闭包</a>)，<a href="https://en.wikipedia.org/wiki/Immediately-invoked_function_expression">自执行函数</a>，<a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions">箭头函数</a>，<a href="https://en.wikipedia.org/wiki/Functional_programming">函数式编程</a> 和 <a href="https://en.wikipedia.org/wiki/Anonymous_recursion">匿名递归</a>。</p>
+
+<p>你可以复制粘贴上述代码到浏览器控制台，会看到打印结果如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">[</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span> <span class="p">]</span>
+</span><span class='line'><span class="p">[</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span> <span class="p">]</span>
+</span><span class='line'><span class="p">[</span> <span class="mi">3</span> <span class="p">]</span>
+</span><span class='line'><span class="p">[]</span>
+</span><span class='line'><span class="p">[]</span>
+</span><span class='line'><span class="p">[</span> <span class="mi">3</span> <span class="p">]</span>
+</span><span class='line'><span class="p">[</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span> <span class="p">]</span>
+</span><span class='line'><span class="p">[</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span> <span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>说到函数式编程，这里有一个使用 <a href="https://en.wikipedia.org/wiki/Scheme_(programming_language">Scheme</a>) (JavaScript 借鉴过的其中一门语言)编写的类似例子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='scheme'><span class='line'><span class="p">(</span>
+</span><span class='line'>  <span class="p">(</span>
+</span><span class='line'>    <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">f</span><span class="p">)</span> <span class="p">(</span><span class="nf">f</span> <span class="nv">f</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">f</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">(</span><span class="k">lambda </span><span class="p">(</span><span class="nf">l</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">(</span><span class="nf">print</span> <span class="nv">l</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nb">not </span><span class="p">(</span><span class="nb">null? </span><span class="nv">l</span><span class="p">))</span> <span class="p">((</span><span class="nf">f</span> <span class="nv">f</span><span class="p">)</span> <span class="p">(</span><span class="nb">cdr </span><span class="nv">l</span><span class="p">)))</span>
+</span><span class='line'>        <span class="p">(</span><span class="nf">print</span> <span class="nv">l</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">)</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>  <span class="p">)</span>
+</span><span class='line'>  <span class="o">&#39;</span><span class="p">(</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class='line'><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Unwind</h2>
+
+<p>像其他很多编程语言一样，函数调用是通过在函数名称后添加括号 <code>()</code> 来完成的：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">foo</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s1">&#39;hey&#39;</span> <span class="p">}</span>
+</span><span class='line'><span class="nx">foo</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在 JavaScript 中我们可以使用括号包裹任意数量的表达式：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">(</span><span class="s1">&#39;hey&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;dev.to&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面代码返回结果是 <code>'dev.to'</code>，原因是 JavaScript 返回最后一个表达式作为结果。</p>
+
+<p>使用括号 <code>()</code> 包裹一个匿名函数表示其结果就是 <a href="https://en.wikipedia.org/wiki/Anonymous_function">匿名函数</a> 本身。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s1">&#39;hey&#39;</span> <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这本身并没有用处，因为匿名函数没有命名，无法被引用，除非在初始化的时候立即调用它。</p>
+
+<p>就像是普通函数一样，我们可以在其后面添加括号 <code>()</code> 来进行调用。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s1">&#39;hey&#39;</span> <span class="p">})()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也可以使用箭头函数：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">(()</span> <span class="o">=&gt;</span> <span class="s1">&#39;hey&#39;</span><span class="p">)()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>同样地，在匿名函数后添加括号 <code>()</code> 来执行函数，这被称为 <a href="https://en.wikipedia.org/wiki/Immediately-invoked_function_expression">自执行函数</a>。</p>
+
+<h2>闭包</h2>
+
+<p><a href="https://en.wikipedia.org/wiki/Closure_(computer_programming">闭包</a>) 指的是函数和该函数声明词法环境的组合。结合 <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions">箭头功能</a>，我们可以定义如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="p">(</span><span class="nx">hi</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="nx">dev</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">hi</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">dev</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在控制台调用上述函数会打印 <code>hey dev.to</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">foo</span><span class="p">(</span><span class="s1">&#39;hey&#39;</span><span class="p">)(</span><span class="s1">&#39;dev.to&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意，我们可以在内部函数作用域访问外部函数的参数 <code>hi</code>。</p>
+
+<p>以下代码跟上述代码一样：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">foo</span> <span class="p">(</span><span class="nx">hi</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">dev</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">hi</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">dev</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>自执行的版本如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">(</span>
+</span><span class='line'>  <span class="p">(</span><span class="nx">hi</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class='line'>    <span class="p">(</span>
+</span><span class='line'>      <span class="p">(</span><span class="nx">dev</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">hi</span><span class="p">}</span> <span class="nx">$</span><span class="p">{</span><span class="nx">dev</span><span class="p">}</span><span class="err">`</span>
+</span><span class='line'>    <span class="p">)</span>
+</span><span class='line'>    <span class="p">(</span><span class="s1">&#39;dev.to&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'><span class="p">(</span><span class="s1">&#39;hey&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>首先，将 <code>hey</code> 作为参数 <code>hi</code> 的值传给最外层作用域的函数，然后这个函数返回另一个自执行函数。<code>dev.to</code> 作为参数 <code>dev</code> 的值传给内部函数，最后这个函数返回最终值：<code>'hey dev.to'</code>。</p>
+
+<h2>再深入一点</h2>
+
+<p>这个一个上述自执行函数的修改版本：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">(</span>
+</span><span class='line'>  <span class="p">(</span>
+</span><span class='line'>    <span class="p">(</span><span class="nx">dev</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class='line'>      <span class="p">(</span><span class="nx">hi</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">hi</span><span class="p">}</span> <span class="nx">$</span><span class="p">{</span><span class="nx">dev</span><span class="p">}</span><span class="err">`</span>
+</span><span class='line'>  <span class="p">)</span>
+</span><span class='line'>  <span class="p">(</span><span class="s1">&#39;dev.to&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'><span class="p">(</span><span class="s1">&#39;hey&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>需要注意的是，<a href="https://en.wikipedia.org/wiki/Immediately-invoked_function_expression">自执行函数</a> 和 <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming">闭包</a>) 用作初始化和封装状态，接下来我们来看另外一个例子。</p>
+
+<h2>匿名递归</h2>
+
+<p>回到我们最初的例子，这次加点注释：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">(</span>
+</span><span class='line'>  <span class="p">(</span>
+</span><span class='line'>    <span class="p">(</span><span class="nx">f</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">f</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span> <span class="c1">// 3.</span>
+</span><span class='line'>  <span class="p">)</span>
+</span><span class='line'>  <span class="p">(</span>
+</span><span class='line'>    <span class="p">(</span><span class="nx">f</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="c1">// 2.</span>
+</span><span class='line'>      <span class="p">(</span><span class="nx">l</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="c1">// 4.</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">l</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">l</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="nx">f</span><span class="p">(</span><span class="nx">f</span><span class="p">)(</span><span class="nx">l</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">l</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">)</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'><span class="p">(</span>
+</span><span class='line'>  <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c1">// 1.</span>
+</span><span class='line'><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>输入函数 <code>[1, 2, 3]</code> 传给最外层作用域</li>
+<li>整个函数作为参数传给上面函数</li>
+<li>这个函数接收下面函数作为参数 <code>f</code> 的值，然后自身调用</li>
+<li><code>2.</code>将被调用被作为 <code>3.</code>的结果然后返回函数 <code>4.</code> ，该函数是满足最外层作用域的函数，因此接收输入数组作为 <code>l</code> 参数的值</li>
+</ol>
+
+
+<p>至于结果为什么是那样子，原因是在递归内部有一个对函数 <code>f</code> 的引用来接收输入数组 <code>l</code>。所以能那样调用：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">f</span><span class="p">(</span><span class="nx">f</span><span class="p">)(</span><span class="nx">l</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意，<code>f</code> 是一个闭包，所以我们只需要调用它就可以访问到操作输入数组的最里面的函数。</p>
+
+<p>为了说明目的，第一个 <code>console.log(l)</code> 语句表示递归自上而下，第二个语句表示递归自下而上。</p>
+
+<h2>结论</h2>
+
+<p>希望你喜欢这篇文章，并从中学到了新的东西。闭包、自执行函数、函数式编程模式不是黑魔法。它们遵循一套易于理解和玩乐的简单原则。</p>
+
+<p>话虽如此，你必须培养自己何时使用它们，何时不用的这样一种感觉。如果你的代码变得难以维护，那这可能会成为重构中一些好点子。</p>
+
+<p>然而，理解这些基本技术对于创建清晰优雅的解决方案以及提升自我是至关重要的。</p>
+
+<p>Happy Coding！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[面向初学者的高阶组件介绍]]></title>
@@ -4039,438 +4602,6 @@
 <li>Javascript高级程序设计（第3版）[人民邮电出版社]</li>
 <li>Java加密与解密的艺术[机械工业出版社]</li>
 </ol>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[对一次求职经历的叙述]]></title>
-    <link href="http://blog.mirreal.net/blog/2014/10/14/about-an-interview/"/>
-    <updated>2014-10-14T09:42:08+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2014/10/14/about-an-interview</id>
-    <content type="html"><![CDATA[<p>首先，我不能说出这家公司的名字，因为这违反了保密协议，即使这个博客除了我没人阅读。我只能说，这只是一家很棒的企业，虽然没有成功，但是仍然给我留下了美好的印象。我写出来，只是记录自己的一点感悟。</p>
-
-<h2>笔试</h2>
-
-<p>该部分包括必做题7道，如下：</p>
-
-<!-- more -->
-
-
-<p>1、有6，9，140颗一包的糖果，比如当用户团购8颗时，则必须拆包。问：必须拆包卖的最大订单是多少？</p>
-
-<p>2、给出一棵二叉树的后序遍历，中序遍历。问：画出该二叉树，并写出前序遍历。</p>
-
-<p>3、写一个函数将二叉树左右子节点交换。</p>
-
-<p>4、给一个数组，可能有重复项，写一个程序求元素X所在的区间。</p>
-
-<p>5、给一个浮点数数组，写一个程序输出任意连续元素乘积的最大值。</p>
-
-<p>6、景区门票5元，某天售票处无零钱，来了2N个游客，其中n人有5元钱，其余人只有10元的。问：所有人都无须为找零而等待的概率是多少？</p>
-
-<p>7、给一个数组，其值表示台阶的高度，写一个程序求蓄水量。</p>
-
-<p>选作题：</p>
-
-<p>前端：设计一个对象，实现两个函数 <code>getVersion()</code> 和 <code>setVersion()</code> 。很简单。</p>
-
-<p>后面的没仔细看了，主要是前面的7道题都没搞定。记得有iOS、Android、运维、测试、嵌入式的。</p>
-
-<h2>面试</h2>
-
-<h3>1st Round</h3>
-
-<p>这一轮大概就是随便聊聊天，主要是针对简历提些问题，看看简历有没有水分。写两段程序，我的题目有：</p>
-
-<h4>链表求逆</h4>
-
-<h4>二叉搜索树</h4>
-
-<p>然后，还问了个数学概率问题：生日悖论</p>
-
-<p>总结一下：大概都是些以前都会见过的东西，至少我碰到的都是接触过的，知道的，不会有太难的问题。</p>
-
-<h3>2nd Round</h3>
-
-<h4>关于作用域</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">function</span> <span class="nx">test</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">a</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">b</span><span class="p">()</span> <span class="p">{};</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">test</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>打印结果:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="mi">1</span>
-</span><span class='line'><span class="p">[</span><span class="nb">Function</span><span class="o">:</span><span class="nx">b</span><span class="p">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>其实，没太明白这道题目考点何处，不过面试官的意思似乎在作用域，当我刚说出第一个会打印出 1 的时候，她说我还是太年轻。我立刻紧张了，看了一遍又一遍，还是没想出陷阱究竟在哪里。我只能想，大概是看错题目了，但我后来的面试过程中又瞄了几次，确定她写的就是上面那段代码。</p>
-
-<h4>原型链</h4>
-
-<p>结果，忘了这东西。衰！</p>
-
-<p>仍然有两个算法问题：</p>
-
-<ul>
-<li><p>1.数组最大的N项</p></li>
-<li><p>2.数组去除重复项</p></li>
-</ul>
-
-
-<p>比一轮的题目会难一点。当然，并不偏，有种似曾相识的感觉。</p>
-
-<h2>2014.10.20更新</h2>
-
-<p>上面的文章是14号上午九点多发的。本以为已经没戏了，结果，临近中午时接到工作人员三面的通知，让我又惊又喜。最后，由于他们准备回京，而我需要两个钟头才能赶过去，所以改为电话面试。</p>
-
-<p>第二天，约好3点钟，但没电话，我打过去问了，后来5点面试官打过来，由于准备另外一家公司的笔试，推迟到第二天。最后，16号下午进行的电话面试。如今，已经过去4天了，有件事已确信无疑，我被婉拒了，他们到底是没看上我。</p>
-
-<h3>回顾一下完整的历程：</h3>
-
-<p>回顾一下此次应聘经历，颇为曲折，让我印象深刻。本来第一天因为另外一场面试错过笔试，就像错过的许多企业一样，以为就这样算了吧。</p>
-
-<p>结果，第二天安排了第二场笔试，于是吃过午饭，就出发，搭两个钟头的公车去参加笔试。笔试题目挺对我的胃口，这句话的意思是比较符合我对技术公司挑选人才标准的期望，做不做得好那是另外一回事了。事实上，笔试后就感觉自己白跑了一趟。</p>
-
-<p>但是，第二天居然收到面试通知，抱着一种很轻松的心态，搭两个钟头的公车去参加面试。在这个时候，对通过面试完全没有抱任何希望，因为这才我的第二次，想的只是增加点面试经验而已，所以真的很轻松，而且没了第一次面试时候话都说不清楚的笨拙，答不上就走呗，没什么损失。</p>
-
-<p>没想到，第一轮面试竟然比较顺利，大为出乎我的意料，而且，在外面呆了好久，也没人过来跟我讲，今天的面试就到这里了。我知道，已经过了，便开始浮想连篇，觉得自己进入这家企业开始有点希望了。等了好长一段时间，终于开始了第二轮面试，但是，那个漂亮姐姐让我觉得渺小，我到底还是太差劲。</p>
-
-<p>面试结束后都快八点，直觉告诉我，不可能会通过了，于是，离开面试地点，搭两个钟头的公车回学校。路上，叫了外卖，请室友帮忙取了，回到宿舍，十点半了，狼吞虎咽消灭掉晚餐。</p>
-
-<h3>作个小小的总结：</h3>
-
-<p>想想这些经历，颇多起伏。我至今不知道，二面到底过没，以我的表现应该是不会过，但偏偏却让我参加第三轮，给了我一种还有希望的错觉，但最后仍然还是嫌弃了我。</p>
-
-<p>电话面试，因为是第一次，我又像第一次面试一样紧张过头了，语无伦次。至少有四个地方，说得稀里糊涂的：</p>
-
-<ol>
-<li>自我介绍</li>
-<li>职位的认识</li>
-<li>为什么不考研</li>
-<li>为什么还没拿到其他公司的offer</li>
-</ol>
-
-
-<p>有种说完就觉得糟了的感觉。</p>
-
-<h4>失败的原因</h4>
-
-<ol>
-<li>技术知识不扎实</li>
-<li>表达太烂</li>
-<li>大概还有礼貌的问题</li>
-</ol>
-
-
-<p>本来，还想去问问那个漂亮姐姐的，寻求一些建议，但转念一想，还是算了，她未必会记得我，问不问也不会有太大差别。</p>
-
-<p>再见了，MT。</p>
-
-<p>不过，如果足够牛逼，又怎会因此而被嫌弃。技术的大门，才刚踏进一只脚而已，不过，我会努力地走下去的。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[关于内存对齐的一点注解]]></title>
-    <link href="http://blog.mirreal.net/blog/2014/09/15/memory-alignment/"/>
-    <updated>2014-09-15T14:30:23+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2014/09/15/memory-alignment</id>
-    <content type="html"><![CDATA[<h2>一、内存对齐的原因</h2>
-
-<p>大部分的参考资料都是如是说的：</p>
-
-<ol>
-<li><p>平台原因(移植原因)：不是所有的硬件平台都能访问任意地址上的任意数据的；某些硬件平台只能在某些地址处取某些特定类型的数据，否则抛出硬件异常。</p></li>
-<li><p>性能原因：数据结构(尤其是栈)应该尽可能地在自然边界上对齐。原因在于，为了访问未对齐的内存，处理器需要作两次内存访问；而对齐的内存访问仅需要一次访问。</p></li>
-</ol>
-
-
-<h2>二、对齐规则</h2>
-
-<h4>每个特定平台上的编译器都有自己的默认“对齐系数”(也叫对齐模数)。比如32位系统默认对齐系数是 4， 64位的则可以达到 8.</h4>
-
-<!-- more -->
-
-
-<p>程序员可以通过预编译命令</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#pragma pack(n)  </span><span class="c1">// n=1,2,4,8,16</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>来改变这一系数，其中的n就是指定的“对齐系数”。</p>
-
-<p>另外，可以通过GCC提供的 <code>__attribute__</code> 扩展机制取消对齐优化。</p>
-
-<h3>规则：</h3>
-
-<ol>
-<li><p>数据成员对齐规则：结构(struct)或联合(union)的数据成员，第一个数据成员放在offset为0的地方，以后每个数据成员的对齐按照 <code>#pragma pack</code> 指定的数值和这个数据成员自身长度中，比较小的那个进行。</p></li>
-<li><p>结构(或联合)的整体对齐规则：在数据成员完成各自对齐之后，结构(或联合)本身也要进行对齐，对齐将按照 <code>#pragma pack</code> 指定的数值和结构(或联合)最大数据成员长度中，比较小的那个进行。</p></li>
-</ol>
-
-
-<h2>三、试验</h2>
-
-<p>下面通过一例子的说明这个规则</p>
-
-<p>编译器：GCC4.6.3, (g++)</p>
-
-<p>操作系统：Ubuntu 12， Windows 7</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="k">struct</span> <span class="n">test</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kt">short</span> <span class="n">a</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">double</span> <span class="n">b</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">c</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">char</span> <span class="n">d</span><span class="p">;</span>
-</span><span class='line'><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在GCC中，各类型的大小如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">))</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="kt">short</span><span class="p">)</span> <span class="o">=</span> <span class="mi">2</span>
-</span><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="o">=</span> <span class="mi">4</span>
-</span><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span> <span class="o">=</span> <span class="mi">4</span>
-</span><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="kt">double</span><span class="p">)</span> <span class="o">=</span> <span class="mi">8</span>
-</span><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="kt">long</span> <span class="kt">long</span><span class="p">)</span> <span class="o">=</span> <span class="mi">8</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>注解：在32位系统，n=4</h4>
-
-<p>相当于：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#pragma pack(4)</span>
-</span><span class='line'><span class="k">struct</span> <span class="n">test</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kt">short</span> <span class="n">a</span><span class="p">;</span> <span class="c1">// 按2字节对齐，存放区间：0-1</span>
-</span><span class='line'>  <span class="kt">double</span> <span class="n">b</span><span class="p">;</span> <span class="c1">// 按4字节对齐，存放区间：4-11</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">c</span><span class="p">;</span> <span class="c1">// 按4字节对齐，存放区间：12-15</span>
-</span><span class='line'>  <span class="kt">char</span> <span class="n">d</span><span class="p">;</span> <span class="c1">// 按1字节对齐，存放区间：16</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'><span class="cp">#pragma pack()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>最后整体对齐，按4圆整，故：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="n">test</span><span class="p">)</span> <span class="o">=</span> <span class="mi">20</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>注解：在64位系统，默认的对齐系数为8</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="k">struct</span> <span class="n">test</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kt">short</span> <span class="n">a</span><span class="p">;</span> <span class="c1">// 按2字节对齐，存放区间：0-1</span>
-</span><span class='line'>  <span class="kt">double</span> <span class="n">b</span><span class="p">;</span> <span class="c1">// 按8字节对齐，存放区间：8-15</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">c</span><span class="p">;</span> <span class="c1">// 按4字节对齐，存放区间：16-19</span>
-</span><span class='line'>  <span class="kt">char</span> <span class="n">d</span><span class="p">;</span> <span class="c1">// 按1字节对齐，存放区间：20</span>
-</span><span class='line'><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>最后整体对齐，按8圆整，故：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="k">sizeof</span><span class="p">(</span><span class="n">test</span><span class="p">)</span> <span class="o">=</span> <span class="mi">24</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>注解：C++允许在结构体中定义static变量，静态变量分配在同一的静态存储区，不包含在结构体大小中。</h4>
-
-<p>如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#pragma pack(4)</span>
-</span><span class='line'><span class="k">struct</span> <span class="n">test</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kt">short</span> <span class="n">a</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">double</span> <span class="n">b</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">c</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">char</span> <span class="n">d</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">static</span> <span class="kt">int</span> <span class="n">d</span><span class="p">;</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'><span class="cp">#pragma pack()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>该结构体的大小仍为 20.</p>
-
-<p>在标准C，似乎并没有这种用法。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Octopress + Github Pages]]></title>
-    <link href="http://blog.mirreal.net/blog/2014/09/01/octopress-plus-github-pages/"/>
-    <updated>2014-09-01T15:04:01+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2014/09/01/octopress-plus-github-pages</id>
-    <content type="html"><![CDATA[<h2>Octopress + Github Pages = a new blog</h2>
-
-<p><a href="http://octopress.org/docs/setup">document</a></p>
-
-<p>Enviroment: Ubuntu 12.00</p>
-
-<h3>1.Installing Ruby With RVM</h3>
-
-<p>首先，由于 <code>octopress</code> 使用 <code>ruby</code>，版本要高于 <code>1.9.3</code>，系统自带的版本可能并不满足，在这里通过 <code>RVM</code> 来安装高版本的 <code>ruby</code>。</p>
-
-<p>如果系统已经有了合适的 <code>ruby</code> 版本，这一步可以跳过。</p>
-
-<p>接下来详细说明。</p>
-
-<h4>Install RVM</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>curl -L https://get.rvm.io <span class="p">|</span> bash -s stable --ruby
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<!-- more -->
-
-
-<p>Then run:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">source</span> ~/.rvm/scripts/rvm
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>to start RVM</p>
-
-<h4>Install Ruby 1.9.3</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>rvm install 1.9.3
-</span><span class='line'>rvm use 1.9.3
-</span><span class='line'>rvm rubygems latest
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>2.Octopress Setup</h3>
-
-<h4>Get octopress</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>git clone git://github.com/imathis/octopress.git octopress
-</span><span class='line'><span class="nb">cd </span>octopress
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>Install dependencies.</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>gem install bundler
-</span><span class='line'>bundle install
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果 <code>gem</code> 太慢，可以将源设置成国内淘宝的，直接修改当前的 <code>Gemfile</code></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">source</span> <span class="s2">&quot;https://ruby.taobao.org&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>Install the default Octopress theme.</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake install
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>3.Deploying to Github Pages</h3>
-
-<p>下面我们就把静态文件发到 <code>github</code> 上</p>
-
-<h4>With Github User/Organization pages</h4>
-
-<p>Create a new Github repository and name the repository with the format <code>username.github.io</code></p>
-
-<p>在 <code>github</code> 上新建一个仓库，名字格式必须是 <code>username.github.io</code>，比如 <code>mirreal.github.io</code>，如果要直接通过 <code>https://mirreal.github.io</code> 访问的话。</p>
-
-<p>另外一种通过路径的方式，具体参考 <code>github pages</code> 文档。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake setup_github_pages
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Next run:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake generate
-</span><span class='line'>rake deploy
-</span></code></pre></td></tr></table></div></figure>
 
 ]]></content>
   </entry>
