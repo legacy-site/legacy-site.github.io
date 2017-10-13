@@ -4,7 +4,7 @@
   <title><![CDATA[Mirreal Note]]></title>
   <link href="http://blog.mirreal.net/atom.xml" rel="self"/>
   <link href="http://blog.mirreal.net/"/>
-  <updated>2017-09-18T22:03:04+08:00</updated>
+  <updated>2017-10-13T16:59:27+08:00</updated>
   <id>http://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Mirreal Ellison]]></name>
@@ -12,6 +12,569 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ES6 Promise：模式与反模式]]></title>
+    <link href="http://blog.mirreal.net/blog/2017/09/29/es6-promises-patterns-and-anti-patterns/"/>
+    <updated>2017-09-29T16:50:11+08:00</updated>
+    <id>http://blog.mirreal.net/blog/2017/09/29/es6-promises-patterns-and-anti-patterns</id>
+    <content type="html"><![CDATA[<blockquote><p>原文：<a href="https://medium.com/datafire-io/es6-promises-patterns-and-anti-patterns-bbb21a5d0918">ES6 Promises: Patterns and Anti-Patterns</a>
+作者：Bobby Brennan</p></blockquote>
+
+<p>当几年前，第一次使用 NodeJS 的时候，对现在被称为“ <a href="http://callbackhell.com/">回调地狱</a> ”的写法感到很困扰。幸运的是，现在是 2017 年了，NodeJS 已经采用大量 JavaScript 的最新特性，从 <a href="http://node.green/">v4</a> 开始已经支持 Promise。</p>
+
+<p>尽管 Promise 可以让代码更加简洁易读，但对于只熟悉回调函数的人来说，可能对此还是会有所怀疑。在这里，将列出我在使用Promise 时学到的一些基本模式，以及踩的一些坑。</p>
+
+<p><em>注意：<strong>在本文中</strong>将使用<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions">箭头函数</a> ，如果你还不是很熟悉，其实很简单，建议<a href="http://exploringjs.com/es6/ch_arrow-functions.html">先读一下使用它们的好处</a></em></p>
+
+<h2>模式与最佳实践</h2>
+
+<h4>使用 Promise</h4>
+
+<p>如果使用的是已经支持 Promise 的第三方库，那么使用起来非常简单。只需关心两个函数：<code>then()</code> 和 <code>catch()</code>。例如，有一个客户端 API 包含三个方法，<code>getItem()</code>，<code>updateItem()</code>，和<code>deleteItem()</code>，每一个方法都返回一个 Promise：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">()</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">api</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">item</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">item</span><span class="p">.</span><span class="nx">amount</span><span class="o">++</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">api</span><span class="p">.</span><span class="nx">updateItem</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">item</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">update</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">api</span><span class="p">.</span><span class="nx">deleteItem</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'>  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;error while working on item 1&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>每次调用 <code>then()</code> 会在 Promise 链中创建一个新的步骤，如果链中的任何一个地方出现错误，就会触发接下来的 <code>catch()</code> 。<code>then()</code> 和 <code>catch()</code> 都可以返回一个值或者一个新的 Promise，结果将被传递到 Promise 链的下一个<code>then()</code>。</p>
+
+<p>为了比较，这里使用回调函数来实现相同逻辑：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">api</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">item</span><span class="p">.</span><span class="nx">amount</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">api</span><span class="p">.</span><span class="nx">updateItem</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">item</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">update</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">api</span><span class="p">.</span><span class="nx">deleteItem</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">})</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>要注意的第一个区别是，使用回调函数，我们必须在过程的<strong>每个</strong>步骤中进行错误处理，而不是用单个的 catch-all 来处理。回调函数的第二个问题更直观，每个步骤都要水平缩进，而使用 Promise 的代码则有显而易见的顺序关系。</p>
+
+<h4>回调函数 Promise 化</h4>
+
+<p>需要学习的第一个技巧是如何将回调函数转换为 Promise。你可能正在使用仍然基于回调的库，或是自己的旧代码，不过不用担心，因为只需要几行代码就可以将其包装成一个 Promise。这是将 Node 中的一个回调方法 <code>fs.readFile</code> 转换为 Promise的示例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">readFilePromise</span><span class="p">(</span><span class="nx">filename</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">((</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">fs</span><span class="p">.</span><span class="nx">readFile</span><span class="p">(</span><span class="nx">filename</span><span class="p">,</span> <span class="s1">&#39;utf8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">reject</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">else</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">})</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">readFilePromise</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">data</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">))</span>
+</span><span class='line'>  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关键部分是 Promise 构造函数，它接收一个函数作为参数，这个函数有两个函数参数：<code>resolve</code> 和 <code>reject</code>。在这个函数里完成所有工作，完成之后，在成功时调用 <code>resolve</code>，如果有错误则调用 <code>reject</code>。</p>
+
+<p>需要注意的是只有<strong>一个</strong><code>resolve</code> 或者 <code>reject</code> 被调用，即应该只被调用一次。在我们的示例中，如果 <code>fs.readFile</code> 返回错误，我们将错误传递给 <code>reject</code>，否则将文件数据传递给<code>resolve</code>。</p>
+
+<h4>Promise 的值</h4>
+
+<p>ES6 有两个很方便的辅助函数，用于通过普通值创建 Promise：<code>Promise.resolve()</code> 和 <code>Promise.reject()</code>。例如，可能需要在同步处理某些情况时一个返回 Promise 的函数：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">readFilePromise</span><span class="p">(</span><span class="nx">filename</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">filename</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Filename not specified&quot;</span><span class="p">));</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">filename</span> <span class="o">===</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="s1">&#39;&lt;h1&gt;Hello!&lt;/h1&gt;&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">((</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="cm">/*...*/</span><span class="p">})</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意，虽然可以传递任何东西（或者不传递任何值）给 <code>Promise.reject()</code>，但是好的做法是传递一个<code>Error</code>。</p>
+
+<h4>并行运行</h4>
+
+<p><code>Promise.all</code>是一个并行运行 Promise 数组的方法，也就是说是同时运行。例如，我们有一个要从磁盘读取文件的列表。使用上面创建的 <code>readFilePromise</code> 函数，将如下所示：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">let</span> <span class="nx">filenames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="s1">&#39;blog.html&#39;</span><span class="p">,</span> <span class="s1">&#39;terms.html&#39;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Promise</span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="nx">filenames</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">readFilePromise</span><span class="p">))</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">files</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;index:&#39;</span><span class="p">,</span> <span class="nx">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;blog:&#39;</span><span class="p">,</span> <span class="nx">files</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;terms:&#39;</span><span class="p">,</span> <span class="nx">files</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+</span><span class='line'>  <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我甚至不会使用传统的回调函数来尝试编写与之等效的代码，那样会很凌乱，而且也容易出错。</p>
+
+<h4>串行运行</h4>
+
+<p>有时同时运行一堆 Promise 可能会出现问题。比如，如果尝试使用 <code>Promise.all</code> 的 API ​​去检索一堆资源，则可能会在达到速率限制时开始响应<a href="https://httpstatuses.com/429">429错误</a>。</p>
+
+<p>一种解决方案是串行运行 Promise，或一个接一个地运行。但是在 ES6 中没有提供类似 <code>Promise.all</code> 这样的方法（为什么？），但我们可以使用 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce?v=b"><code>Array.reduce</code></a> 来实现：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">let</span> <span class="nx">itemIDs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">itemIDs</span><span class="p">.</span><span class="nx">reduce</span><span class="p">((</span><span class="nx">promise</span><span class="p">,</span> <span class="nx">itemID</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="nx">api</span><span class="p">.</span><span class="nx">deleteItem</span><span class="p">(</span><span class="nx">itemID</span><span class="p">));</span>
+</span><span class='line'><span class="p">},</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">());</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在这种情况下，我们需要等待每次调用 <code>api.deleteItem()</code> 完成之后才能进行下一次调用。这种方法，比为每个 itemID 写 <code>.then()</code> 更简洁更通用：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">()</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="nx">api</span><span class="p">.</span><span class="nx">deleteItem</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="nx">api</span><span class="p">.</span><span class="nx">deleteItem</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="nx">api</span><span class="p">.</span><span class="nx">deleteItem</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="nx">api</span><span class="p">.</span><span class="nx">deleteItem</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="nx">api</span><span class="p">.</span><span class="nx">deleteItem</span><span class="p">(</span><span class="mi">5</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Race</h4>
+
+<p>ES6 提供的另一个很方便的函数是 <code>Promise.race</code>。跟 <code>Promise.all</code> 一样，接收一个 Promise 数组，并同时运行它们，但不同的是，会在一旦<strong>任何</strong> Promise 完成或失败的情况下返回，并放弃所有其他的结果。</p>
+
+<p>例如，我们可以创建一个在几秒钟之后超时的 Promise：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">timeout</span><span class="p">(</span><span class="nx">ms</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">((</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">reject</span><span class="p">,</span> <span class="nx">ms</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Promise</span><span class="p">.</span><span class="nx">race</span><span class="p">([</span><span class="nx">readFilePromise</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">),</span> <span class="nx">timeout</span><span class="p">(</span><span class="mi">1000</span><span class="p">)])</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">data</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">))</span>
+</span><span class='line'>  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Timed out after 1 second&quot;</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>需要注意的是，其他 Promise 仍将继续运行 ，只是看不到结果而已。</p>
+
+<h4>捕获错误</h4>
+
+<p>捕获错误最常见的方式是添加一个  <code>.catch()</code> 代码块，这将捕获前面所有 <code>.then()</code> 代码块中的错误  ：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">()</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="nx">api</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">item</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">item</span><span class="p">.</span><span class="nx">amount</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">api</span><span class="p">.</span><span class="nx">updateItem</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">item</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'>  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;failed to get or update item&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在这里，只要有 <code>getItem</code> 或者 <code>updateItem</code> 失败，<code>catch()</code>就会被触发。但是如果我们想分开处理 <code>getItem</code> 的错误怎么办？只需再插入一个<code>catch()</code> 就可以，它也可以返回另一个 Promise。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">()</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="nx">api</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</span><span class='line'>  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">api</span><span class="p">.</span><span class="nx">createItem</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">{</span><span class="nx">amount</span><span class="o">:</span> <span class="mi">0</span><span class="p">}))</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">item</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">item</span><span class="p">.</span><span class="nx">amount</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">api</span><span class="p">.</span><span class="nx">updateItem</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">item</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'>  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;failed to update item&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在，如果<code>getItem()</code>失败，我们通过第一个 <code>catch</code> 介入并创建一条新的记录。</p>
+
+<h4>抛出错误</h4>
+
+<p>应该将 <code>then()</code> 语句中的所有代码视为 <code>try</code> 块内的所有代码。<code>return Promise.reject()</code> 和 <code>throw new Error()</code> 都会导致下一个 <code>catch()</code> 代码块的运行。</p>
+
+<p>这意味着运行时错误也会触发 <code>catch()</code>，所以不要去假设错误的来源。例如，在下面的代码中，我们可能希望该 <code>catch()</code> 只能获得 <code>getItem</code> 抛出的错误，但是如示例所示，它还会在我们的 <code>then()</code> 语句中捕获运行时错误。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">api</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">item</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">delete</span> <span class="nx">item</span><span class="p">.</span><span class="nx">owner</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">owner</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'>  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span> <span class="c1">// Cannot read property &#39;name&#39; of undefined</span>
+</span><span class='line'>  <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>动态链</h4>
+
+<p>有时，我们想要动态地构建 Promise 链，例如，在满足特定条件时，插入一个额外的步骤。在下面的示例中，在读取给定文件之前，我们可以选择创建一个锁定文件：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">readFileAndMaybeLock</span><span class="p">(</span><span class="nx">filename</span><span class="p">,</span> <span class="nx">createLockFile</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">let</span> <span class="nx">promise</span> <span class="o">=</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">createLockFile</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">promise</span> <span class="o">=</span> <span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="nx">writeFilePromise</span><span class="p">(</span><span class="nx">filename</span> <span class="o">+</span> <span class="s1">&#39;.lock&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="nx">readFilePromise</span><span class="p">(</span><span class="nx">filename</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一定要通过重写 <code>promise = promise.then(/*...*/)</code> 来更新 <code>Promise</code> 的值。参看接下来反模式中会提到的 <strong>多次调用 then()</strong>。</p>
+
+<h2>反模式</h2>
+
+<p>Promise 是一个整洁的抽象，但很容易陷入某些陷阱。以下是我遇到的一些最常见的问题。</p>
+
+<h4>重回回调地狱</h4>
+
+<p>当我第一次从回调函数转到 Promise 时，发现很难摆脱一些旧习惯，仍像使用回调函数一样嵌套 Promise：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">api</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">item</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">item</span><span class="p">.</span><span class="nx">amount</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">api</span><span class="p">.</span><span class="nx">updateItem</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">item</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">update</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">api</span><span class="p">.</span><span class="nx">deleteItem</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>          <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">deletion</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;done!&#39;</span><span class="p">);</span>
+</span><span class='line'>          <span class="p">})</span>
+</span><span class='line'>      <span class="p">})</span>
+</span><span class='line'>  <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这种嵌套是完全没有必要的。有时一两层嵌套可以帮助组合相关任务，但是最好总是使用 <code>.then()</code> 重写成 Promise 垂直链  。</p>
+
+<h4>没有返回</h4>
+
+<p>我遇到的一个经常会犯的错误是在一个 Promise 链中忘记 <code>return</code> 语句。你能发现下面的 bug 吗？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">api</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">item</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">item</span><span class="p">.</span><span class="nx">amount</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">api</span><span class="p">.</span><span class="nx">updateItem</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">item</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">update</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">api</span><span class="p">.</span><span class="nx">deleteItem</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">deletion</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;done!&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因为我们没有在第4行的 <code>api.updateItem()</code> 前面写 <code>return</code>，所以 <code>then()</code> 代码块会立即 resolove，导致 <code>api.deleteItem()</code> 可能在<code>api.updateItem()</code> 完成之前就被调用。</p>
+
+<p>在我看来，这是 ES6 Promise 的一个大问题，往往会引发意想不到的行为。问题是，  <code>.then()</code> 可以返回一个值，也可以返回一个新的 Promise，<code>undefined</code> 完全是一个有效的返回值。就个人而言，如果我负责 Promise API，我会在 <code>.then()</code> 返回   <code>undefined</code> 时抛出运行时错误，但现在我们需要特别注意 <code>return</code> 创建的 Promise。</p>
+
+<h4>多次调用 <code>.then()</code></h4>
+
+<p>根据规范，在同一个 Promise 上多次调用 <code>then()</code> 是完全有效的，并且回调将按照其注册顺序被调用。但是，我并未见过需要这样做的场景，并且在使用返回值和错误处理时可能会产生一些意外行为：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">let</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">p</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="s1">&#39;b&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">p</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">result</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="c1">// &#39;a&#39;</span>
+</span><span class='line'><span class="p">})</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">let</span> <span class="nx">q</span> <span class="o">=</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">q</span> <span class="o">=</span> <span class="nx">q</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="s1">&#39;b&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">q</span> <span class="o">=</span> <span class="nx">q</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">result</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="c1">// &#39;b&#39;</span>
+</span><span class='line'><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在这个例子中，因为我们在每次调用 <code>then()</code> 不更新 <code>p</code> 的值，所以我们看不到 <code>'b'</code> 返回。但是每次调用 <code>then()</code> 时更新 <code>q</code>，所以其行为更可预测。</p>
+
+<p>这也适用于错误处理：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">let</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">();</span>
+</span><span class='line'><span class="nx">p</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;whoops!&quot;</span><span class="p">)})</span>
+</span><span class='line'><span class="nx">p</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;hello!&#39;</span><span class="p">);</span> <span class="c1">// &#39;hello!&#39;</span>
+</span><span class='line'><span class="p">})</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">let</span> <span class="nx">q</span> <span class="o">=</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">();</span>
+</span><span class='line'><span class="nx">q</span> <span class="o">=</span> <span class="nx">q</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;whoops!&quot;</span><span class="p">)})</span>
+</span><span class='line'><span class="nx">q</span> <span class="o">=</span> <span class="nx">q</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;hello&#39;</span><span class="p">);</span> <span class="c1">// We never reach here</span>
+</span><span class='line'><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在这里，我们期望的是抛出一个错误来打破 Promise 链，但由于没有更新 <code>p</code> 的值，所以第二个 <code>then()</code> 仍会被调用。</p>
+
+<p>有可能在一个 Promise 上多次调用 <code>.then()</code> 有很多理由  ，因为它允许将 Promise 分配到几个新的独立的 Promise 中，但是还没发现真实的使用场景。</p>
+
+<h4>混合使用回调和 Promise</h4>
+
+<p>很容易进入一种陷阱，在使用基于 Promise 库的同时，仍在基于回调的项目中工作。始终避免在 <code>then()</code> 或 <code>catch()</code> 使用回调函数 ，否则 Promise 会吞噬任何后续的错误，将其作为 Promise 链的一部分。例如，以下内容看起来是一个挺合理的方式，使用回调函数来包装一个 Promise：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">getThing</span><span class="p">(</span><span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">api</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">item</span> <span class="o">=&gt;</span> <span class="nx">callback</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">item</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">e</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">getThing</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">thing</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">thing</span><span class="p">);</span>
+</span><span class='line'><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里的问题是，如果有错误，我们会收到关于“Unhandled promise rejection”的警告，即使我们添加了一个 <code>catch()</code> 代码块。这是因为，<code>callback()</code> 在 <code>then()</code> 和 <code>catch()</code> 都会被调用，使之成为 Promise 链的一部分。</p>
+
+<p>如果必须使用回调来包装 Promise，可以使用  <code>setTimeout</code> （或者是 NodeJS 中的 <code>process.nextTick</code>）来打破 Promise：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">getThing</span><span class="p">(</span><span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">api</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">item</span> <span class="o">=&gt;</span> <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="nx">callback</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">item</span><span class="p">)))</span>
+</span><span class='line'>    <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">_</span> <span class="o">=&gt;</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">e</span><span class="p">)));</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">getThing</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">thing</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">thing</span><span class="p">);</span>
+</span><span class='line'><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>不捕获错误</h4>
+
+<p>JavaScript 中的错误处理有点奇怪。虽然支持熟悉的 <code>try/catch</code> 范例，但是没有办法强制调用者以 Java 的方式处理错误。然而，使用回调函数，使用所谓的“errbacks”，即第一个参数是一个错误回调变得很常见。这迫使调用者至少承认错误的可能性。例如，<code>fs</code> 库：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">fs</span><span class="p">.</span><span class="nx">readFile</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="s1">&#39;utf8&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+</span><span class='line'><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用 Promise，又将很容易忘记需要进行错误处理，特别是对于敏感操作（如文件系统和数据库访问）。目前，如果没有捕获到 reject 的 Promise，将在 NodeJS 中看到非常丑的警告：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>(node:29916) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 1): Error: whoops!
+</span><span class='line'>(node:29916) DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>确保在主要的事件循环中任何 Promise 链的末尾添加 <code>catch()</code> 以避免这种情况。</p>
+
+<h2>总结</h2>
+
+<p>希望这是一篇有用的关于常见 Promise 模式和反模式的概述。如果你想了解更多，这里有一些有用的资源：</p>
+
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Mozilla 的 ES6 Promise 文档</a></li>
+<li><a href="https://developers.google.com/web/fundamentals/getting-started/primers/promises">来自 Google 的 Promise 介绍</a></li>
+<li><a href="http://www.datchley.name/es6-promises/">Dave Atchley 的 ES6 Promise 概述</a></li>
+</ul>
+
+
+<p>更多的 Promise <a href="http://www.datchley.name/promise-patterns-anti-patterns/">模式</a>和<a href="https://hackernoon.com/javascript-promises-best-practices-anti-patterns-b32309f65551">反模式</a></p>
+
+<p><a href="https://medium.com/datafire-io">或者阅读来自 DataFire 团队的内容</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[在 Node.js 中使用原生 ES 模块]]></title>
@@ -4176,433 +4739,6 @@
 <p>在秋季招聘季之初，和很多人一样显得特别迷茫，不知道该何去何从，投递过很多不同的职位，什么运维，测试，研发，网络都有。在那时候，对前端工程师的理解特别片面和错误，在经过美团面试之后才决定走上前端开发的路。可是，校招这种事就像一阵风一样，来得快去得也快，等到我坚定自己的路线之后，仿佛什么都晚了，虽然我仍在进行各种尝试，可是效果甚微。</p>
 
 <p>那一段时间里，也让我明白一件很重要的事，以前的我太局限于自己的象牙塔，外面的洪荒世界让我不敢踏出。但是呢，早点失败，就可能早点成功，没能勇敢地走出去是大学里最大的遗憾。如果有机会早点接触这个真实的世界，现在我的处境肯定会更好。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Base64简要笔记及其他]]></title>
-    <link href="http://blog.mirreal.net/blog/2014/11/06/base64-note/"/>
-    <updated>2014-11-06T21:38:01+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2014/11/06/base64-note</id>
-    <content type="html"><![CDATA[<h3>Base64 是一种基于 64 个可打印字符来表示二进制数据的表示方法。</h3>
-
-<h4>1.base64 算法的由来</h4>
-
-<p>base64 最早是用作解决电子邮件的传输问题，由于历史原因，早期电子邮件只允许传输 ASCII 码字符，如果想传输一封带有非 ASCII 字符的邮件，在遇到一些老旧的网关就可能会对字符最高位进行调整，导致收到的邮件出现乱码。</p>
-
-<h4>2.base64 不是加密算法</h4>
-
-<p>base64 算法的编码和解码方法可以作为加密和解密操作，但是不能叫做加密算法，因为其算法和充当密钥的索引表都是公开的。最多是让在你身后的人一时看不懂，所谓防君子不防小人。</p>
-
-<h4>3.Base 编码方法</h4>
-
-<!-- more -->
-
-
-<p>转换的时候，将三个 byte 的数据，先后放入一个 24bit 的缓冲区中，先来的 byte 占高位。数据不足 3byte 的话，剩下的 bit 用 0 补足。然后，每次取出 6 个 bit，按照其值选择索引表的字符作为编码后的输出。不断进行，直到全部输入数据转换完成。</p>
-
-<p>这里就不举例说明，具体可以参考维基百科。</p>
-
-<h4>4.base64 索引表如下</h4>
-
-<table>
-<tr>
-<th scope="col">数值</th>
-<th scope="col">字符</th>
-<th scope="col">数值</th>
-<th scope="col">字符</th>
-<th scope="col">数值</th>
-<th scope="col">字符</th>
-<th scope="col">数值</th>
-<th scope="col">字符</th>
-</tr>
-<tr>
-<td>0</td>
-<td>A</td>
-<td>16</td>
-<td>Q</td>
-<td>32</td>
-<td>g</td>
-<td>48</td>
-<td>w</td>
-</tr>
-<tr>
-<td>1</td>
-<td>B</td>
-<td>17</td>
-<td>R</td>
-<td>33</td>
-<td>h</td>
-<td>49</td>
-<td>x</td>
-</tr>
-<tr>
-<td>2</td>
-<td>C</td>
-<td>18</td>
-<td>S</td>
-<td>34</td>
-<td>i</td>
-<td>50</td>
-<td>y</td>
-</tr>
-<tr>
-<td>3</td>
-<td>D</td>
-<td>19</td>
-<td>T</td>
-<td>35</td>
-<td>j</td>
-<td>51</td>
-<td>z</td>
-</tr>
-<tr>
-<td>4</td>
-<td>E</td>
-<td>20</td>
-<td>U</td>
-<td>36</td>
-<td>k</td>
-<td>52</td>
-<td>0</td>
-</tr>
-<tr>
-<td>5</td>
-<td>F</td>
-<td>21</td>
-<td>V</td>
-<td>37</td>
-<td>l</td>
-<td>53</td>
-<td>1</td>
-</tr>
-<tr>
-<td>6</td>
-<td>G</td>
-<td>22</td>
-<td>W</td>
-<td>38</td>
-<td>m</td>
-<td>54</td>
-<td>2</td>
-</tr>
-<tr>
-<td>7</td>
-<td>H</td>
-<td>23</td>
-<td>X</td>
-<td>39</td>
-<td>n</td>
-<td>55</td>
-<td>3</td>
-</tr>
-<tr>
-<td>8</td>
-<td>I</td>
-<td>24</td>
-<td>Y</td>
-<td>40</td>
-<td>o</td>
-<td>56</td>
-<td>4</td>
-</tr>
-<tr>
-<td>9</td>
-<td>J</td>
-<td>25</td>
-<td>Z</td>
-<td>41</td>
-<td>p</td>
-<td>57</td>
-<td>5</td>
-</tr>
-<tr>
-<td>10</td>
-<td>K</td>
-<td>26</td>
-<td>a</td>
-<td>42</td>
-<td>q</td>
-<td>58</td>
-<td>6</td>
-</tr>
-<tr>
-<td>11</td>
-<td>L</td>
-<td>27</td>
-<td>b</td>
-<td>43</td>
-<td>r</td>
-<td>59</td>
-<td>7</td>
-</tr>
-<tr>
-<td>12</td>
-<td>M</td>
-<td>28</td>
-<td>c</td>
-<td>44</td>
-<td>s</td>
-<td>60</td>
-<td>8</td>
-</tr>
-<tr>
-<td>13</td>
-<td>N</td>
-<td>29</td>
-<td>d</td>
-<td>45</td>
-<td>t</td>
-<td>61</td>
-<td>9</td>
-</tr>
-<tr>
-<td>14</td>
-<td>O</td>
-<td>30</td>
-<td>e</td>
-<td>46</td>
-<td>u</td>
-<td>62</td>
-<td>+</td>
-</tr>
-<tr>
-<td>15</td>
-<td>P</td>
-<td>31</td>
-<td>f</td>
-<td>47</td>
-<td>v</td>
-<td>63</td>
-<td>/</td>
-</tr>
-</table>
-
-
-
-
-<!-- | 数值 | 字符 | 数值 | 字符 | 数值 | 字符 | 数值 | 字符 |
-| - | - | | - | - | | - | - | | - | - |
-| 0 | A | 16 | Q | 32 | g   | 48 | w |
-| 1 | B | 17 | R | 33   | h | 49 | x |
-| 2 |   C   | 18 | S | 34   | i | 50 | y |
-| 3 | D | 19 | T | 35   | j | 51 | z |
-| 4 | E | 20 | U | 36   | k | 52 | 0 |
-| 5 |F  |21 |V  |37 |l  |53 |1
-| 6 |G  |22 |W  |38 |m  |54 |2
-| 7 |H  |23 |X  |39 |n  |55 |3
-| 8 |I  |24 |Y  |40 |o  |56 |4
-| 9 |J  |25 |Z  |41 |p  |57 |5
-| 10    |K  |26 |a  |42 |q  |58 |6
-| 11    |L  |27 |b  |43 |r  |59 |7
-| 12    |M  |28 |c  |44 |s  |60 |8
-| 13    |N  |29 |d  |45 |t  |61 |9
-| 14    |O  |30 |e  |46 |u  |62 |+
-| 15    |P  |31 |f  |47 |v  |63 |/ -->
-
-
-<h4>5.一个简单的编码方法和译码方法实现：</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">base64Encode</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">map</span> <span class="o">=</span> <span class="s1">&#39;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/&#39;</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">binStr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">newStr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">threeChar</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">i</span><span class="o">+</span><span class="mi">3</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">t</span> <span class="o">=</span> <span class="nx">threeChar</span><span class="p">.</span><span class="nx">charCodeAt</span><span class="p">(</span><span class="nx">j</span><span class="p">).</span><span class="nx">toString</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">while</span> <span class="p">(</span><span class="nx">t</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="nx">t</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span> <span class="o">+</span> <span class="nx">t</span><span class="p">;</span>
-</span><span class='line'>      <span class="nx">binStr</span> <span class="o">+=</span> <span class="nx">t</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">k</span> <span class="o">&lt;</span> <span class="mi">24</span><span class="p">;</span> <span class="nx">k</span> <span class="o">+=</span> <span class="mi">6</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">newStr</span> <span class="o">+=</span> <span class="nx">map</span><span class="p">[</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">binStr</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="nx">k</span><span class="p">,</span> <span class="nx">k</span><span class="o">+</span><span class="mi">6</span><span class="p">),</span> <span class="mi">2</span><span class="p">)];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">+</span><span class="mi">3</span><span class="o">-</span><span class="nx">len</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="nx">newStr</span> <span class="o">=</span> <span class="nx">newStr</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;=&#39;</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">+</span><span class="mi">3</span><span class="o">-</span><span class="nx">len</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="nx">newStr</span> <span class="o">=</span> <span class="nx">newStr</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;==&#39;</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">out</span> <span class="o">+=</span> <span class="nx">newStr</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="k">return</span> <span class="nx">out</span><span class="p">;</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">base64Decode</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">code</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">map</span> <span class="o">=</span> <span class="s1">&#39;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/&#39;</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">ascii</span> <span class="o">=</span> <span class="s1">&#39; !&quot;#$%&amp;\&#39;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ&#39;</span> <span class="o">+</span>
-</span><span class='line'>          <span class="s1">&#39;[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~&#39;</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">code</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">fourChar</span> <span class="o">=</span> <span class="nx">code</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">i</span><span class="o">+</span><span class="mi">4</span><span class="p">),</span>
-</span><span class='line'>        <span class="nx">binStr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">newStr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">t</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">fourChar</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="nx">j</span><span class="p">)).</span><span class="nx">toString</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">while</span> <span class="p">(</span><span class="nx">t</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">)</span> <span class="nx">t</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span> <span class="o">+</span> <span class="nx">t</span><span class="p">;</span>
-</span><span class='line'>      <span class="nx">binStr</span> <span class="o">+=</span> <span class="nx">t</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">k</span> <span class="o">&lt;</span> <span class="mi">24</span><span class="p">;</span> <span class="nx">k</span> <span class="o">+=</span> <span class="mi">8</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="kr">char</span> <span class="o">=</span> <span class="nx">ascii</span><span class="p">[</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">binStr</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="nx">k</span><span class="p">,</span> <span class="nx">k</span><span class="o">+</span><span class="mi">8</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">32</span><span class="p">];</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="kr">char</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="nx">newStr</span> <span class="o">+=</span> <span class="kr">char</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="nx">out</span> <span class="o">+=</span> <span class="nx">newStr</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="k">return</span> <span class="nx">out</span><span class="p">;</span>
-</span><span class='line'><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>HTML5 提供的通用 Base64 方法 API</h3>
-
-<h4>1.编码： <code>window.btoa(stringToEncode)</code></h4>
-
-<p>只能将 ASCII 字符串或二进制数据转换成一个 base64 编码过的字符串,该方法不能直接作用于 Unicode 字符串。</p>
-
-<h4>2.解码： <code>window.atob(encodedData)</code></h4>
-
-<p>将已经被 base64 编码过的数据进行解码。</p>
-
-<h4>3.作用于 UTF-8 编码的文字</h4>
-
-<p>但是这两个 Web API 功能很简单，并不能直接作用于 Unicode 字符串，所以当调用 <code>btoa()</code> 时若传入的不是 ASCII 或二进制字符串，比如汉字就会出错。</p>
-
-<p>下面是别人提供的简单解决方法：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">utf8_to_b64</span><span class="p">(</span> <span class="nx">str</span> <span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">window</span><span class="p">.</span><span class="nx">btoa</span><span class="p">(</span><span class="nx">unescape</span><span class="p">(</span><span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">str</span><span class="p">)));</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">function</span> <span class="nx">b64_to_utf8</span><span class="p">(</span> <span class="nx">str</span> <span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nx">escape</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">atob</span><span class="p">(</span><span class="nx">str</span><span class="p">)));</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>作者在这里使用了一个小小的Hack技巧。<code>encodeURIComponent()</code> 是ECMAscript中Global对象的URI方法，对URI进行编码，可以作用于所有Unicode字符。而 <code>escape()</code> 是已废弃的URI编码方法，功能和 <code>encodeURIComponent()</code> 相同，但是只能编码ASCII字符。</p>
-
-<p>即 <code>encodeURIComponent(str)</code> 相当于 <code>escape(unicodeToASCII(str))</code> ，则 <code>unescape(encodeURIComponent(str))</code> 等同于 <code>unicodeToASCII(str)</code> ,所以就将 Unicode 字符转换成了 ASCII 字符。( <code>unescape()</code> 是和 <code>escape()</code> 对应的解码方法）</p>
-
-<p>关于文字集和文字编码方面的知识，比如 UTF-8 是基于 Unicode 文字集的一种广泛使用的编码方式，具体此处不再赘述。</p>
-
-<h3>Data URL与Base64</h3>
-
-<p>这里主要说说 Data URL 模式和 Base64 ，比如下面这段代码：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;\n\n\n%c&quot;</span><span class="p">,</span> <span class="s1">&#39;font-size:0;margin-top:20px;line-height:36px;padding-top:50px;padding-left:158px;background:url(&quot;data:image/png;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAyAJ4DASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigCtfX9vp1sZ7hwqjoO5PoK5afxu/mH7ParszwXPNc94y1sz6/Nbb/wB1a/IF/wBrqTXR+HvCls+nxXWoqZZZlDiPJAQHp+NerDD0aFFVK2rZ5U69avVdOi7JBa+NgXAurXap/ijOcV1Vtcw3kCzwOHjYcEVxnijwzBZae9/YBkEXMkecjHqM+lUvAest/ar6ezZjmQso9GH/ANalVw1KrRdahpbdDpV61KsqVbW56NRRRXlnqBRRVOTVtOhlaKW/tkkU4ZWlUEH6ZoAuUVQ/tvSv+glaf9/l/wAaP7b0r/oJWn/f5f8AGgC/RUMF1b3MXmwTxyxg43owI/On+dF/z1T/AL6FAD6Ko2utaXfSyRWmo2s8kX31jlVivbnBq2JYycCRCT2DUAPopjTRKcNIgI7FhSefD/z1j/76FAElFR+fD/z1j/76FPVlYZVgR6g0AMmmjgiaWVgqKMkmuO1fxrIkEj6YqkoM/vE+8O+DmqfxF1loJrXTVbarKZXHrzgf1qPwh4ei1iye8vdzW7MUSMHG7HXJ9K9COEgsM61XrscDxlT61GlSSdt76+p59qN1/al5LeyuUmmYu5XkE/SvY/CPiG01bRrePz4xdwxqksecHIGMgehrP174f6XdafIdMgFrdopMe1jtYjsQf5145E00krBJHh8s/PIpIK89OO5rzqVXE1akKFR8yb062PqcRh8sqYWri8PHklFXfS/6a7K3U9u8Zarbpo9xp6XCC4uF2HHOxT1OPXHQVwWivaaHex3lusktwgIDSvxzweBWVpkV1q1/DZWiPJK/djnA7lj/AFr1aw8FaTa2qx3EP2mbHzyOSMn2APFfQS9jgqfspNu58NH22Nqe0jpbb+u5X03xzaXEqxXqfZ2bgODlfx9K6tWDKGUgg8gjvXlPjbw+mgPDdWhY2kzFdpOSjdcZ9MfyrovhzrL6hpc9pKxZrVwFJ67T0rjxOFpuj9Yo7HZhsTUVb2Fbc7WvIfGeneCrHxNctq39q/bLj9+/kBSnPp+VevV4x8Q7yPT/AIlWN7NEZY4FikeMYywDZI5rzD0zjteHh3fCNAW82YPmm7xnPbGPxrVtE8AfY4RdnWWudg80xqu0t3xz0rr/APha+g/9C7P/AN8x1heLfHel+IdDaws9HktZTIr+YyoAAO3HNAHaWdlpln8Kb59HNx9juLeWZPPPzgng5x9K8tMOm2ehaddXEN9PcXRcsVm2oqq2MD3r1DS/+SKD/sHyfzauDll05vAWhWd9eS2rmea4jZITICAdv55NAEKweGAMjSPEYJ9HH/xNXvCUmjnxzYRQWGpxssuYzLPkqdp++uOn/wBaro8a6hHEMeJbsIqjBOkDGPrip/BmqaXL47+2y6pdX2pXymMAWnlr0HJ/BewoA6jXfhpYa9rNxqU2oXcckxGUTGBgAentWd/wp3S/+gpff+O/4Vk/FLRo9PuG1ganP9ovZQkdoowMBQCc59h27irWn/Cqa5063nudduoZ5I1d4wmdhIzjrQBc/wCFO6X/ANBS+/8AHf8ACuz8O6FD4c0aLTIJpJo42Zg8mMncSf61xDfCVI1LN4kulUdSY8Af+PV2nhjR00LQobCO8a8VGZhM3U5Yn1PTOKAPPvi1aSw6lYagobyniMRI6Bgcj8wT+VXPhv4stI9OOk3kgieNy0bN0IPJ/XNd9rGkWmuaZLY3ibo3HBHVT2I968h1T4c6zps5MEbXUIOUlhOG/EdQa9vD1KOJwyw9R2a2PHrwq4bEPEU48ye56jrPifT9M02a4FzG7Kp2lTkA9s/4d68HjE+pX0dpYwu7SSHy4x1Zj1J9z+lbsXg7xFqUqxta3bY6G4YhV9/mr0vwf4Kt/DUZuJmWfUJBhpMcIPRf8aqCw+Ai535p9CZzr49qmk4w3f8AWl/Is+EPCsPhrTsNiS+mAM8v/so9hXR0UV4tSpKpNzm9WevTpxpxUIrRGJ4p8Px+JNHNm85gdXEkcgGQGAI5HcYJqn4O8Jx+GLacm6+0zzkFnC4UAdABU3jKPVJNDzpUZmkSQNJEpwXTByB+ODj2rO8AW2tRWt3LqkUlvFI4MMEh5HqfbNdkef6o/f0vsccuT62vc1tudlXjnxAmay+JFjfG1knjt1ikZFX7wDZI6V7HRXAd55h/ws+w/wChXn/Jf/iawvFnjKDxFoh0+20Ga2kMiv5m0Hp24Fe2UUAcPZWlxb/B77NNDIk4sHBjK/Nzkjj8a4Sy1Oxi8H2+i6r4cvLtgXkSZPkaMlj904yOle50UAfPsmn+M5PDoR7fUjpAbiIjkL2+Xrj3xiuv8D6rpen6ha6dZeGb2Ga4bZJez/M3TOSccDjoMda9TooA8a8fX00/j+3M+n3FzY6dsxGgIEnRjzjvwPwrc/4WvL/0LN5/38/+xr0migDyPxF8QZ9c0C801fD95C1wm0SFydvPXG2ux+HFtcWngixjuYXikJdtrgg4LEg8+orq6KACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//Z&quot;);background-repeat:no-repeat;&#39;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这是一个真实的小例子，可以在百度网盘看到，会在控制台打印出百度云logo。这里用到了 <code>console.log()</code> 的一些稍微高级一点的用法，支持类似C语言 <code>printf()</code> 风格的打印方式，占位符 <code>%c</code> 可以使用一些CSS样式语句。比如这里使用的：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nt">font-size</span><span class="o">:</span> <span class="nt">0</span><span class="o">;</span>
-</span><span class='line'><span class="nt">margin-top</span><span class="o">:</span> <span class="nt">20px</span><span class="o">;</span>
-</span><span class='line'><span class="nt">line-height</span><span class="o">:</span> <span class="nt">36px</span><span class="o">;</span>
-</span><span class='line'><span class="nt">padding-top</span><span class="o">:</span> <span class="nt">50px</span><span class="o">;</span>
-</span><span class='line'><span class="nt">padding-left</span><span class="o">:</span> <span class="nt">158px</span><span class="o">;</span>
-</span><span class='line'><span class="nt">background</span><span class="o">:</span> <span class="nt">url</span><span class="o">(</span><span class="s2">&quot;data:image/png;base64...&quot;</span><span class="o">);</span>
-</span><span class='line'><span class="nt">background-repeat</span><span class="o">:</span> <span class="nt">no-repeat</span><span class="o">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>关于 <code>console.log()</code> 的用法以及 <code>console</code> 对象的其他方法、属性，具体此处不再赘述。</p>
-
-<p>回到 url，可以看到一长串数据，在开头是这样的：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nt">data</span><span class="nd">:image</span><span class="o">/</span><span class="nt">png</span><span class="o">;</span><span class="nt">base64</span><span class="o">...</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这就是 Data URL Scheme 的语法格式，后面是用 Base64 编码的图片数据。</p>
-
-<p>完整的图片就像下面这样，可以直接复制到地址栏查看：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nt">data</span><span class="nd">:image</span><span class="o">/</span><span class="nt">png</span><span class="o">;</span><span class="nt">base64</span><span class="o">,/</span><span class="nt">9j</span><span class="o">/</span><span class="nt">4AAQSkZJRgABAQEAYABgAAD</span><span class="o">/</span><span class="nt">2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL</span><span class="o">/</span><span class="nt">2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL</span><span class="o">/</span><span class="nt">wAARCAAyAJ4DASIAAhEBAxEB</span><span class="o">/</span><span class="nt">8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL</span><span class="o">/</span><span class="nt">8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4</span><span class="o">+</span><span class="nt">Tl5ufo6erx8vP09fb3</span><span class="o">+</span><span class="nt">Pn6</span><span class="o">/</span><span class="nt">8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL</span><span class="o">/</span><span class="nt">8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3</span><span class="o">+</span><span class="nt">Pn6</span><span class="o">/</span><span class="nt">9oADAMBAAIRAxEAPwD3</span><span class="o">+</span><span class="nt">iiigCtfX9vp1sZ7hwqjoO5PoK5afxu</span><span class="o">/</span><span class="nt">mH7ParszwXPNc94y1sz6</span><span class="o">/</span><span class="nt">Nbb</span><span class="o">/</span><span class="nt">wB1a</span><span class="o">/</span><span class="nt">IF</span><span class="o">/</span><span class="nt">wBrqTXR</span><span class="o">+</span><span class="nt">HvCls</span><span class="o">+</span><span class="nt">nxXWoqZZZlDiPJAQHp</span><span class="o">+</span><span class="nt">NerDD0aFFVK2rZ5U69avVdOi7JBa</span><span class="o">+</span><span class="nt">NgXAurXap</span><span class="o">/</span><span class="nt">ijOcV1Vtcw3kCzwOHjYcEVxnijwzBZae9</span><span class="o">/</span><span class="nt">YBkEXMkecjHqM</span><span class="o">+</span><span class="nt">lUvAest</span><span class="o">/</span><span class="nt">ar6ezZjmQso9GH</span><span class="o">/</span><span class="nt">ANalVw1KrRdahpbdDpV61KsqVbW56NRRRXlnqBRRVOTVtOhlaKW</span><span class="o">/</span><span class="nt">tkkU4ZWlUEH6ZoAuUVQ</span><span class="o">/</span><span class="nt">tvSv</span><span class="o">+</span><span class="nt">glaf9</span><span class="o">/</span><span class="nt">l</span><span class="o">/</span><span class="nt">wAaP7b0r</span><span class="o">/</span><span class="nt">oJWn</span><span class="o">/</span><span class="nt">f5f8AGgC</span><span class="o">/</span><span class="nt">RUMF1b3MXmwTxyxg43owI</span><span class="o">/</span><span class="nt">On</span><span class="o">+</span><span class="nt">dF</span><span class="o">/</span><span class="nt">z1T</span><span class="o">/</span><span class="nt">AL6FAD6Ko2utaXfSyRWmo2s8kX31jlVivbnBq2JYycCRCT2DUAPopjTRKcNIgI7FhSefD</span><span class="o">/</span><span class="nt">z1j</span><span class="o">/</span><span class="nt">76FAElFR</span><span class="o">+</span><span class="nt">fD</span><span class="o">/</span><span class="nt">z1j</span><span class="o">/</span><span class="nt">76FPVlYZVgR6g0AMmmjgiaWVgqKMkmuO1fxrIkEj6YqkoM</span><span class="o">/</span><span class="nt">vE</span><span class="o">+</span><span class="nt">8O</span><span class="o">+</span><span class="nt">DmqfxF1loJrXTVbarKZXHrzgf1qPwh4ei1iye8vdzW7MUSMHG7HXJ9K9COEgsM61XrscDxlT61GlSSdt76</span><span class="o">+</span><span class="nt">p59qN1</span><span class="o">/</span><span class="nt">al5LeyuUmmYu5XkE</span><span class="o">/</span><span class="nt">SvY</span><span class="o">/</span><span class="nt">CPiG01bRrePz4xdwxqksecHIGMgehrP174f6XdafIdMgFrdopMe1jtYjsQf5145E00krBJHh8s</span><span class="o">/</span><span class="nt">PIpIK89OO5rzqVXE1akKFR8yb062PqcRh8sqYWri8PHklFXfS</span><span class="o">/</span><span class="nt">6a7K3U9u8Zarbpo9xp6XCC4uF2HHOxT1OPXHQVwWivaaHex3lusktwgIDSvxzweBWVpkV1q1</span><span class="o">/</span><span class="nt">DZWiPJK</span><span class="o">/</span><span class="nt">djnA7lj</span><span class="o">/</span><span class="nt">AFr1aw8FaTa2qx3EP2mbHzyOSMn2APFfQS9jgqfspNu58NH22Nqe0jpbb</span><span class="o">+</span><span class="nt">u5X03xzaXEqxXqfZ2bgODlfx9K6tWDKGUgg8gjvXlPjbw</span><span class="o">+</span><span class="nt">mgPDdWhY2kzFdpOSjdcZ9MfyrovhzrL6hpc9pKxZrVwFJ67T0rjxOFpuj9Yo7HZhsTUVb2Fbc7WvIfGeneCrHxNctq39q</span><span class="o">/</span><span class="nt">bLj9</span><span class="o">+/</span><span class="nt">kBSnPp</span><span class="o">+</span><span class="nt">VevV4x8Q7yPT</span><span class="o">/</span><span class="nt">AIlWN7NEZY4FikeMYywDZI5rzD0zjteHh3fCNAW82YPmm7xnPbGPxrVtE8AfY4RdnWWudg80xqu0t3xz0rr</span><span class="o">/</span><span class="nt">APha</span><span class="o">+</span><span class="nt">g</span><span class="o">/</span><span class="nt">9C7P</span><span class="o">/</span><span class="nt">AN8x1heLfHel</span><span class="o">+</span><span class="nt">IdDaws9HktZTIr</span><span class="o">+</span><span class="nt">YyoAAO3HNAHaWdlpln8Kb59HNx9juLeWZPPPzgng5x9K8tMOm2ehaddXEN9PcXRcsVm2oqq2MD3r1DS</span><span class="o">/+</span><span class="nt">SKD</span><span class="o">/</span><span class="nt">sHyfzauDll05vAWhWd9eS2rmea4jZITICAdv55NAEKweGAMjSPEYJ9HH</span><span class="o">/</span><span class="nt">xNXvCUmjnxzYRQWGpxssuYzLPkqdp</span><span class="o">++</span><span class="nt">uOn</span><span class="o">/</span><span class="nt">wBaro8a6hHEMeJbsIqjBOkDGPrip</span><span class="o">/</span><span class="nt">BmqaXL47</span><span class="o">+</span><span class="nt">2y6pdX2pXymMAWnlr0HJ</span><span class="o">/</span><span class="nt">BewoA6jXfhpYa9rNxqU2oXcckxGUTGBgAentWd</span><span class="o">/</span><span class="nt">wp3S</span><span class="o">/+</span><span class="nt">gpff</span><span class="o">+</span><span class="nt">O</span><span class="o">/</span><span class="nt">4Vk</span><span class="o">/</span><span class="nt">FLRo9PuG1ganP9ovZQkdoowMBQCc59h27irWn</span><span class="o">/</span><span class="nt">Cqa5063nudduoZ5I1d4wmdhIzjrQBc</span><span class="o">/</span><span class="nt">wCFO6X</span><span class="o">/</span><span class="nt">ANBS</span><span class="o">+/</span><span class="nt">8AHf8ACuz8O6FD4c0aLTIJpJo42Zg8mMncSf61xDfCVI1LN4kulUdSY8Af</span><span class="o">+</span><span class="nt">PV2nhjR00LQobCO8a8VGZhM3U5Yn1PTOKAPPvi1aSw6lYagobyniMRI6Bgcj8wT</span><span class="o">+</span><span class="nt">VXPhv4stI9OOk3kgieNy0bN0IPJ</span><span class="o">/</span><span class="nt">XNd9rGkWmuaZLY3ibo3HBHVT2I968h1T4c6zps5MEbXUIOUlhOG</span><span class="o">/</span><span class="nt">EdQa9vD1KOJwyw9R2a2PHrwq4bEPEU48ye56jrPifT9M02a4FzG7Kp2lTkA9s</span><span class="o">/</span><span class="nt">4d68HjE</span><span class="o">+</span><span class="nt">pX0dpYwu7SSHy4x1Zj1J9z</span><span class="o">+</span><span class="nt">lbsXg7xFqUqxta3bY6G4YhV9</span><span class="o">/</span><span class="nt">mr0vwf4Kt</span><span class="o">/</span><span class="nt">DUZuJmWfUJBhpMcIPRf8aqCw</span><span class="o">+</span><span class="nt">Ai535p9CZzr49qmk4w3f8AWl</span><span class="o">/</span><span class="nt">Is</span><span class="o">+</span><span class="nt">EPCsPhrTsNiS</span><span class="o">+</span><span class="nt">mAM8v</span><span class="o">/</span><span class="nt">so9hXR0UV4tSpKpNzm9WevTpxpxUIrRGJ4p8Px</span><span class="o">+</span><span class="nt">JNHNm85gdXEkcgGQGAI5HcYJqn4O8Jx</span><span class="o">+</span><span class="nt">GLacm6</span><span class="o">+</span><span class="nt">0zzkFnC4UAdABU3jKPVJNDzpUZmkSQNJEpwXTByB</span><span class="o">+</span><span class="nt">ODj2rO8AW2tRWt3LqkUlvFI4MMEh5HqfbNdkef6o</span><span class="o">/</span><span class="nt">f0vsccuT62vc1tudlXjnxAmay</span><span class="o">+</span><span class="nt">JFjfG1knjt1ikZFX7wDZI6V7HRXAd55h</span><span class="o">/</span><span class="nt">ws</span><span class="o">+</span><span class="nt">w</span><span class="o">/</span><span class="nt">wChXn</span><span class="o">/</span><span class="nt">Jf</span><span class="o">/</span><span class="nt">iawvFnjKDxFoh0</span><span class="o">+</span><span class="nt">20Ga2kMiv5m0Hp24Fe2UUAcPZWlxb</span><span class="o">/</span><span class="nt">B77NNDIk4sHBjK</span><span class="o">/</span><span class="nt">Nzkjj8a4Sy1Oxi8H2</span><span class="o">+</span><span class="nt">i6r4cvLtgXkSZPkaMlj904yOle50UAfPsmn</span><span class="o">+</span><span class="nt">M5PDoR7fUjpAbiIjkL2</span><span class="o">+</span><span class="nt">Xrj3xiuv8D6rpen6ha6dZeGb2Ga4bZJez</span><span class="o">/</span><span class="nt">M3TOSccDjoMda9TooA8a8fX00</span><span class="o">/</span><span class="nt">j</span><span class="o">+</span><span class="nt">3M</span><span class="o">+</span><span class="nt">n3FzY6dsxGgIEnRjzjvwPwrc</span><span class="o">/</span><span class="nt">4WvL</span><span class="o">/</span><span class="nt">0LN5</span><span class="o">/</span><span class="nt">38</span><span class="o">/+</span><span class="nt">xr0migDyPxF8QZ9c0C801fD95C1wm0SFydvPXG2ux</span><span class="o">+</span><span class="nt">HFtcWngixjuYXikJdtrgg4LEg8</span><span class="o">+</span><span class="nt">orq6KACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD</span><span class="o">//</span><span class="nt">Z</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>不过，Firefox 似乎不支持在控制台使用 Data URL，大概是由于这个原因，有时候可以降级在控制台直接使用一张图片。</p>
-
-<h5>参考资料：</h5>
-
-<ol>
-<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window.btoa">https://developer.mozilla.org/zh-CN/docs/Web/API/Window.btoa</a></li>
-<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window.atob">https://developer.mozilla.org/zh-CN/docs/Web/API/Window.atob</a></li>
-<li><a href="http://tools.ietf.org/html/rfc2397" title="RFC 2397 of the Internet Engineering Task Force (IETF)">RFC 2397 of the Internet Engineering Task Force (IETF)</a></li>
-<li>Javascript高级程序设计（第3版）[人民邮电出版社]</li>
-<li>Java加密与解密的艺术[机械工业出版社]</li>
-</ol>
-
 ]]></content>
   </entry>
   
