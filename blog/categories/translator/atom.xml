@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Translator | Mirreal Note]]></title>
   <link href="http://blog.mirreal.net/blog/categories/translator/atom.xml" rel="self"/>
   <link href="http://blog.mirreal.net/"/>
-  <updated>2017-12-04T08:56:51+08:00</updated>
+  <updated>2017-12-04T09:02:01+08:00</updated>
   <id>http://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Patrick Ran]]></name>
@@ -394,6 +394,188 @@ const [language, country] = locale.split('-');
 <h2>所以结论是</h2>
 
 <p>希望这篇文章能有助于你看到编写整洁代码的好处，甚至可以直接使用这里介绍的一些代码示例。一旦你习惯编写整洁代码，将很快就会体会到 “write it and forget it” 的生活方式。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[魔幻语言 JavaScript 系列之 Call、bind 以及上下文]]></title>
+    <link href="http://blog.mirreal.net/blog/2017/11/09/call-apply-and-context-in-javascript/"/>
+    <updated>2017-11-09T14:24:57+08:00</updated>
+    <id>http://blog.mirreal.net/blog/2017/11/09/call-apply-and-context-in-javascript</id>
+    <content type="html"><![CDATA[<blockquote><p>原文：<a href="http://blog.bloomca.me/2017/11/08/the-most-clever-line-of-javascript.html">The Most Clever Line of JavaScript</a></p>
+
+<p>作者：<a href="https://twitter.com/blooomca">Seva Zaikov</a></p></blockquote>
+
+<h2>原文</h2>
+
+<p>最近 <a href="https://twitter.com/vedroarbuzov">一个朋友</a> 发给我一段非常有趣的 JavaScript 代码，是他在某个 <a href="https://github.com/pelias/openstreetmap/blob/313f208ea323232919e42bf88871d8e19ddacec3/stream/address_extractor.js#L54">开源库中</a> 看到的：</p>
+
+<pre><code class="javascript">addressParts.map(Function.prototype.call, String.prototype.trim);
+</code></pre>
+
+<p>一开始，我觉得这是一个“不错的尝试”。但是，印象中 <code>map</code> 好像只接受一个参数，这里却出现第二个参数，所以去查看了 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map">MDN文档</a>，才知道可以传一个上下文（context）作为第二个参数。在这时候，我还无法解释这段代码，运行完之后感到更加困惑了，因为它竟然能如预期那样工作。</p>
+
+<p>我花了至少半个小时来尝试理解这段代码，这是一个很有趣的例子，可以用来说明 JavaScript 是一门多么魔幻的语言，即使已经写了好几年的 JS。当然，你可以选择自己去弄清楚，如果想看看我的理解，请继续阅读。</p>
+
+<p>那么，它到底是如何工作的呢？让我们从一种更简单的实现开始（实际上这种实现代码更短，并且更易读:)）：</p>
+
+<pre><code class="javascript">addressParts.map(str =&gt; str.trim());
+</code></pre>
+
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call">Function.prototype.call</a> 是 JavaScript 函数原型中的一个函数，它调用函数，使用第一个参数作为 <code>this</code> 参数，并传递剩余参数作为被调用函数的参数。举个例子：</p>
+
+<pre><code class="javascript">// this function has `Function` in prototype chain
+// so `call` is available
+function multiply(x, y) {
+  return x * y;
+}
+
+multiply.call(null, 3, 5); // 15
+multiply(3, 5); // same, 15
+</code></pre>
+
+<p><code>map</code> 第二个参数的典型用法如下所示，假设有一个基于类的 React 组件，其功能是渲染一个按钮列表：</p>
+
+<pre><code class="javascript">class ExampleComponent extends Component {
+  renderButton({ title, name }) {
+    // without proper `this` it will fail
+    const { isActive } = this.props;
+    return (
+      &lt;Button key={title} title={title}&gt;
+        {name}
+      &lt;/Button&gt;
+    );
+  }
+
+  render() {
+    const { buttons } = this.props;
+
+    // without second param our function won't be able
+    // to access `this` inside
+    const buttonsMarkup = buttons.map(this.renderButton, this);
+  }
+}
+</code></pre>
+
+<p>但是，以我的经验来看，这种使用第二个参数的做法并不常见，更常见的做法是使用类属性或装饰器来避免绑定。</p>
+
+<blockquote><p>译者注：<code>map</code> 第二个参数的用法等同于
+<code>javascript
+const buttonsMarkup = buttons.map(this.renderButton.bind(this);
+</code></p></blockquote>
+
+<p>还有一个类似的方法 &ndash; <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply">Function.prototype.apply</a>，工作原理与 <code>call</code> 相同，只是第二个参数应该是一个数组（译者注：或者是一个类数组），它将被转换成一个参数列表，用逗号分隔。所以，让我们看看如何使用它来计算最大值：</p>
+
+<pre><code class="javascript">Math.max(1, 2, 3); // if we know all numbers upfront
+// we can call it like that
+
+Math.max([1, 2, 3]); // won't work!
+
+Math.max.apply(null, [1, 2, 3]); // will work!
+
+// however, ES2015 array destructuring works as well:
+Math.max(...[1, 2, 3]);
+</code></pre>
+
+<p>现在，我们重新创建一个可以解决问题的函数调用方式。我们想删除字符串两端的空白字符，这个方法位于 <code>String.prototype</code> ，所以我们使用 <code>.</code> 操作符来调用它（虽然，字符串是原始值（primitive），但是当我们进行方法调用时，会在内部被转换成对象）。我们继续：</p>
+
+<pre><code class="javascript">// let's try to imagine how trim method is implemented
+// on String.prototype
+String.prototype.trim = function() {
+  // string itself is contained inside `this`!
+  const str = this;
+  // this is a very naive implementation
+  return str.replace(/(^\s+)|(\s+$)/g, '');
+};
+
+// let's try to use `.call` method to invoke `trim`
+" aa ".trim.call(thisArg);
+
+// but `this` is our string itself!
+// so, next two calls are equivalent:
+" aa ".trim.call(" aa ");
+String.prototype.trim.call(" aa ");
+</code></pre>
+
+<p>我们现在距离答案更近一步，但是仍然没有解释清楚最初那段代码：</p>
+
+<pre><code class="javascript">addressParts.map(Function.prototype.call, String.prototype.trim);
+</code></pre>
+
+<p>让我们自己来实现 <code>Function.prototype.call</code>：</p>
+
+<pre><code class="javascript">Function.prototype.call = function(thisArg, ...args) {
+  // `this` in our case is actually our function!
+  const fn = this;
+
+  // also, pretty naive implementation
+  return fn.bind(thisArg)(...args);
+};
+</code></pre>
+
+<p>现在，我们可以来理一理所有的东西。当我们在 <code>.map</code> 里面声明函数的时候，我们给 <code>Function.prototype.call</code> 绑定<code>String.prototype.trim</code> 作为 <code>this</code> 上下文，然后我们在数组中的每个元素上调用这个函数，把每个字符串作为 <code>thisArg</code> 参数的值传递给 <code>call</code>。这意味着，<code>String.prototype.trim</code> 将使用字符串作为 <code>this</code> 上下文来调用。我们已经知道这样做是有效的，看看下面的例子：</p>
+
+<pre><code class="javascript">String.prototype.trim.call(" aa "); // "aa"
+</code></pre>
+
+<p>问题解决了！但是，我认为这并不是一个好的做法，至于应该如何使用一种好的方式来完成这件事， 很简单，只需传递一个匿名函数就能搞定：</p>
+
+<pre><code class="javascript">addressParts.map(str =&gt; str.trim()); // same effect
+</code></pre>
+
+<h2>也谈谈 JavaScript 中的 call、apply 和 bind</h2>
+
+<p>作者在最后这一段可能讲得有些简略，尤其是对于 <code>bind</code> 的用法，谈谈我的理解思路：</p>
+
+<pre><code class="javascript">// 我们从常用的 slice 说起
+// 相信很多人都写过这样的代码
+// 我们称之为方法借用
+Array.prototype.slice.call([1, 2, 3], 1) // [ 2, 3]
+
+// 也会有人这样写
+[].slice.call([1, 2, 3], 1) // [2, 3]
+
+// 但上面的例子其实不是其真实的使用场景，因为 [1, 2, 3] 本身就是一个 array，可以直接调用 slice
+[1, 2, 3].slice(1) // [2, 3]
+
+// 之前比较常见的场景是处理 argumnents，通过这种方式将这种类数组转换成真正的数组
+Array.prototype.slice.call(arguments)
+
+// 回到最上面的例子，我们已经知道使用 call 可以让你在某个特定上下文(context)调用函数(fn)
+// fn.call(context [, ...args])
+// 而对 call 来说，它的上下文就是 fn
+// 所以 call 本身也是有上下文的，那我们为什么不可以直接给 call 指定一个上下文，就像这样：
+Function.prototype.call.call(Array.prototype.slice, [1, 2, 3], 1) // [2, 3]
+
+// 或者是这样，apply 接受一个数组
+Function.prototype.call.apply(Array.prototype.slice, [[1, 2, 3], 1]) // [2, 3]
+
+// 当然，也可以使用一下 bind，这样会返回一个新的函数
+// 我们直接将 slice 绑定到 call 的上下文
+var slice = Function.prototype.call.bind(Array.prototype.slice)
+slice([1, 2, 3], 1) // [2, 3]
+
+// 我们来稍微改动一下，跟上述 slice 的例子一致
+var trim = Function.prototype.call.bind(String.prototype.trim)
+
+// 上述 slice 等同于 Array.prototype.slice.call
+// 所以这里的 trim，等同于 String.prototype.trim.call
+// 那么
+trim(' node') // 'node'
+
+// 现在，在 map 里使用 trim
+addressParts.map(Function.prototype.call.bind(String.prototype.trim))
+
+// 回到最初的那段代码，这里面包含一个隐式的 bind 操作，与上面的代码等效
+// 问题到这里就已经解决
+addressParts.map(Function.prototype.call, String.prototype.trim)
+
+
+// 如作者所言，这样的代码确实不容易阅读，不过对于我们理解 call、bind 以及 context 的概念仍是个很好的例子
+// 我们还可以写得更复杂
+// 不用担心，下面这段代码什么新东西都没有，不过是给 map 绑定到 call 而已
+Function.prototype.call.bind(Array.prototype.map)(addressParts, Function.prototype.call, String.prototype.trim)
+</code></pre>
 ]]></content>
   </entry>
   
@@ -1232,133 +1414,6 @@ console.log(Object.keys(fs2)); // ['default']
 <li>提案: “<a href="https://github.com/tc39/proposal-import-meta"><code>import.meta</code></a>”</li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[在工作中学习]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/09/02/learning-at-work/"/>
-    <updated>2017-09-02T21:49:52+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/09/02/learning-at-work</id>
-    <content type="html"><![CDATA[<blockquote><p>原文；<a href="https://jvns.ca/blog/2017/08/06/learning-at-work/">Learning at work</a></p>
-
-<p>作者：Julia Evans</p>
-
-<p>谈点：学习是一件没有尽头的事，虽然在工作中很多时候被淹没在没玩没了的需求里面，加班是常态，或许很多人不知不觉放弃学习的心思。这篇文章中提到的一些方法我很赞同，很多点也是我的做事方式，这里也希望所有人都能找到适合自己的学习方式。</p></blockquote>
-
-<p>在 Twitter 上我提了一个问题，“你是如何花时间用于自身学习”（<a href="https://twitter.com/b0rk/status/887111177062555648">这个推文</a>)，这些回答有一些相同之处：</p>
-
-<ul>
-<li>阅读博客文章</li>
-<li>去参加业界大会</li>
-<li>读书</li>
-<li>在洗碗时看一些演讲</li>
-<li>在一些不那么重要的项目里运用你想要学习的技术</li>
-</ul>
-
-
-<p>这些方法都挺管用的。为了个人职业发展，在工作之外花时间学习新技能是非常普遍的事，在这方面我也有不少经验。</p>
-
-<p>另一方面，我知道有一些很厉害的程序员在工作之外完全不写代码。于是我开始思考，如果你想变得更牛，但又不想工作之外花太多额外时间要怎么办？</p>
-
-<p>这些是我以及在 Twitter 上的朋友提到的一些观点，并且都是能在工作时候做的事情。</p>
-
-<h2>不要学习工作之外的编程语言/框架</h2>
-
-<p>这一点听起来有些消极，但确实还是很有用的。对于学习编程语言，我的观点是：</p>
-
-<ul>
-<li>我很熟悉几种编程语言（python，scala，ruby）</li>
-<li>学习新的编程语言需要相当长的时间</li>
-<li>我不想把空闲时间花在上面</li>
-</ul>
-
-
-<p>最近我在做一些 Go 方面的工作，还挺有趣的，我也喜欢做这件事。但是又觉得在上面花费太多个人时间，所以显得不是那么有趣了。通过编写代码学习编程，阅读别人的代码掌握一些模式，然后自己审查代码，然而这些都不是必须的，因为完全可以在工作中去做这些事情。</p>
-
-<h2>选择一些可以从中学习的项目</h2>
-
-<p>这些是我在过去三年学到的一些东西：</p>
-
-<ul>
-<li>Scala/Ruby/Go</li>
-<li>hadoop/mapreduce/scalding</li>
-<li>如何使用 Java 并发库，以及如何配置一个 Java 程序</li>
-<li>关于各种 AWS 服务的工作原理</li>
-<li>很多机器学习的东西</li>
-<li>网络/ CDN / TLS 如何工作</li>
-<li>docker/容器/rkt/kubernetes</li>
-<li>服务发现 / DNS / jenkins</li>
-</ul>
-
-
-<p>一个关于如何选择项目的例子：如果在工作使用一个不能很好并行的程序，这时候问题就来了。我可以选择去问写这个程序的人为什么不使用并行编程，但是如果我也很想学习一下并行编程的话，就可以自己去完成这件事。所以后来我就 <a href="https://jvns.ca/blog/2016/03/29/thread-pools-part-ii-i-love-blocking/">学到了如何在 Java 中使用线程池</a>。</p>
-
-<p>我只为此工作了几天，但却因此学到了新东西。</p>
-
-<p>现在我正在从事 Kubernetes 相关的工作，当时选择它并不是因为可以在这里面学到很多东西。但是我确实学到很多有关分布式系统的东西，还在工作中使用 Go 语言，我觉得这很很棒。</p>
-
-<p>当人们说像“嘿，我们使用 X 技术，需要有相关经验的人才能在这里工作”时，这其实相当愚蠢。现在我在网络/ puppet / kubernetes / docker / AWS 上花了很多时间，在这项工作之前没有任何相关工作经验。</p>
-
-<h2>观察那些高级人员是如何做事的</h2>
-
-<p>我会观察那些我敬佩的人在工作中的做事方式，然后尝试模仿他们或者是向他们寻求建议。例如，当 <a href="http://onemogin.com/">Cory</a> 加入时，我注意到，在引进新技术的时候，他会这样做：</p>
-
-<ul>
-<li>找到另一个有类似问题需要解决的团队</li>
-<li>与他们合作，确保技术真正解决问题</li>
-</ul>
-
-
-<p>现在我正在开展一个新项目，一直在考虑这些工作可以帮到谁以及如何帮助，这样做就会感觉好很多。</p>
-
-<h2>阅读每个 pull request</h2>
-
-<p>在这个主题下引用两个我很喜欢的观点：</p>
-
-<blockquote><p>我在一个小团队，所以会阅读所有的 pull request，直到完全了解问题和解决方案</p></blockquote>
-
-<p>和</p>
-
-<blockquote><p>我也是一样！我跟踪检查，看看人们如何解决各种问题</p></blockquote>
-
-<p>事实上，我并没有阅读团队中的每一个 pull request。但是那确实很有用，通过跟踪别人在这方面做的工作来学习这个领域的东西。</p>
-
-<p>但我并不是能完全做到。我曾经从事机器学习方面的工作，发现理论也很有趣，就想跟踪人们在这方面的情况，但对我来说有太多要注意的东西。我只能尽量注意那些比较接近我的东西，像是其中网络团队的一些工作。</p>
-
-<h2>阅读源代码</h2>
-
-<blockquote><p>阅读我用到的源代码对我而言是一个大块头。了解它在内部在做什么，主要是为什么可以通过某种方式工作。</p></blockquote>
-
-<p>这是很重要的一点，也非常重要。很多库、框架、工具并没有很好的文档，在没有阅读源代码的情况下根本无法了解其工作原理。</p>
-
-<h2>跟进你无法解决的 bug</h2>
-
-<p>有时我会遇到一些自己没办法解决的 bug。后来，可能别人会找到解决方法，在这时候，就值得花时间去搞清楚具体的解决方法是什么，以及他们如何想出来的。</p>
-
-<p>例如，最近有一个我没有调试出来的网络问题，刚好有人在上周搞清楚这个问题。现在想一想，大概明白造成这个 bug 的原因，但是我并不清楚他们用什么工具来获取调试所需的信息。当我重新开始工作时，必须确保我真的搞清楚这个问题，这样下次就可以做得更好。</p>
-
-<p>Jessica Kerr 评论道</p>
-
-<blockquote><p>每当我在故障排除时，除了解决这个问题，还会更深入或更广泛地延伸开去。</p></blockquote>
-
-<p>我也喜欢这个回复：</p>
-
-<blockquote><p>有时候，想解决一个与工作有关的问题，但并没有真的在实际工作中发生，只是看看我能不能在某方面有所突破。</p></blockquote>
-
-<h2>运用好通勤时间</h2>
-
-<p>对我而言，其实并没有通勤时间。但很多人提到他们会利用通勤时间来听播客/阅读报纸/阅读有趣的文章。这似乎是一个很不错的方式，来做一些你感兴趣的事情。</p>
-
-<h2>花时间在工作中学习</h2>
-
-<p>Twitter上有人说“我希望每天可以花 1 小时来学习”。我的观点是，我的工作就是要在工作日中抽出时间来学习东西。像现在我正在工作中使用 Kubernetes，这是一个很复杂的系统需要很长时间才能理解，我得花时间了解它是如何工作的。例如，在开始的时候，没什么目的地在做集群测试，只是想了解容器的网络如何工作的，同时也在项目上取得进展。</p>
-
-<p>这可能对我来说挺容易的，因为我的工作跟别人隔得很远，没有人真的知道我具体在做什么，他们只是关心在大方面做的是什么。</p>
-
-<p>实际上，如果要是提前多花点时间阅读，可能效果会更好。就像我刚刚在阅读 Kelsey Hightower 的“learn kubernetes the hard way”的文档，读完不需花太长时间，而且其中有一个关于如何设置一个集群的很好的点，这样就可以很节省我很多时间。</p>
-
-<p>关于这个点，有些人还要想得更远。比如，我的朋友 Dan 就提到好几次，说他喜欢在工作中阅读技术书籍。最初觉得这是一件令人惊讶的事情，但它确实很有用。事实上，有很多跟我工作相关的书籍，找不到理由为什么不能在工作中阅读它们。</p>
 ]]></content>
   </entry>
   
