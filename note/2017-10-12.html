@@ -1,0 +1,254 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>2017-10-12 |  Patrick Ran</title>
+  <meta name="author" content="Patrick Ran">
+  
+
+  
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <!-- end CSS-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips &#8211;>
+
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="/javascripts/libs/modernizr-2.0.6.min.js"></script>
+</head>
+
+<body id="article">
+
+  <div id="container" style="margin-top: 30px;">
+    <nav role="navigation" ><ul class="main-navigation">
+  <li style='float:left;margin-right:5px'><a class='nav' href="http://mirreal.net/">HOME</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/">BLOG</a></li>
+  <li style='float:left;margin-right:7px'><a class='nav' href="/archives">ARCHIVES</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/note">NOTE</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
+</ul>
+<br><br>
+</nav>
+    <article>
+  <h1 class="article-title">2017-10-12</h1>
+  <div class="sharing">
+  
+  
+</div>
+
+  <div class="article-content"><h2>聚沙</h2>
+
+<h3>MD5</h3>
+
+<p><a href="https://msdn.microsoft.com/zh-cn/library/system.security.cryptography.md5">https://msdn.microsoft.com/zh-cn/library/system.security.cryptography.md5</a>(v=vs.110).aspx?cs-save-lang=1&amp;cs-lang=csharp</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">System.Security.Cryptography</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">namespace</span> <span class="nn">MD5Sample</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">class</span> <span class="nc">Program</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="kt">string</span> <span class="n">source</span> <span class="p">=</span> <span class="s">&quot;Hello World!&quot;</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">using</span> <span class="p">(</span><span class="n">MD5</span> <span class="n">md5Hash</span> <span class="p">=</span> <span class="n">MD5</span><span class="p">.</span><span class="n">Create</span><span class="p">())</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="kt">string</span> <span class="n">hash</span> <span class="p">=</span> <span class="n">GetMd5Hash</span><span class="p">(</span><span class="n">md5Hash</span><span class="p">,</span> <span class="n">source</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;The MD5 hash of &quot;</span> <span class="p">+</span> <span class="n">source</span> <span class="p">+</span> <span class="s">&quot; is: &quot;</span> <span class="p">+</span> <span class="n">hash</span> <span class="p">+</span> <span class="s">&quot;.&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Verifying the hash...&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(</span><span class="n">VerifyMd5Hash</span><span class="p">(</span><span class="n">md5Hash</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">hash</span><span class="p">))</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;The hashes are the same.&quot;</span><span class="p">);</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>                <span class="k">else</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;The hashes are not same.&quot;</span><span class="p">);</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">static</span> <span class="kt">string</span> <span class="nf">GetMd5Hash</span><span class="p">(</span><span class="n">MD5</span> <span class="n">md5Hash</span><span class="p">,</span> <span class="kt">string</span> <span class="n">input</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// Convert the input string to a byte array and compute the hash.</span>
+</span><span class='line'>            <span class="kt">byte</span><span class="p">[]</span> <span class="n">data</span> <span class="p">=</span> <span class="n">md5Hash</span><span class="p">.</span><span class="n">ComputeHash</span><span class="p">(</span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="n">input</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// Create a new Stringbuilder to collect the bytes</span>
+</span><span class='line'>            <span class="c1">// and create a string.</span>
+</span><span class='line'>            <span class="n">StringBuilder</span> <span class="n">sBuilder</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// Loop through each byte of the hashed data</span>
+</span><span class='line'>            <span class="c1">// and format each one as a hexadecimal string.</span>
+</span><span class='line'>            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">data</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="n">sBuilder</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">ToString</span><span class="p">(</span><span class="s">&quot;x2&quot;</span><span class="p">));</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// Return the hexadecimal string.</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">sBuilder</span><span class="p">.</span><span class="n">ToString</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Verify a hash against a string.</span>
+</span><span class='line'>        <span class="k">static</span> <span class="kt">bool</span> <span class="nf">VerifyMd5Hash</span><span class="p">(</span><span class="n">MD5</span> <span class="n">md5Hash</span><span class="p">,</span> <span class="kt">string</span> <span class="n">input</span><span class="p">,</span> <span class="kt">string</span> <span class="n">hash</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// Hash the input.</span>
+</span><span class='line'>            <span class="kt">string</span> <span class="n">hashOfInput</span> <span class="p">=</span> <span class="n">GetMd5Hash</span><span class="p">(</span><span class="n">md5Hash</span><span class="p">,</span> <span class="n">input</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// Create a StringComparer an compare the hashes.</span>
+</span><span class='line'>            <span class="n">StringComparer</span> <span class="n">comparer</span> <span class="p">=</span> <span class="n">StringComparer</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="m">0</span> <span class="p">==</span> <span class="n">comparer</span><span class="p">.</span><span class="n">Compare</span><span class="p">(</span><span class="n">hashOfInput</span><span class="p">,</span> <span class="n">hash</span><span class="p">))</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="k">else</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Node.js</p>
+
+<p><a href="https://nodejs.org/api/crypto.html">https://nodejs.org/api/crypto.html</a></p>
+</div>
+
+  
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread"><div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'mirreal';
+  var disqus_identifier = 'http://blog.mirreal.net/note/2017-10-12.html';
+  var disqus_url = 'http://blog.mirreal.net/note/2017-10-12.html';
+  //var disqus_developer = 1;
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+  
+</article>
+
+       <footer role="contentinfo" class="copyright">
+    	<p>
+		Copyright &copy; 2017 - <span><a href="http://mirreal.net/">Patrick Ran</a></span>
+	</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
+
