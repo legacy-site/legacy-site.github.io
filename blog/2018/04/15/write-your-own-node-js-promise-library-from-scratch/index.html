@@ -1,0 +1,484 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>从零开始写一个 Promise 库 |  Patrick Ran</title>
+  <meta name="author" content="Patrick Ran">
+  
+
+  
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <!-- end CSS-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips &#8211;>
+
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="/javascripts/libs/modernizr-2.0.6.min.js"></script>
+</head>
+
+<body id="post">
+
+  <div id="container">
+    <nav role="navigation" ><ul class="main-navigation">
+  <li style='float:left;margin-right:5px'><a class='nav' href="http://mirreal.net/">HOME</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/">BLOG</a></li>
+  <li style='float:left;margin-right:7px'><a class='nav' href="/archives">ARCHIVES</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/note">NOTE</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
+</ul>
+<br><br>
+</nav>
+    <article>
+
+
+  <div class="header-line">
+    <h1 class="article-title">从零开始写一个 Promise 库</h1>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Patrick Ran</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2018-04-15T12:15:14+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2018</span></span> <span class='time'>12:15 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/translator/'>translator</a>
+  
+</span>
+
+
+    </p>
+  </div>
+
+  <div class="article-content"><blockquote><p>原文：<a href="http://thecodebarbarian.com/write-your-own-node-js-promise-library-from-scratch.html">Write Your Own Node.js Promise Library from Scratch</a></p>
+
+<p>作者：<a href="https://twitter.com/code_barbarian">code_barbarian</a></p></blockquote>
+
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a> 已经是 JavaScript 中异步处理的基石，<a href="http://thecodebarbarian.com/2015/03/20/callback-hell-is-a-myth">回调</a>的场景将会越来越少，而且现在<a href="http://thecodebarbarian.com/common-async-await-design-patterns-in-node.js.html">可以直接在 Node.js 使用 async/await</a>。async/await 基于 Promise，因此需要了解 Promise 来掌握 async/await。这篇文章，将介绍如何编写一个 Promise 库，并演示如何使用 async/await。</p>
+
+<h2>Promise 是什么？</h2>
+
+<p>在 ES6 规范中，<a href="http://www.ecma-international.org/ecma-262/6.0/#sec-promise-executor">Promise 是一个类</a>，它的构造函数接受一个 <code>executor</code> 函数。Promise 类的实例有一个 <a href="http://www.ecma-international.org/ecma-262/6.0/#sec-promise.prototype.then"><code>then()</code> 方法</a>。根据规范，Promise 还有其他的一些属性，但在这里可以暂时忽略，因为我们要实现的是一个精简版的库。下面是一个 <code>MyPromise</code> 类的脚手架：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class MyPromise {
+</span><span class='line'>    // `executor` 函数接受两个参数，`resolve()` 和 `reject()`
+</span><span class='line'>    // 负责在异步操作成功(resolved)或者失败(rejected)的时候调用 `resolve()` 或者 `reject()`
+</span><span class='line'>    constructor(executor) {}
+</span><span class='line'>
+</span><span class='line'>    // 当 promise 的状态是 fulfilled（完成）时调用 `onFulfilled` 方法，
+</span><span class='line'>    // 当 promise 的状态是 rejected（失败）时调用 `onRejected` 方法
+</span><span class='line'>    // 到目前为止，可以认为 'fulfilled' 和 'resolved' 是一样的
+</span><span class='line'>    then(onFulfilled, onRejected) {}
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>executor</code> 函数需要两个参数，<code>resolve()</code> 和 <code>reject()</code>。promise 是一个状态机，包含三个状态：</p>
+
+<ul>
+<li>pending：初始状态，既不是成功，也不是失败状态</li>
+<li>fulfilled：意味着操作成功完成，返回结果值</li>
+<li>rejected：意味着操作失败，返回错误信息</li>
+</ul>
+
+
+<p>这样很容易就能实现 <code>MyPromise</code> 构造函数的初始版本：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>constructor(executor) {
+</span><span class='line'>    if (typeof executor !== 'function') {
+</span><span class='line'>        throw new Error('Executor must be a function')
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    // 初始状态，$state 表示 promise 的当前状态
+</span><span class='line'>    // $chained 是当 promise 处在 settled 状态时需要调用的函数数组
+</span><span class='line'>    this.$state = 'PENDING'
+</span><span class='line'>    this.$chained = []
+</span><span class='line'>
+</span><span class='line'>    // 为处理器函数实现 `resolve()` 和 `reject()`
+</span><span class='line'>    const resolve = res =&gt; {
+</span><span class='line'>        // 只要当 `resolve()` 或 `reject()` 被调用
+</span><span class='line'>        // 这个 promise 对象就不再处于 pending 状态，被称为 settled 状态
+</span><span class='line'>        // 调用 `resolve()` 或 `reject()` 两次，以及在 `resolve()` 之后调用 `reject()` 是无效的
+</span><span class='line'>        if (this.$state !== 'PENDING') {
+</span><span class='line'>            return
+</span><span class='line'>        }
+</span><span class='line'>        // 后面将会谈到 fulfilled 和 resolved 之间存在细微差别
+</span><span class='line'>        this.$state = 'FULFILLED'
+</span><span class='line'>        this.$internalValue = res
+</span><span class='line'>        // If somebody called `.then()` while this promise was pending, need
+</span><span class='line'>        // to call their `onFulfilled()` function
+</span><span class='line'>        for (const { onFulfilled } of this.$chained) {
+</span><span class='line'>            onFulfilled(res)
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>    const reject = err =&gt; {
+</span><span class='line'>        if (this.$state !== 'PENDING') {
+</span><span class='line'>            return
+</span><span class='line'>        }
+</span><span class='line'>        this.$state = 'REJECTED'
+</span><span class='line'>        this.$internalValue = err
+</span><span class='line'>        for (const { onRejected } of this.$chained) {
+</span><span class='line'>            onRejected(err)
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    // 如规范所言，调用处理器函数中的 `resolve()` 和 `reject()`
+</span><span class='line'>    try {
+</span><span class='line'>        // 如果处理器函数抛出一个同步错误，我们认为这是一个失败状态
+</span><span class='line'>        // 需要注意的是，`resolve()` 和 `reject()` 只能被调用一次
+</span><span class='line'>        executor(resolve, reject)
+</span><span class='line'>    } catch (err) {
+</span><span class='line'>        reject(err)
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>then()</code> 函数的实现更简单，它接受两个参数，<code>onFulfilled()</code> 和 <code>onRejected()</code>。<code>then()</code> 函数必须确保 promise 在 fulfilled 时调用 <code>onFulfilled()</code>，在 rejected 时调用 <code>onRejected()</code>。如果 promise 已经 resolved 或 rejected，<code>then()</code> 函数会立即调用 <code>onFulfilled()</code> 或 <code>onRejected()</code>。如果 promise 仍处于 pending 状态，就将函数推入 <code>$chained</code> 数组，因此后续 <code>resolve()</code> 和 <code>reject()</code> 函数仍然可以调用它们。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>then(onFulfilled, onRejected) {
+</span><span class='line'>    if (this.$state === 'FULFILLED') {
+</span><span class='line'>        onFulfilled(this.$internalValue)
+</span><span class='line'>    } else if (this.$state === 'REJECTED') {
+</span><span class='line'>        onRejected(this.$internalValue)
+</span><span class='line'>    } else {
+</span><span class='line'>        this.$chained.push({ onFulfilled, onRejected })
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>*除此之外：ES6 规范表示，如果在已经 resolved 或 rejected 的 promise 调用 <code>.then()</code>, 那么 <code>onFulfilled()</code> 或 <code>onRejected()</code> 将在下一个时序被调用。由于本文代码只是一个教学示例而不是规范的精确实现，因此实现会忽略这些细节。</em></p>
+
+<h2>Promise 调用链</h2>
+
+<p>上面的例子特意忽略了 promise 中最复杂也是最有用的部分：<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises#Chaining">链式调用</a>。如果 <code>onFulfilled()</code> 或者 <code>onRejected()</code> 函数返回一个 promise，则 <code>then()</code> 应该返回一个 <a href="http://www.ecma-international.org/ecma-262/6.0/#sec-promise-objects">“locked in”</a> 的新 promise 以匹配这个 promise 的状态。例如：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>p = new MyPromise(resolve =&gt; {
+</span><span class='line'>    setTimeout(() =&gt; resolve('World'), 100)
+</span><span class='line'>})
+</span><span class='line'>
+</span><span class='line'>p
+</span><span class='line'>    .then(res =&gt; new MyPromise(resolve =&gt; resolve(`Hello, ${res}`)))
+</span><span class='line'>    // 在 100 ms 后打印 'Hello, World'
+</span><span class='line'>    .then(res =&gt; console.log(res))</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面是可以返回 promise 的 <code>.then()</code> 函数实现，这样就可以进行链式调用。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>then(onFulfilled, onRejected) {
+</span><span class='line'>    return new MyPromise((resolve, reject) =&gt; {
+</span><span class='line'>        // 确保在 `onFulfilled()` 和 `onRejected()` 的错误将导致返回的 promise 失败（reject)
+</span><span class='line'>        const _onFulfilled = res =&gt; {
+</span><span class='line'>            try {
+</span><span class='line'>                // 如果 `onFulfilled()` 返回一个 promise, 确保 `resolve()` 能正确处理
+</span><span class='line'>                resolve(onFulfilled(res))
+</span><span class='line'>            } catch (err) {
+</span><span class='line'>                reject(err)
+</span><span class='line'>            }
+</span><span class='line'>        }
+</span><span class='line'>        const _onRejected = err =&gt; {
+</span><span class='line'>            try {
+</span><span class='line'>                reject(onRejected(err))
+</span><span class='line'>            } catch (_err) {
+</span><span class='line'>                reject(_err)
+</span><span class='line'>            }
+</span><span class='line'>        }
+</span><span class='line'>        if (this.$state === 'FULFILLED') {
+</span><span class='line'>            _onFulfilled(this.$internalValue)
+</span><span class='line'>        } else if (this.$state === 'REJECTED') {
+</span><span class='line'>            _onRejected(this.$internalValue)
+</span><span class='line'>        } else {
+</span><span class='line'>            this.$chained.push({ onFulfilled: _onFulfilled, onRejected: _onRejected })
+</span><span class='line'>        }
+</span><span class='line'>    })
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在 <code>then()</code> 返回一个 promise，但是还需要完成一些工作：如果 <code>onFulfilled()</code> 返回一个 promise，<code>resolve()</code> 要能够正确处理。所以 <code>resolve()</code> 函数需要在 <code>then()</code> 递归调用，下面是更新后的 <code>resolve()</code> 函数：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>const resolve = res =&gt; {
+</span><span class='line'>    // 只要当 `resolve()` 或 `reject()` 被调用
+</span><span class='line'>    // 这个 promise 对象就不再处于 pending 状态，被称为 settled 状态
+</span><span class='line'>    // 调用 `resolve()` 或 `reject()` 两次，以及在 `resolve()` 之后调用 `reject()` 是无效的
+</span><span class='line'>    if (this.$state !== 'PENDING') {
+</span><span class='line'>        return
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    // 如果 `res` 是 thenable（带有then方法的对象）
+</span><span class='line'>    // 将锁定 promise 来保持跟 thenable 的状态一致
+</span><span class='line'>    if (res !== null && typeof res.then === 'function') {
+</span><span class='line'>        // 在这种情况下，这个 promise 是 resolved，但是仍处于 'PENDING' 状态
+</span><span class='line'>        // 这就是 ES6 规范中说的"一个 resolved 的 promise"，可能处在 pending, fulfilled 或者 rejected 状态
+</span><span class='line'>        // http://www.ecma-international.org/ecma-262/6.0/#sec-promise-objects
+</span><span class='line'>        return res.then(resolve, reject)
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    this.$state = 'FULFILLED'
+</span><span class='line'>    this.$internalValue = res
+</span><span class='line'>    // If somebody called `.then()` while this promise was pending, need
+</span><span class='line'>    // to call their `onFulfilled()` function
+</span><span class='line'>    for (const { onFulfilled } of this.$chained) {
+</span><span class='line'>        onFulfilled(res)
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    return res
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>为了简单起见，上面的例子省略了一旦 promise 被锁定用以匹配另一个 promise 时，调用 resolve() 或者 reject() 是无效的关键细节。在上面的例子中，你可以 resolve() 一个 pending 的 promise ，然后抛出一个错误，然后 res.then(resolve, reject) 将会无效。这仅仅是一个例子，而不是 ES6 promise 规范的完全实现。</em></p>
+
+<p>上面的代码说明了 resolved 的 promise 和 fulfilled 的 promise 之间的区别。这种区别是微妙的，并且与 promise 链式调用有关。resolved 不是一种真正的 promise 状态，但它是<a href="http://www.ecma-international.org/ecma-262/6.0/#sec-promise-objects">ES6规范中定义</a>的<a href="http://www.ecma-international.org/ecma-262/6.0/#sec-promise-objects">术语</a>。当对一个已经 resolved 的 promise 调用 <code>resolve()</code>，可能会发生以下两件事之一：</p>
+
+<ul>
+<li>在调用 <code>resolve(v)</code>时，如果 <code>v</code> 不是一个 promise ，那么 promise 立即成为 fulfilled。在这种简单的情况下，resolved 和 fulfilled 就是一样的。</li>
+<li>在调用 <code>resolve(v)</code>时，如果 <code>v</code> 是另一个 promise，那么这个 promise 一直处于 pending 直到 <code>v</code> 调用 resolve 或者 reject。在这种情况下， promise 是 resolved 但处于 pending 状态。</li>
+</ul>
+
+
+<h2>与 Async/Await 一起使用</h2>
+
+<p>关键字 <code>await</code> 会暂停执行一个 <code>async</code> 函数，直到等待的 promise 变成 settled 状态。现在我们已经有了一个简单的自制 promise 库，看看结合使用 async/await 中时会发生什么。向 <code>then()</code> 函数添加一个 <code>console.log()</code> 语句：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>then(onFulfilled, onRejected) {
+</span><span class='line'>    console.log('Then', onFulfilled, onRejected, new Error().stack)
+</span><span class='line'>    return new MyPromise((resolve, reject) =&gt; {
+</span><span class='line'>        /* ... */
+</span><span class='line'>    })
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在，我们来 <code>await</code> 一个 <code>MyPromise</code> 的实例，看看会发生什么。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>run().catch(error =&gt; console.error(error.stack))
+</span><span class='line'>
+</span><span class='line'>async function run() {
+</span><span class='line'>    const start = Date.now()
+</span><span class='line'>    await new MyPromise(resolve =&gt; setTimeout(() =&gt; resolve(), 100))
+</span><span class='line'>    console.log('Elapsed time', Date.now() - start)
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意上面的 <code>.catch()</code> 调用。<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch"><code>catch()</code> 函数</a>是 ES6 promise 规范的核心部分。本文不会详细讲述它，因为 <code>.catch(f)</code> 相当于 <code>.then(null, f)</code>，没有什么特别的内容。</p>
+
+<p>以下是输出内容，注意 await 隐式调用 <code>.then()</code> 中的 <code>onFulfilled()</code> 和 <code>onRejected()</code> 函数，这是 V8 底层的 C++ 代码（native code）。此外，<code>await</code> 会一直等待调用 <code>.then()</code> 直到下一个时序。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Then function () { [native code] } function () { [native code] } Error
+</span><span class='line'>    at MyPromise.then (/home/val/test/promise.js:63:50)
+</span><span class='line'>    at process._tickCallback (internal/process/next_tick.js:188:7)
+</span><span class='line'>    at Function.Module.runMain (module.js:686:11)
+</span><span class='line'>    at startup (bootstrap_node.js:187:16)
+</span><span class='line'>    at bootstrap_node.js:608:3
+</span><span class='line'>Elapsed time 102</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>更多</h2>
+
+<p><a href="http://thecodebarbarian.com/common-async-await-design-patterns-in-node.js.html">async/await</a> 是非常强大的特性，但掌握起来稍微有点困难，因为需要使用者了解 promise 的基本原则。 promise 有很多细节，例如捕获处理器函数中的同步错误，以及 promise 一旦解决就无法改变状态，这使得 async/await 成为可能。一旦对 promise 有了充分的理解，async/await 就会变得容易得多。</p>
+</div>
+  
+    <section>
+      <h1>Comments</h1>
+      <div id="disqus_thread"><div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'mirreal';
+  var disqus_identifier = 'http://blog.mirreal.net/blog/2018/04/15/write-your-own-node-js-promise-library-from-scratch/';
+  var disqus_url = 'http://blog.mirreal.net/blog/2018/04/15/write-your-own-node-js-promise-library-from-scratch/';
+  //var disqus_developer = 1;
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+    </section>
+  
+
+</article>
+
+    <p class="meta">
+      
+        <a class="basic-alignment left nav" href="/blog/2018/04/12/looking-into-assembly-code-of-coercion/" title="Previous Post: 魔幻语言 JavaScript 系列之类型转换、宽松相等以及原始值">&laquo; 魔幻语言 JavaScript 系列之类型转换、宽松相等以及原始值</a>
+      
+      
+    </p>
+  </div>
+</body>
+</html>

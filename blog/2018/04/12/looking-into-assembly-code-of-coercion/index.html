@@ -1,0 +1,909 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>魔幻语言 JavaScript 系列之类型转换、宽松相等以及原始值 |  Patrick Ran</title>
+  <meta name="author" content="Patrick Ran">
+  
+
+  
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <!-- end CSS-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips &#8211;>
+
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="/javascripts/libs/modernizr-2.0.6.min.js"></script>
+</head>
+
+<body id="post">
+
+  <div id="container">
+    <nav role="navigation" ><ul class="main-navigation">
+  <li style='float:left;margin-right:5px'><a class='nav' href="http://mirreal.net/">HOME</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/">BLOG</a></li>
+  <li style='float:left;margin-right:7px'><a class='nav' href="/archives">ARCHIVES</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/note">NOTE</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/weekly">WEEKLY</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/project">PROJECT</a></li>
+  <li style="float:left;margin-right:7px"><a class="nav" href="/about">ABOUT</a></li>
+</ul>
+<br><br>
+</nav>
+    <article>
+
+
+  <div class="header-line">
+    <h1 class="article-title">魔幻语言 JavaScript 系列之类型转换、宽松相等以及原始值</h1>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Patrick Ran</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2018-04-12T10:18:01+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2018</span></span> <span class='time'>10:18 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/translator/'>translator</a>
+  
+</span>
+
+
+    </p>
+  </div>
+
+  <div class="article-content"><blockquote><p>编译自：<a href="https://wanago.io/2018/04/02/1-2-3-9-looking-into-assembly-code-of-coercion/"><code>[1] + [2] – [3] === 9</code>!? Looking into assembly code of coercion.</a></p>
+
+<p>全文从两个题目来介绍类型转换、宽松相等以及原始值的概念:</p>
+
+<p>[1] + [2] – [3] === 9</p>
+
+<p>如果让 a == true &amp;&amp; a == false 的值为 true</p>
+
+<p>第二道题目是译者加的，因为这其实是个很好的例子，体现出 JavaScript 的魔幻之处</p></blockquote>
+
+<p>变量值都具有类型，但仍然可以将一种类型的值赋值给另一种类型，如果是由开发者进行这些操作，就是<strong>类型转换</strong>（显式转换）。如果是发生在后台，比如在尝试对不一致的类型执行操作时，就是<strong>隐式转换</strong>（强制转换）。</p>
+
+<h2>类型转换（Type casting）</h2>
+
+<h3>基本包装类型（Primitive types wrappers）</h3>
+
+<p>在 JavaScript 中除了 <code>null</code> 和 <code>undefined</code> 之外的所有基本类型都有一个对应的基本包装类型。通过使用其构造函数，可以将一个值的类型转换为另一种类型。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nb">String</span><span class="p">(</span><span class="mi">123</span><span class="p">);</span> <span class="c1">// &#39;123&#39;</span>
+</span><span class='line'><span class="nb">Boolean</span><span class="p">(</span><span class="mi">123</span><span class="p">);</span> <span class="c1">// true</span>
+</span><span class='line'><span class="nb">Number</span><span class="p">(</span><span class="s1">&#39;123&#39;</span><span class="p">);</span> <span class="c1">// 123</span>
+</span><span class='line'><span class="nb">Number</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span> <span class="c1">// 1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>基本类型的包装器不会保存很长时间，一旦完成相应工作，就会消失</p></blockquote>
+
+<p>需要注意的是，如果在构造函数前使用 <code>new</code> 关键字，结果就完全不同，比如下面的例子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">const</span> <span class="nx">bool</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Boolean</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+</span><span class='line'><span class="nx">bool</span><span class="p">.</span><span class="nx">propertyName</span> <span class="o">=</span> <span class="s1">&#39;propertyValue&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">bool</span><span class="p">.</span><span class="nx">valueOf</span><span class="p">();</span> <span class="c1">// false</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">bool</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">bool</span><span class="p">.</span><span class="nx">propertyName</span><span class="p">);</span> <span class="c1">// &#39;propertyValue&#39;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由于 <code>bool</code> 在这里是一个新的对象，已经不再是基本类型值，它的计算结果为 <code>true</code>。</p>
+
+<p>上述例子，因为在 if 语句中，括号间的表达式将会装换成布尔值，比如</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其实，上面这段代码跟下面一样：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="p">(</span> <span class="nb">Boolean</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>parseFloat</h3>
+
+<p><code>parseFloat</code> 函数的功能跟 <code>Number</code> 构造函数类似，但对于传参并没有那么严格。当它遇到不能转换成数字的字符，将返回一个到该点的值并忽略其余字符。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nb">Number</span><span class="p">(</span><span class="s1">&#39;123a45&#39;</span><span class="p">);</span> <span class="c1">// NaN</span>
+</span><span class='line'><span class="nb">parseFloat</span><span class="p">(</span><span class="s1">&#39;123a45&#39;</span><span class="p">);</span> <span class="c1">// 123</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>parseInt</h3>
+
+<p><code>parseInt</code> 函数在解析时将会对数字进行向下取整，并且可以使用不同的进制。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nb">parseInt</span><span class="p">(</span><span class="s1">&#39;1111&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">// 15</span>
+</span><span class='line'><span class="nb">parseInt</span><span class="p">(</span><span class="s1">&#39;0xF&#39;</span><span class="p">);</span> <span class="c1">// 15</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">parseFloat</span><span class="p">(</span><span class="s1">&#39;0xF&#39;</span><span class="p">);</span> <span class="c1">// 0</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>parseInt</code> 函数可以猜测进制，或着你可以显式地通过第二个参数传入进制，参考 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt">MDN web docs</a>。</p>
+
+<p>而且不能正常处理大数，所以不应该成为 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor"><strong>Math.floor</strong></a> 的替代品，是的，<code>Math.floor</code> 也会进行类型转换：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nb">parseInt</span><span class="p">(</span><span class="s1">&#39;1.261e7&#39;</span><span class="p">);</span> <span class="c1">// 1</span>
+</span><span class='line'><span class="nb">Number</span><span class="p">(</span><span class="s1">&#39;1.261e7&#39;</span><span class="p">);</span> <span class="c1">// 12610000</span>
+</span><span class='line'><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="s1">&#39;1.261e7&#39;</span><span class="p">)</span> <span class="c1">// 12610000</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="c1">// 1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>toString</h3>
+
+<p>可以使用 <strong>toString</strong> 函数将值转换为字符串，但是在不同原型之间的实现有所不同。</p>
+
+<p><strong>String.prototype.toString</strong></p>
+
+<p>返回字符串的值</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">const</span> <span class="nx">dogName</span> <span class="o">=</span> <span class="s1">&#39;Fluffy&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">dogName</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="c1">// &#39;Fluffy&#39;</span>
+</span><span class='line'><span class="nb">String</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="s1">&#39;Fluffy&#39;</span><span class="p">)</span> <span class="c1">// &#39;Fluffy&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">String</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span><span class="p">.</span><span class="nx">call</span><span class="p">({})</span> <span class="c1">// Uncaught TypeError: String.prototype.toString requires that &#39;this&#39; be a String</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Number.prototype.toString</strong></p>
+
+<p>返回将数字的字符串表示形式，可以指定进制作为第一个参数传入</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">(</span><span class="mi">15</span><span class="p">).</span><span class="nx">toString</span><span class="p">();</span> <span class="c1">// &quot;15&quot;</span>
+</span><span class='line'><span class="p">(</span><span class="mi">15</span><span class="p">).</span><span class="nx">toString</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span> <span class="c1">// &quot;1111&quot;</span>
+</span><span class='line'><span class="p">(</span><span class="o">-</span><span class="mi">15</span><span class="p">).</span><span class="nx">toString</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span> <span class="c1">// &quot;-1111&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Symbol .prototype.toString</strong></p>
+
+<p>返回  <code>Symbol（${description}）</code></p>
+
+<p><strong>Boolean.prototype.toString</strong></p>
+
+<p>返回 <code>“true”</code> 或 <code>“false”</code></p>
+
+<p><strong>Object.prototype.toString</strong></p>
+
+<p>返回一个字符串 <code>[ object $ { tag } ]</code> ，其中 tag 可以是内置类型比如 “Array”，“String”，“Object”，“Date”，也可以是自定义 tag。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">const</span> <span class="nx">dogName</span> <span class="o">=</span> <span class="s1">&#39;Fluffy&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">dogName</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span> <span class="c1">// &#39;Fluffy&#39; (String.prototype.toString called here)</span>
+</span><span class='line'><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">dogName</span><span class="p">);</span> <span class="c1">// &#39;[object String]&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>随着 ES6 的推出，还可以使用 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol"><strong>Symbol</strong></a> 进行自定义 tag。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">const</span> <span class="nx">dog</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Fluffy&#39;</span> <span class="p">}</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="nx">dog</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="p">)</span> <span class="c1">// &#39;[object Object]&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">dog</span><span class="p">[</span><span class="nx">Symbol</span><span class="p">.</span><span class="nx">toStringTag</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Dog&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="nx">dog</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="p">)</span> <span class="c1">// &#39;[object Dog]&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>或者</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">const</span> <span class="nx">Dog</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Dog</span><span class="p">.</span><span class="nx">prototype</span><span class="p">[</span><span class="nx">Symbol</span><span class="p">.</span><span class="nx">toStringTag</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Dog&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">const</span> <span class="nx">dog</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Dog</span><span class="p">(</span><span class="s1">&#39;Fluffy&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">dog</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span> <span class="c1">// &#39;[object Dog]&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>还可以结合使用 ES6 class 和 getter：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">Dog</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">constructor</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">get</span> <span class="p">[</span><span class="nx">Symbol</span><span class="p">.</span><span class="nx">toStringTag</span><span class="p">]()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="s1">&#39;Dog&#39;</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">const</span> <span class="nx">dog</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Dog</span><span class="p">(</span><span class="s1">&#39;Fluffy&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">dog</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span> <span class="c1">// &#39;[object Dog]&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Array.prototype.toString</strong></p>
+
+<p>在每个元素上调用 <code>toString</code>，并返回一个字符串，并且以逗号分隔。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">const</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span>
+</span><span class='line'>  <span class="p">{},</span>
+</span><span class='line'>  <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>  <span class="mi">3</span>
+</span><span class='line'><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">arr</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="c1">// &quot;[object Object],2,3&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>强制转换</h2>
+
+<p>如果了解类型转换的工作原理，那么理解强制转换就会容易很多。</p>
+
+<h3>数学运算符</h3>
+
+<p><strong>加号运算符</strong></p>
+
+<p>在作为二元运算符的 <code>+</code> 如果两边的表达式存在字符串，最后将会返回一个字符串。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s1">&#39;2&#39;</span> <span class="o">+</span> <span class="mi">2</span> <span class="c1">// &#39;22&#39;</span>
+</span><span class='line'><span class="mi">15</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span> <span class="c1">// &#39;15&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以使用一元运算符将其转换为数字：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="o">+</span><span class="s1">&#39;12&#39;</span> <span class="c1">// 12</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>其他数学运算符</strong></p>
+
+<p>其他数学运算符（如 <code>-</code>或 <code>/</code>）将始终转换为数字。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="s1">&#39;04-02-2018&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="s1">&#39;1&#39;</span> <span class="c1">// 1522619999999</span>
+</span><span class='line'><span class="s1">&#39;12&#39;</span> <span class="o">/</span> <span class="s1">&#39;6&#39;</span> <span class="c1">// 2</span>
+</span><span class='line'><span class="o">-</span><span class="s1">&#39;1&#39;</span> <span class="c1">// -1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上述例子中，Date 类型将转换为数字，即 <a href="https://en.wikipedia.org/wiki/Unix_time">Unix 时间戳</a>。</p>
+
+<h3>逻辑非</h3>
+
+<p>如果原始值是 <em>假</em>，则使用逻辑非将输出 <em>真</em>，如果 <em>真</em>，则输出为 <em>假</em>。 如果使用两次，可用于将该值转换为相应的布尔值。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="o">!</span><span class="mi">1</span> <span class="c1">// false</span>
+</span><span class='line'><span class="o">!!</span><span class="p">({})</span> <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>位或</h3>
+
+<p>值得一提的是，即使 ToInt32 实际上是一个抽象操作（仅限内部，不可调用），将一个值转换为一个<a href="https://en.wikipedia.org/wiki/32-bit">有符号的 32 位整数</a>。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="mi">0</span> <span class="o">|</span> <span class="kc">true</span>          <span class="c1">// 1</span>
+</span><span class='line'><span class="mi">0</span> <span class="o">|</span> <span class="s1">&#39;123&#39;</span>         <span class="c1">// 123</span>
+</span><span class='line'><span class="mi">0</span> <span class="o">|</span> <span class="s1">&#39;2147483647&#39;</span>  <span class="c1">// 2147483647</span>
+</span><span class='line'><span class="mi">0</span> <span class="o">|</span> <span class="s1">&#39;2147483648&#39;</span>  <span class="c1">// -2147483648 (too big)</span>
+</span><span class='line'><span class="mi">0</span> <span class="o">|</span> <span class="s1">&#39;-2147483648&#39;</span> <span class="c1">// -2147483648</span>
+</span><span class='line'><span class="mi">0</span> <span class="o">|</span> <span class="s1">&#39;-2147483649&#39;</span> <span class="c1">// 2147483647 (too small)</span>
+</span><span class='line'><span class="mi">0</span> <span class="o">|</span> <span class="kc">Infinity</span>      <span class="c1">// 0</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当其中一个操作数为 0 时执行按位或操作将不改变另一个操作数的值。</p>
+
+<h3>其他情况下的强制转换</h3>
+
+<p>在编码时，可能会遇到更多强制转换的情况，比如这个例子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">const</span> <span class="nx">foo</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">bar</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">x</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">x</span><span class="p">[</span><span class="nx">foo</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;foo&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">x</span><span class="p">[</span><span class="nx">bar</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;bar&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">x</span><span class="p">[</span><span class="nx">foo</span><span class="p">]);</span> <span class="c1">// &quot;bar&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>发生这种情况是因为 <code>foo</code> 和 <code>bar</code> 在转换为字符串的结果均为 <code>“[object Object]”</code>。就像这样：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">x</span><span class="p">[</span><span class="nx">bar</span><span class="p">.</span><span class="nx">toString</span><span class="p">()]</span> <span class="o">=</span> <span class="s1">&#39;bar&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">x</span><span class="p">[</span><span class="s2">&quot;[object Object]&quot;</span><span class="p">];</span> <span class="c1">// &quot;bar&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals">模板字符串</a>的时候也会发生强制转换，在下面例子中重写 <code>toString</code> 函数：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">const</span> <span class="nx">Dog</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Dog</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">const</span> <span class="nx">dog</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Dog</span><span class="p">(</span><span class="s1">&#39;Fluffy&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">dog</span><span class="p">}</span> <span class="nx">is</span> <span class="nx">a</span> <span class="nx">good</span> <span class="nx">dog</span><span class="o">!</span><span class="err">`</span><span class="p">);</span> <span class="c1">// &quot;Fluffy is a good dog!&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正因为如此，<strong>宽松相等</strong>（==）被认为是一种不好的做法，如果两边类型不一致，就会试图进行强制隐式转换。</p>
+
+<p>看下面这个有趣的例子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">const</span> <span class="nx">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">String</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">foo2</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">String</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">foo</span> <span class="o">===</span> <span class="nx">foo2</span> <span class="c1">// false</span>
+</span><span class='line'><span class="nx">foo</span> <span class="o">&gt;=</span> <span class="nx">foo2</span> <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在这里我们使用了 <code>new</code> 关键字，所以 <code>foo</code> 和 <code>foo2</code> 都是字符串包装类型，原始值都是 <code>foo</code> 。但是，它们现在引用了两个不同的对象，所以 <code>foo === foo2</code> 将返回 <code>false</code>。这里的关系运算符 <code>&gt;=</code> 会在两个操作数上调用 <code>valueOf</code> 函数，因此比较的是它们的原始值，<code>'foo' &gt; = 'foo'</code> 的结果为 <code>true</code>。</p>
+
+<h2>[1] + [2] - [3] === 9</h2>
+
+<p>希望这些知识都能帮助揭开这个题目的神秘面纱</p>
+
+<ol>
+<li><code>[1] + [2]</code> 将调用 <code>Array.prototype.toString</code> 转换为字符串，然后进行字符串拼接。结果将是 <code>“12”</code>
+
+<ul>
+<li><code>[1,2] + [3,4]</code> 的值讲师 <code>“1,23,4”</code></li>
+</ul>
+</li>
+<li><code>12 - [3]</code>，减号运算符会将值转换为 Number 类型，所以等于 <code>12-3</code>，结果为 <code>9</code>
+
+<ul>
+<li>12 - [3,4] 的值是 <code>NaN</code>，因为<code>"3,4"</code> 不能被转换为 Number</li>
+</ul>
+</li>
+</ol>
+
+
+<h2>总结</h2>
+
+<p>尽管很多人会建议尽量避免强制隐式转换，但了解它的工作原理非常重要，在调试代码和避免错误方面大有帮助。</p>
+
+<p>【译文完】</p>
+
+<h2>再谈点，关于宽松相等和原始值</h2>
+
+<p>这里看另一道题目，在 JavaScript 环境下，能否让表达式 <code>a == true &amp;&amp; a == false</code> 为 <code>true</code>。</p>
+
+<p>就像下面这样，在控制台打印出 <code>’yeah'</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// code here</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">==</span> <span class="kc">true</span> <span class="o">&amp;&amp;</span> <span class="nx">a</span> <span class="o">==</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;yeah&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关于宽松相等（==），先看看 ECMA 5.1 的规范，包含 <code>toPrimitive</code>:</p>
+
+<ul>
+<li><a href="http://www.ecma-international.org/ecma-262/5.1/#sec-11.9.3">11.9.3</a> The Abstract Equality Comparison Algorithm</li>
+<li><a href="http://www.ecma-international.org/ecma-262/5.1/#sec-9.1">9.1</a> ToPrimitive</li>
+</ul>
+
+
+<h3>稍作总结</h3>
+
+<p>规范很长很详细，简单总结就是，对于下述表达式：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">x</span> <span class="o">==</span> <span class="nx">y</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>类型相同，判断的就是 x === y</li>
+<li>类型不同
+
+<ul>
+<li>如果 x，y 其中一个是布尔值，将这个布尔值进行 ToNumber 操作</li>
+<li>如果 x，y 其中一个是字符串，将这个字符串进行 ToNumber 操作</li>
+<li>若果 x，y 一方为对象，将这个对象进行 ToPrimitive 操作</li>
+</ul>
+</li>
+</ul>
+
+
+<p>至于 <code>ToPrimitive</code>，即求原始值，可以简单理解为进行 <code>valueOf()</code> 和 <code>toString()</code> 操作。</p>
+
+<p>稍后我们再详细剖析，接下来先看一个问题。</p>
+
+<h3>Question：是否存在这样一个变量，满足 x == !x</h3>
+
+<p>就像这样：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// code here</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">x</span> <span class="o">==</span> <span class="o">!</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;yeah&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可能很多人会想到下面这个，毕竟我们也曾热衷于各种奇技淫巧：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">[]</span> <span class="o">==</span> <span class="o">!</span><span class="p">[]</span> <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但答案绝不仅仅局限于此，比如：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Boolean</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">x</span> <span class="o">==</span> <span class="o">!</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;yeah&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// x.valueOf() -&gt; false</span>
+</span><span class='line'><span class="c1">// x is a object, so: !x -&gt; false</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Number</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'><span class="nx">y</span> <span class="o">==</span> <span class="o">!</span><span class="nx">y</span> <span class="c1">// true</span>
+</span><span class='line'><span class="c1">// y.valueOf() -&gt; 0</span>
+</span><span class='line'><span class="c1">// !y -&gt; false</span>
+</span><span class='line'><span class="c1">// 0 === Number(false) // true</span>
+</span><span class='line'><span class="c1">// 0 == false // true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>理解这个问题，那下面的这些例子都不是问题了：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">[]</span> <span class="o">==</span> <span class="o">!</span><span class="p">[]</span>
+</span><span class='line'><span class="p">[]</span> <span class="o">==</span> <span class="p">{}</span>
+</span><span class='line'><span class="p">[]</span> <span class="o">==</span> <span class="o">!</span><span class="p">{}</span>
+</span><span class='line'><span class="p">{}</span> <span class="o">==</span> <span class="o">!</span><span class="p">[]</span>
+</span><span class='line'><span class="p">{}</span> <span class="o">==</span> <span class="o">!</span><span class="p">{}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在来看看什么是 <code>ToPrimitive</code></p>
+
+<h3>ToPrimitive</h3>
+
+<p>看规范：<a href="http://www.ecma-international.org/ecma-262/5.1/#sec-8.12.8">8.12.8</a> <code>[[DefaultValue]] (hint)</code></p>
+
+<p>如果是 <code>Date</code> 求原始值，则 hint 是 <code>String</code>，其他均为 <code>Number</code>，即先调用 <code>valueOf()</code> 再调用 <code>toString()</code>。</p>
+
+<p>如果 hint 为 <code>Number</code>，具体过程如下：</p>
+
+<ol>
+<li>调用对象的 <code>valueOf()</code> 方法，如果值是原值则返回</li>
+<li>否则，调用对象的 <code>toString()</code> 方法，如果值是原值则返回</li>
+<li>否则，抛出 TypeError 错误</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// valueOf 和 toString 的调用顺序</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">valueOf</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;valueof&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">toString</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;toString&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">{}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">a</span> <span class="o">==</span> <span class="mi">0</span>
+</span><span class='line'><span class="c1">// valueof</span>
+</span><span class='line'><span class="c1">// toString</span>
+</span><span class='line'><span class="c1">// Uncaught TypeError: Cannot convert object to primitive value</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Date 类型先 toString，后 valueOf</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">t</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="s1">&#39;2018/04/01&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">t</span><span class="p">.</span><span class="nx">valueOf</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;valueof&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[]</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">t</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;toString&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">{}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">t</span> <span class="o">==</span> <span class="mi">0</span>
+</span><span class='line'><span class="c1">// toString</span>
+</span><span class='line'><span class="c1">// valueof</span>
+</span><span class='line'><span class="c1">// Uncaught TypeError: Cannot convert object to primitive value</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>到目前为止，上面的都是 ES5 的规范，那么在 ES6 中，有什么变化呢</p>
+
+<h3>ES6 中 ToPrimitive</h3>
+
+<p><a href="http://www.ecma-international.org/ecma-262/6.0/index.html#sec-toprimitive">7.1.1</a>ToPrimitive ( input [, PreferredType] )</p>
+
+<p>在 ES6 中吗，是可以自定义 <code>@@toPrimitive</code> 方法的，这是 Well-Known Symbols(<a href="http://www.ecma-international.org/ecma-262/6.0/index.html#sec-well-known-symbols">§6.1.5.1</a>)中的一个。JavaScript 内建了一些在 ECMAScript 5 之前没有暴露给开发者的 symbol，它们代表了内部语言行为。</p>
+
+<p>来自 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toPrimitive">MDN</a> 的例子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// 没有 Symbol.toPrimitive 属性的对象</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">obj1</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="o">+</span><span class="nx">obj1</span><span class="p">);</span> <span class="c1">// NaN</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">obj1</span><span class="p">}</span><span class="err">`</span><span class="p">);</span> <span class="c1">// &#39;[object Object]&#39;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj1</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="p">);</span> <span class="c1">// &#39;[object Object]&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 拥有 Symbol.toPrimitive 属性的对象</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">obj2</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nx">Symbol</span><span class="p">.</span><span class="nx">toPrimitive</span><span class="p">](</span><span class="nx">hint</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">hint</span> <span class="o">==</span> <span class="s1">&#39;number&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">hint</span> <span class="o">==</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="s1">&#39;hello&#39;</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="o">+</span><span class="nx">obj2</span><span class="p">);</span> <span class="c1">// 10 -- hint is &#39;number&#39;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">obj2</span><span class="p">}</span><span class="err">`</span><span class="p">);</span> <span class="c1">// &#39;hello&#39; -- hint is &#39;string&#39;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj2</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="p">);</span> <span class="c1">// &#39;true&#39; -- hint is &#39;default&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>有了上述铺垫，答案就呼之欲出了</p>
+
+<h3><code>a == true &amp;&amp; a == false</code> 为 <code>true</code> 的答案</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">flag</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">toString</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">flag</span> <span class="o">=</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">flag</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>或者使用 <code>valueOf()</code>：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">flag</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">valueOf</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">flag</span> <span class="o">=</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">flag</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>或者是直接改变 ToPrimitive 行为：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// 其实只需设置 default 即可</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">flag</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>    <span class="p">[</span><span class="nx">Symbol</span><span class="p">.</span><span class="nx">toPrimitive</span><span class="p">](</span><span class="nx">hint</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">hint</span> <span class="o">===</span> <span class="s1">&#39;number&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="mi">10</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">hint</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="s1">&#39;hello&#39;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">flag</span> <span class="o">=</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">flag</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>如果是严格相等呢</h3>
+
+<p>这个问题在严格相等的情况下，也是能够成立的，这又是另外的知识点了，使用 <code>defineProperty</code> 就能实现：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">flag</span> <span class="o">=</span> <span class="kc">false</span>
+</span><span class='line'><span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nb">window</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">get</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="nx">flag</span> <span class="o">=</span> <span class="o">!</span><span class="nx">flag</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">})</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="kc">true</span> <span class="o">&amp;&amp;</span> <span class="nx">a</span> <span class="o">===</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;yeah&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>阅读更多</h3>
+
+<ul>
+<li><a href="https://stackoverflow.com/questions/48270127/can-a-1-a-2-a-3-ever-evaluate-to-true">Can (a== 1 &amp;&amp; a ==2 &amp;&amp; a==3) ever evaluate to true?</a></li>
+</ul>
+
+</div>
+  
+    <section>
+      <h1>Comments</h1>
+      <div id="disqus_thread"><div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'mirreal';
+  var disqus_identifier = 'http://blog.mirreal.net/blog/2018/04/12/looking-into-assembly-code-of-coercion/';
+  var disqus_url = 'http://blog.mirreal.net/blog/2018/04/12/looking-into-assembly-code-of-coercion/';
+  //var disqus_developer = 1;
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+    </section>
+  
+
+</article>
+
+    <p class="meta">
+      
+        <a class="basic-alignment left nav" href="/blog/2017/12/01/clean-code-vs-dirty-code-react-best-practices/" title="Previous Post: React 整洁代码最佳实践">&laquo; React 整洁代码最佳实践</a>
+      
+      
+        <a class="basic-alignment right nav" href="/blog/2018/04/15/write-your-own-node-js-promise-library-from-scratch/" title="Next Post: 从零开始写一个 Promise 库">从零开始写一个 Promise 库 &raquo;</a>
+      
+    </p>
+  </div>
+</body>
+</html>
