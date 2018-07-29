@@ -1,4 +1,2 @@
 User-agent: *
-Disallow: 
-
-Sitemap: http://blog.mirreal.net/sitemap.xml 
+Disallow:
