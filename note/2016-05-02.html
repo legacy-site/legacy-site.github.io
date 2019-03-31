@@ -63,17 +63,25 @@
 <h3>events 模块</h3>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">const</span> <span class="nx">EventEmitter</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;events&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">emitter</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="nx">eventName</span><span class="p">,</span> <span class="nx">listener</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">emitter</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="nx">eventName</span><span class="p">[,</span> <span class="nx">arg1</span><span class="p">][,</span> <span class="nx">arg2</span><span class="p">][,</span> <span class="p">...])</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">emitter</span><span class="p">.</span><span class="nx">removeListener</span><span class="p">(</span><span class="nx">eventName</span><span class="p">,</span> <span class="nx">listener</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">emitter</span><span class="p">.</span><span class="nx">removeAllListeners</span><span class="p">([</span><span class="nx">eventName</span><span class="p">])</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>emitter.on(eventName, listener)</p>
-
-<p>emitter.emit(eventName[, arg1][, arg2][, &hellip;])</p>
-
-<p>emitter.removeListener(eventName, listener)</p>
-
-<p>emitter.removeAllListeners([eventName])</p>
 
 <h3>Node es6</h3>
 
