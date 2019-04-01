@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Translator | Mirreal Note]]></title>
-  <link href="http://blog.mirreal.net/blog/categories/translator/atom.xml" rel="self"/>
-  <link href="http://blog.mirreal.net/"/>
-  <updated>2019-04-01T09:14:08+08:00</updated>
-  <id>http://blog.mirreal.net/</id>
+  <link href="https://blog.mirreal.net/blog/categories/translator/atom.xml" rel="self"/>
+  <link href="https://blog.mirreal.net/"/>
+  <updated>2019-04-01T09:57:50+08:00</updated>
+  <id>https://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Patrick Ran]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[从零开始写一个 Promise 库]]></title>
-    <link href="http://blog.mirreal.net/blog/2018/04/15/write-your-own-node-js-promise-library-from-scratch/"/>
+    <link href="https://blog.mirreal.net/blog/2018/04/15/write-your-own-node-js-promise-library-from-scratch/"/>
     <updated>2018-04-15T12:15:14+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2018/04/15/write-your-own-node-js-promise-library-from-scratch</id>
+    <id>https://blog.mirreal.net/blog/2018/04/15/write-your-own-node-js-promise-library-from-scratch</id>
     <content type="html"><![CDATA[<blockquote><p>原文：<a href="http://thecodebarbarian.com/write-your-own-node-js-promise-library-from-scratch.html">Write Your Own Node.js Promise Library from Scratch</a></p>
 
 <p>作者：<a href="https://twitter.com/code_barbarian">code_barbarian</a></p></blockquote>
@@ -245,9 +245,9 @@ Elapsed time 102
   
   <entry>
     <title type="html"><![CDATA[魔幻语言 JavaScript 系列之类型转换、宽松相等以及原始值]]></title>
-    <link href="http://blog.mirreal.net/blog/2018/04/12/looking-into-assembly-code-of-coercion/"/>
+    <link href="https://blog.mirreal.net/blog/2018/04/12/looking-into-assembly-code-of-coercion/"/>
     <updated>2018-04-12T10:18:01+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2018/04/12/looking-into-assembly-code-of-coercion</id>
+    <id>https://blog.mirreal.net/blog/2018/04/12/looking-into-assembly-code-of-coercion</id>
     <content type="html"><![CDATA[<blockquote><p>编译自：<a href="https://wanago.io/2018/04/02/1-2-3-9-looking-into-assembly-code-of-coercion/"><code>[1] + [2] – [3] === 9</code>!? Looking into assembly code of coercion.</a></p>
 
 <p>全文从两个题目来介绍类型转换、宽松相等以及原始值的概念:</p>
@@ -783,9 +783,9 @@ if (a === true &amp;&amp; a === false) {
   
   <entry>
     <title type="html"><![CDATA[React 整洁代码最佳实践]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/12/01/clean-code-vs-dirty-code-react-best-practices/"/>
+    <link href="https://blog.mirreal.net/blog/2017/12/01/clean-code-vs-dirty-code-react-best-practices/"/>
     <updated>2017-12-01T08:53:45+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/12/01/clean-code-vs-dirty-code-react-best-practices</id>
+    <id>https://blog.mirreal.net/blog/2017/12/01/clean-code-vs-dirty-code-react-best-practices</id>
     <content type="html"><![CDATA[<blockquote><p>原文：<a href="http://americanexpress.io/clean-code-dirty-code/">Clean Code vs. Dirty Code: React Best Practices</a></p>
 
 <p>作者：Donavon West</p></blockquote>
@@ -1167,9 +1167,9 @@ const [language, country] = locale.split('-');
   
   <entry>
     <title type="html"><![CDATA[魔幻语言 JavaScript 系列之 Call、bind 以及上下文]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/11/09/call-apply-and-context-in-javascript/"/>
+    <link href="https://blog.mirreal.net/blog/2017/11/09/call-apply-and-context-in-javascript/"/>
     <updated>2017-11-09T14:24:57+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/11/09/call-apply-and-context-in-javascript</id>
+    <id>https://blog.mirreal.net/blog/2017/11/09/call-apply-and-context-in-javascript</id>
     <content type="html"><![CDATA[<blockquote><p>原文：<a href="http://blog.bloomca.me/2017/11/08/the-most-clever-line-of-javascript.html">The Most Clever Line of JavaScript</a></p>
 
 <p>作者：<a href="https://twitter.com/blooomca">Seva Zaikov</a></p></blockquote>
@@ -1349,9 +1349,9 @@ Function.prototype.call.bind(Array.prototype.map)(addressParts, Function.prototy
   
   <entry>
     <title type="html"><![CDATA[编写扁平化的代码]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/11/02/writing-flat-and-declarative-code/"/>
+    <link href="https://blog.mirreal.net/blog/2017/11/02/writing-flat-and-declarative-code/"/>
     <updated>2017-11-02T11:20:03+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/11/02/writing-flat-and-declarative-code</id>
+    <id>https://blog.mirreal.net/blog/2017/11/02/writing-flat-and-declarative-code</id>
     <content type="html"><![CDATA[<blockquote><p>原文：<a href="https://peeke.nl/writing-flat-code">Writing flat &amp; declarative code</a></p>
 
 <p>作者：<a href="https://twitter.com/peeke__">Peeke Kuepers</a></p></blockquote>

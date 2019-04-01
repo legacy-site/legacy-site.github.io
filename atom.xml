@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Mirreal Note]]></title>
-  <link href="http://blog.mirreal.net/atom.xml" rel="self"/>
-  <link href="http://blog.mirreal.net/"/>
-  <updated>2019-04-01T09:14:08+08:00</updated>
-  <id>http://blog.mirreal.net/</id>
+  <link href="https://blog.mirreal.net/atom.xml" rel="self"/>
+  <link href="https://blog.mirreal.net/"/>
+  <updated>2019-04-01T09:57:50+08:00</updated>
+  <id>https://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Patrick Ran]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[从零开始写一个 Promise 库]]></title>
-    <link href="http://blog.mirreal.net/blog/2018/04/15/write-your-own-node-js-promise-library-from-scratch/"/>
+    <link href="https://blog.mirreal.net/blog/2018/04/15/write-your-own-node-js-promise-library-from-scratch/"/>
     <updated>2018-04-15T12:15:14+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2018/04/15/write-your-own-node-js-promise-library-from-scratch</id>
+    <id>https://blog.mirreal.net/blog/2018/04/15/write-your-own-node-js-promise-library-from-scratch</id>
     <content type="html"><![CDATA[<blockquote><p>原文：<a href="http://thecodebarbarian.com/write-your-own-node-js-promise-library-from-scratch.html">Write Your Own Node.js Promise Library from Scratch</a></p>
 
 <p>作者：<a href="https://twitter.com/code_barbarian">code_barbarian</a></p></blockquote>
@@ -393,9 +393,9 @@
   
   <entry>
     <title type="html"><![CDATA[魔幻语言 JavaScript 系列之类型转换、宽松相等以及原始值]]></title>
-    <link href="http://blog.mirreal.net/blog/2018/04/12/looking-into-assembly-code-of-coercion/"/>
+    <link href="https://blog.mirreal.net/blog/2018/04/12/looking-into-assembly-code-of-coercion/"/>
     <updated>2018-04-12T10:18:01+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2018/04/12/looking-into-assembly-code-of-coercion</id>
+    <id>https://blog.mirreal.net/blog/2018/04/12/looking-into-assembly-code-of-coercion</id>
     <content type="html"><![CDATA[<blockquote><p>编译自：<a href="https://wanago.io/2018/04/02/1-2-3-9-looking-into-assembly-code-of-coercion/"><code>[1] + [2] – [3] === 9</code>!? Looking into assembly code of coercion.</a></p>
 
 <p>全文从两个题目来介绍类型转换、宽松相等以及原始值的概念:</p>
@@ -1194,9 +1194,9 @@
   
   <entry>
     <title type="html"><![CDATA[React 整洁代码最佳实践]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/12/01/clean-code-vs-dirty-code-react-best-practices/"/>
+    <link href="https://blog.mirreal.net/blog/2017/12/01/clean-code-vs-dirty-code-react-best-practices/"/>
     <updated>2017-12-01T08:53:45+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/12/01/clean-code-vs-dirty-code-react-best-practices</id>
+    <id>https://blog.mirreal.net/blog/2017/12/01/clean-code-vs-dirty-code-react-best-practices</id>
     <content type="html"><![CDATA[<blockquote><p>原文：<a href="http://americanexpress.io/clean-code-dirty-code/">Clean Code vs. Dirty Code: React Best Practices</a></p>
 
 <p>作者：Donavon West</p></blockquote>
@@ -1780,9 +1780,9 @@ const loadConfig = () =&gt; {
   
   <entry>
     <title type="html"><![CDATA[魔幻语言 JavaScript 系列之 Call、bind 以及上下文]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/11/09/call-apply-and-context-in-javascript/"/>
+    <link href="https://blog.mirreal.net/blog/2017/11/09/call-apply-and-context-in-javascript/"/>
     <updated>2017-11-09T14:24:57+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/11/09/call-apply-and-context-in-javascript</id>
+    <id>https://blog.mirreal.net/blog/2017/11/09/call-apply-and-context-in-javascript</id>
     <content type="html"><![CDATA[<blockquote><p>原文：<a href="http://blog.bloomca.me/2017/11/08/the-most-clever-line-of-javascript.html">The Most Clever Line of JavaScript</a></p>
 
 <p>作者：<a href="https://twitter.com/blooomca">Seva Zaikov</a></p></blockquote>
@@ -2085,9 +2085,9 @@ const buttonsMarkup = buttons.map(this.renderButton.bind(this);
   
   <entry>
     <title type="html"><![CDATA[编写扁平化的代码]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/11/02/writing-flat-and-declarative-code/"/>
+    <link href="https://blog.mirreal.net/blog/2017/11/02/writing-flat-and-declarative-code/"/>
     <updated>2017-11-02T11:20:03+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/11/02/writing-flat-and-declarative-code</id>
+    <id>https://blog.mirreal.net/blog/2017/11/02/writing-flat-and-declarative-code</id>
     <content type="html"><![CDATA[<blockquote><p>原文：<a href="https://peeke.nl/writing-flat-code">Writing flat &amp; declarative code</a></p>
 
 <p>作者：<a href="https://twitter.com/peeke__">Peeke Kuepers</a></p></blockquote>
@@ -2663,9 +2663,9 @@ const buttonsMarkup = buttons.map(this.renderButton.bind(this);
   
   <entry>
     <title type="html"><![CDATA[ES6 Promise：模式与反模式]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/09/29/es6-promises-patterns-and-anti-patterns/"/>
+    <link href="https://blog.mirreal.net/blog/2017/09/29/es6-promises-patterns-and-anti-patterns/"/>
     <updated>2017-09-29T16:50:11+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/09/29/es6-promises-patterns-and-anti-patterns</id>
+    <id>https://blog.mirreal.net/blog/2017/09/29/es6-promises-patterns-and-anti-patterns</id>
     <content type="html"><![CDATA[<blockquote><p>原文：<a href="https://medium.com/datafire-io/es6-promises-patterns-and-anti-patterns-bbb21a5d0918">ES6 Promises: Patterns and Anti-Patterns</a>
 作者：Bobby Brennan</p></blockquote>
 
@@ -3226,9 +3226,9 @@ const buttonsMarkup = buttons.map(this.renderButton.bind(this);
   
   <entry>
     <title type="html"><![CDATA[在 Node.js 中使用原生 ES 模块]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/09/13/using-es-modules-natively-in-node-dot-js/"/>
+    <link href="https://blog.mirreal.net/blog/2017/09/13/using-es-modules-natively-in-node-dot-js/"/>
     <updated>2017-09-13T16:19:59+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/09/13/using-es-modules-natively-in-node-dot-js</id>
+    <id>https://blog.mirreal.net/blog/2017/09/13/using-es-modules-natively-in-node-dot-js</id>
     <content type="html"><![CDATA[<blockquote><p>原文：<a href="http://2ality.com/2017/09/native-esm-node.html">Using ES modules natively in Node.js</a></p>
 
 <p>作者：<a href="https://twitter.com/rauschma">Axel Rauschmayer</a></p></blockquote>
@@ -3372,9 +3372,9 @@ const buttonsMarkup = buttons.map(this.renderButton.bind(this);
   
   <entry>
     <title type="html"><![CDATA[在工作中学习]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/09/02/learning-at-work/"/>
+    <link href="https://blog.mirreal.net/blog/2017/09/02/learning-at-work/"/>
     <updated>2017-09-02T21:49:52+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/09/02/learning-at-work</id>
+    <id>https://blog.mirreal.net/blog/2017/09/02/learning-at-work</id>
     <content type="html"><![CDATA[<blockquote><p>原文；<a href="https://jvns.ca/blog/2017/08/06/learning-at-work/">Learning at work</a></p>
 
 <p>作者：Julia Evans</p>
@@ -3499,9 +3499,9 @@ const buttonsMarkup = buttons.map(this.renderButton.bind(this);
   
   <entry>
     <title type="html"><![CDATA[JavaScript 中的匿名递归]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/08/09/anonymous-recursion-in-javascript/"/>
+    <link href="https://blog.mirreal.net/blog/2017/08/09/anonymous-recursion-in-javascript/"/>
     <updated>2017-08-09T14:54:22+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/08/09/anonymous-recursion-in-javascript</id>
+    <id>https://blog.mirreal.net/blog/2017/08/09/anonymous-recursion-in-javascript</id>
     <content type="html"><![CDATA[<blockquote><p>原文：<a href="https://dev.to/simov/anonymous-recursion-in-javascript">Anonymous Recursion in JavaScript</a></p>
 
 <p>作者：Simeon Velichkov</p></blockquote>
@@ -3789,9 +3789,9 @@ const buttonsMarkup = buttons.map(this.renderButton.bind(this);
   
   <entry>
     <title type="html"><![CDATA[面向初学者的高阶组件介绍]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/07/19/higher-order-components-for-beginners/"/>
+    <link href="https://blog.mirreal.net/blog/2017/07/19/higher-order-components-for-beginners/"/>
     <updated>2017-07-19T18:59:37+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/07/19/higher-order-components-for-beginners</id>
+    <id>https://blog.mirreal.net/blog/2017/07/19/higher-order-components-for-beginners</id>
     <content type="html"><![CDATA[<blockquote><p>作者：Brandon Newton</p>
 
 <p>原文：<a href="https://btnwtn.com/articles/higher-order-components-for-beginners">Higher-Order Components (HOCs) for Beginners</a></p>
@@ -4328,9 +4328,9 @@ const buttonsMarkup = buttons.map(this.renderButton.bind(this);
   
   <entry>
     <title type="html"><![CDATA[CSS Animations vs Web Animations API]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/06/26/css-animations-vs-web-animations-api-slash/"/>
+    <link href="https://blog.mirreal.net/blog/2017/06/26/css-animations-vs-web-animations-api-slash/"/>
     <updated>2017-06-26T20:47:08+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/06/26/css-animations-vs-web-animations-api-slash</id>
+    <id>https://blog.mirreal.net/blog/2017/06/26/css-animations-vs-web-animations-api-slash</id>
     <content type="html"><![CDATA[<blockquote><p>作者：Ollie Williams</p>
 
 <p>原文：<a href="https://css-tricks.com/css-animations-vs-web-animations-api/">CSS Animations vs Web Animations API</a></p></blockquote>
@@ -4669,9 +4669,9 @@ const buttonsMarkup = buttons.map(this.renderButton.bind(this);
   
   <entry>
     <title type="html"><![CDATA[JavaScript 异常的防范与监控]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/06/21/javascript-stack-trace/"/>
+    <link href="https://blog.mirreal.net/blog/2017/06/21/javascript-stack-trace/"/>
     <updated>2017-06-21T23:12:00+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/06/21/javascript-stack-trace</id>
+    <id>https://blog.mirreal.net/blog/2017/06/21/javascript-stack-trace</id>
     <content type="html"><![CDATA[<p>一套完善的前端体系应少不了异常统计与监控，即使有足够的质量保证体系，难免会出现一些意料之外的事，尤其是在复杂的网路环境和运行环境之下。为了保证代码的健壮性以及页面的稳定性，我们从多个方面来做异常的防范和监控。</p>
 
 <h2>三种思路</h2>
@@ -5034,9 +5034,9 @@ const buttonsMarkup = buttons.map(this.renderButton.bind(this);
   
   <entry>
     <title type="html"><![CDATA[喜欢用 Git 做的一些小事]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/06/12/little-things-i-like-to-do-with-git/"/>
+    <link href="https://blog.mirreal.net/blog/2017/06/12/little-things-i-like-to-do-with-git/"/>
     <updated>2017-06-12T18:00:00+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/06/12/little-things-i-like-to-do-with-git</id>
+    <id>https://blog.mirreal.net/blog/2017/06/12/little-things-i-like-to-do-with-git</id>
     <content type="html"><![CDATA[<blockquote><p>作者：<a href="https://twitter.com/csswizardry">@csswizardry</a></p>
 
 <p>原文：<a href="https://csswizardry.com/2017/05/little-things-i-like-to-do-with-git/">Little Things I Like to Do with Git</a></p>
@@ -5390,9 +5390,9 @@ const buttonsMarkup = buttons.map(this.renderButton.bind(this);
   
   <entry>
     <title type="html"><![CDATA[移除在 ESM 模式生成的严格模式]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/06/05/remove-strict-node/"/>
+    <link href="https://blog.mirreal.net/blog/2017/06/05/remove-strict-node/"/>
     <updated>2017-06-05T18:00:00+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/06/05/remove-strict-node</id>
+    <id>https://blog.mirreal.net/blog/2017/06/05/remove-strict-node</id>
     <content type="html"><![CDATA[<h2>起源</h2>
 
 <p>项目升级构建方式，以前的代码采用 AMD 风格组织代码，并使用 <code>r.js</code> 完成打包优化工作。后续成员选择采用 ES6 的风格编写代码，然后 webpack + babel 完成打包构建。迁移工作并不如想象中那么容易，终于完成各种配置，测试时候发现问题：抛出一个语法错误。错误很快被定位，属于历史代码的不规范写法，之所以现在暴露出来是因为新的构建方式会加入 <code>"use strict"</code>。</p>
@@ -5505,9 +5505,9 @@ const buttonsMarkup = buttons.map(this.renderButton.bind(this);
   
   <entry>
     <title type="html"><![CDATA[编写现代 JavaScript 代码]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/06/02/writing-modern-javascript-code/"/>
+    <link href="https://blog.mirreal.net/blog/2017/06/02/writing-modern-javascript-code/"/>
     <updated>2017-06-02T18:00:00+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/06/02/writing-modern-javascript-code</id>
+    <id>https://blog.mirreal.net/blog/2017/06/02/writing-modern-javascript-code</id>
     <content type="html"><![CDATA[<blockquote><p>原文作者：<a href="https://twitter.com/scastiel">Sébastien Castiel</a></p>
 
 <p>原文链接：<a href="https://dev.to/scastiel/writing-modern-javascript-code">Writing modern JavaScript code</a></p>
@@ -5709,9 +5709,9 @@ const buttonsMarkup = buttons.map(this.renderButton.bind(this);
   
   <entry>
     <title type="html"><![CDATA[JavaScript 模块化现状]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/05/29/the-state-of-javascript/"/>
+    <link href="https://blog.mirreal.net/blog/2017/05/29/the-state-of-javascript/"/>
     <updated>2017-05-29T18:00:00+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/05/29/the-state-of-javascript</id>
+    <id>https://blog.mirreal.net/blog/2017/05/29/the-state-of-javascript</id>
     <content type="html"><![CDATA[<blockquote><p>原文作者：Johannes Ewald <a href="https://twitter.com/Jhnnns">@Jhnnns</a></p>
 
 <p>原文链接：<a href="https://medium.com/webpack/the-state-of-javascript-modules-4636d1774358">The state of JavaScript modules</a></p>
@@ -6121,9 +6121,9 @@ const buttonsMarkup = buttons.map(this.renderButton.bind(this);
   
   <entry>
     <title type="html"><![CDATA[JS/React 开发者的 Atom 终极配置]]></title>
-    <link href="http://blog.mirreal.net/blog/2017/05/28/my-atom-editor-setup-for-js-react/"/>
+    <link href="https://blog.mirreal.net/blog/2017/05/28/my-atom-editor-setup-for-js-react/"/>
     <updated>2017-05-28T18:00:00+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2017/05/28/my-atom-editor-setup-for-js-react</id>
+    <id>https://blog.mirreal.net/blog/2017/05/28/my-atom-editor-setup-for-js-react</id>
     <content type="html"><![CDATA[<blockquote><p>原文作者：Elad Ossadon</p>
 
 <p>原文链接：<a href="https://medium.com/productivity-freak/my-atom-editor-setup-for-js-react-9726cd69ad20">The Ultimate Atom Editor Setup (+for JS/React)</a></p></blockquote>
@@ -6354,18 +6354,18 @@ const buttonsMarkup = buttons.map(this.renderButton.bind(this);
   
   <entry>
     <title type="html"><![CDATA[科学上网的方法和原理]]></title>
-    <link href="http://blog.mirreal.net/blog/2016/06/10/the-method-and-principle-of-breaking-the-wall/"/>
+    <link href="https://blog.mirreal.net/blog/2016/06/10/the-method-and-principle-of-breaking-the-wall/"/>
     <updated>2016-06-10T18:15:50+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2016/06/10/the-method-and-principle-of-breaking-the-wall</id>
+    <id>https://blog.mirreal.net/blog/2016/06/10/the-method-and-principle-of-breaking-the-wall</id>
     <content type="html"><![CDATA[<p>逗你呢，这里没有你想要的东西。</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[使用 ES6 的浏览器兼容性问题]]></title>
-    <link href="http://blog.mirreal.net/blog/2016/05/14/compatibility-problem-with-es6/"/>
+    <link href="https://blog.mirreal.net/blog/2016/05/14/compatibility-problem-with-es6/"/>
     <updated>2016-05-14T16:35:34+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2016/05/14/compatibility-problem-with-es6</id>
+    <id>https://blog.mirreal.net/blog/2016/05/14/compatibility-problem-with-es6</id>
     <content type="html"><![CDATA[<p>以前对浏览器兼容性问题只是大概知道一些点，没想到这次真正着手去做的时候，还是碰到了很多问题。刚开始的时候一边解决问题，一边想着：用 IE8 的都是神经病，到后来，我发现完了，I LOVE IE。</p>
 
 <h2>0x00 起源</h2>
@@ -6771,9 +6771,9 @@ const buttonsMarkup = buttons.map(this.renderButton.bind(this);
   
   <entry>
     <title type="html"><![CDATA[为什么是 JSONP]]></title>
-    <link href="http://blog.mirreal.net/blog/2016/04/01/what-is-jsonp-and-why/"/>
+    <link href="https://blog.mirreal.net/blog/2016/04/01/what-is-jsonp-and-why/"/>
     <updated>2016-04-01T21:06:58+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2016/04/01/what-is-jsonp-and-why</id>
+    <id>https://blog.mirreal.net/blog/2016/04/01/what-is-jsonp-and-why</id>
     <content type="html"><![CDATA[<!-- # JSONP，跨域，安全策略，以及 WHY
 
 服务器端、浏览器端

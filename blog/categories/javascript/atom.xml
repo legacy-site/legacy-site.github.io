@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Javascript | Mirreal Note]]></title>
-  <link href="http://blog.mirreal.net/blog/categories/javascript/atom.xml" rel="self"/>
-  <link href="http://blog.mirreal.net/"/>
-  <updated>2019-04-01T09:14:08+08:00</updated>
-  <id>http://blog.mirreal.net/</id>
+  <link href="https://blog.mirreal.net/blog/categories/javascript/atom.xml" rel="self"/>
+  <link href="https://blog.mirreal.net/"/>
+  <updated>2019-04-01T09:57:50+08:00</updated>
+  <id>https://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Patrick Ran]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Base64简要笔记及其他]]></title>
-    <link href="http://blog.mirreal.net/blog/2014/11/06/base64-note/"/>
+    <link href="https://blog.mirreal.net/blog/2014/11/06/base64-note/"/>
     <updated>2014-11-06T21:38:01+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2014/11/06/base64-note</id>
+    <id>https://blog.mirreal.net/blog/2014/11/06/base64-note</id>
     <content type="html"><![CDATA[<h3>Base64 是一种基于 64 个可打印字符来表示二进制数据的表示方法。</h3>
 
 <h4>1.base64 算法的由来</h4>

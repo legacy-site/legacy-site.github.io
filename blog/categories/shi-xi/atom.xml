@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: 实习 | Mirreal Note]]></title>
-  <link href="http://blog.mirreal.net/blog/categories/shi-xi/atom.xml" rel="self"/>
-  <link href="http://blog.mirreal.net/"/>
-  <updated>2019-04-01T09:14:08+08:00</updated>
-  <id>http://blog.mirreal.net/</id>
+  <link href="https://blog.mirreal.net/blog/categories/shi-xi/atom.xml" rel="self"/>
+  <link href="https://blog.mirreal.net/"/>
+  <updated>2019-04-01T09:57:50+08:00</updated>
+  <id>https://blog.mirreal.net/</id>
   <author>
     <name><![CDATA[Patrick Ran]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[第一次实习生体验]]></title>
-    <link href="http://blog.mirreal.net/blog/2014/11/29/my-first-internship/"/>
+    <link href="https://blog.mirreal.net/blog/2014/11/29/my-first-internship/"/>
     <updated>2014-11-29T23:21:08+08:00</updated>
-    <id>http://blog.mirreal.net/blog/2014/11/29/my-first-internship</id>
+    <id>https://blog.mirreal.net/blog/2014/11/29/my-first-internship</id>
     <content type="html"><![CDATA[<p>实习，也是第一份工作。</p>
 
 <p>一直想对此写点什么。在这段并不是太长的时间里，学到的很多，有些东西可能无法言表，就像是某种潜移默化的影响和变化。</p>
